@@ -1,16 +1,24 @@
+// ===============================
+// CART (PANIER)
+// Affiche le panier sous forme de modal avec gestion des articles, quantités et total
+// ===============================
 import { useState } from 'react';
 import { FaShoppingCart, FaTrash, FaMinus, FaPlus, FaArrowLeft } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 
 const Cart = ({ isOpen, onClose }) => {
+  // Accès au contexte du panier et aux fonctions de gestion
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  // Pour naviguer vers le magasin
   const navigate = useNavigate();
+  // État pour gérer l'affichage du bouton de commande
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   console.log('Cart component rendering, isOpen:', isOpen);
   console.log('Cart component props:', { isOpen, onClose });
 
+  // Formate le prix en euros
   const formatPrice = (price) => {
     return new Intl.NumberFormat('fr-FR', {
       style: 'currency',
@@ -18,12 +26,14 @@ const Cart = ({ isOpen, onClose }) => {
     }).format(price);
   };
 
+  // Gère le changement de quantité d'un article
   const handleQuantityChange = (productId, newQuantity) => {
     if (newQuantity >= 1) {
       updateQuantity(productId, newQuantity);
     }
   };
 
+  // Simule le passage à la caisse (checkout)
   const handleCheckout = () => {
     setIsCheckingOut(true);
     // Ici vous pourriez rediriger vers une page de paiement
@@ -34,15 +44,19 @@ const Cart = ({ isOpen, onClose }) => {
     }, 1000);
   };
 
+  // Permet de continuer les achats (retour au magasin)
   const handleContinueShopping = () => {
     onClose();
     navigate('/magasin');
   };
 
+  // Si le panier n'est pas ouvert, on ne rend rien
   if (!isOpen) return null;
 
   return (
+    // Overlay du panier (clique à l'extérieur pour fermer)
     <div className="cart-overlay" onClick={onClose}>
+      {/* Conteneur principal du panier (stop la propagation du clic) */}
       <div className="cart-container" onClick={(e) => e.stopPropagation()}>
         <div className="cart-header">
           <h2>
@@ -54,6 +68,7 @@ const Cart = ({ isOpen, onClose }) => {
           </button>
         </div>
 
+        {/* Si le panier est vide */}
         {cart.items.length === 0 ? (
           <div className="cart-empty">
             <FaShoppingCart className="cart-empty-icon" />
@@ -66,6 +81,7 @@ const Cart = ({ isOpen, onClose }) => {
           </div>
         ) : (
           <>
+            {/* Liste des articles du panier */}
             <div className="cart-items">
               {cart.items.map((item) => (
                 <div key={item.id} className="cart-item">
@@ -79,6 +95,7 @@ const Cart = ({ isOpen, onClose }) => {
                     <p className="cart-item-price">{formatPrice(item.price)}</p>
                   </div>
                   
+                  {/* Gestion de la quantité */}
                   <div className="cart-item-quantity">
                     <button
                       className="quantity-btn"
@@ -96,10 +113,12 @@ const Cart = ({ isOpen, onClose }) => {
                     </button>
                   </div>
                   
+                  {/* Total pour cet article */}
                   <div className="cart-item-total">
                     {formatPrice(item.price * item.quantity)}
                   </div>
                   
+                  {/* Bouton pour supprimer l'article */}
                   <button
                     className="cart-item-remove"
                     onClick={() => removeFromCart(item.id)}
@@ -111,6 +130,7 @@ const Cart = ({ isOpen, onClose }) => {
               ))}
             </div>
 
+            {/* Pied du panier : total et actions */}
             <div className="cart-footer">
               <div className="cart-summary">
                 <div className="cart-total">

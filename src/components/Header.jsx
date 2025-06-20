@@ -1,3 +1,7 @@
+// ===============================
+// HEADER (EN-TÊTE DE NAVIGATION)
+// Affiche la barre de navigation, le logo, le bouton panier et le menu mobile
+// ===============================
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaBars, FaTimes, FaShoppingCart } from 'react-icons/fa';
@@ -5,11 +9,16 @@ import { useCart } from '../context/CartContext';
 import gsap from 'gsap';
 
 const Header = ({ onOpenCart }) => {
+  // État pour savoir si la page est scrollée (pour effet visuel)
   const [isScrolled, setIsScrolled] = useState(false);
+  // État pour afficher ou cacher le menu mobile
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // Permet de connaître la page courante
   const location = useLocation();
+  // Accès au panier global
   const { cart } = useCart();
 
+  // Ajoute un effet lors du scroll pour changer le style du header
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -20,53 +29,22 @@ const Header = ({ onOpenCart }) => {
   }, []);
 
   useEffect(() => {
-    // Temporarily disabled GSAP animations to test
-    // // Animate header on mount
-    // const header = document.querySelector('.header');
-    // if (header) {
-    //   gsap.from(header, {
-    //     y: -100,
-    //     opacity: 0,
-    //     duration: 0.8,
-    //     ease: 'power2.out'
-    //   });
-    // }
-    // // Animate nav links only if they exist
-    // const navLinks = document.querySelectorAll('.nav-link');
-    // if (navLinks.length > 0) {
-    //   gsap.from(navLinks, {
-    //     y: -20,
-    //     opacity: 0,
-    //     duration: 0.6,
-    //     stagger: 0.1,
-    //     delay: 0.3,
-    //     ease: 'power2.out'
-    //   });
-    // }
+    // Animations GSAP désactivées pour l'instant
+    // Voir App.jsx pour l'exemple
   }, []);
 
+  // Ouvre ou ferme le menu mobile
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    
-    // Temporarily disabled GSAP animations to test
-    // if (!isMobileMenuOpen) {
-    //   const mobileNavLinks = document.querySelectorAll('.mobile-menu .nav-link');
-    //   if (mobileNavLinks.length > 0) {
-    //     gsap.from(mobileNavLinks, {
-    //       x: -30,
-    //       opacity: 0,
-    //       duration: 0.4,
-    //       stagger: 0.1,
-    //       ease: 'power2.out'
-    //     });
-    //   }
-    // }
+    // Animation GSAP désactivée
   };
 
+  // Ferme le menu mobile
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
 
+  // Gère le clic sur le bouton panier
   const handleCartClick = () => {
     console.log('Cart button clicked!');
     console.log('onOpenCart function:', onOpenCart);
@@ -79,6 +57,7 @@ const Header = ({ onOpenCart }) => {
     closeMobileMenu();
   };
 
+  // Liste des liens de navigation
   const navItems = [
     { path: '/magasin', label: 'Magasin' },
     { path: '/services', label: 'Services' },
@@ -90,10 +69,12 @@ const Header = ({ onOpenCart }) => {
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="container">
         <div className="header-content">
+          {/* Logo cliquable */}
           <Link to="/" className="logo" onClick={closeMobileMenu}>
             Adel Computer
           </Link>
 
+          {/* Menu de navigation principal (desktop) */}
           <nav className="nav-menu">
             {navItems.map((item) => (
               <Link
@@ -107,6 +88,7 @@ const Header = ({ onOpenCart }) => {
             ))}
           </nav>
 
+          {/* Actions à droite : bouton panier et menu mobile */}
           <div className="header-actions">
             <button
               className="cart-button"
@@ -115,11 +97,13 @@ const Header = ({ onOpenCart }) => {
               style={{ border: '2px solid red' }}
             >
               <FaShoppingCart />
+              {/* Badge du nombre d'articles dans le panier */}
               {cart.itemCount > 0 && (
                 <span className="cart-badge">{cart.itemCount}</span>
               )}
             </button>
 
+            {/* Bouton pour ouvrir/fermer le menu mobile */}
             <button
               className="mobile-menu-toggle"
               onClick={toggleMobileMenu}
@@ -130,6 +114,7 @@ const Header = ({ onOpenCart }) => {
           </div>
         </div>
 
+        {/* Menu mobile (affiché sur petits écrans) */}
         <div className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}>
           <nav className="nav-menu">
             {navItems.map((item) => (
@@ -142,6 +127,7 @@ const Header = ({ onOpenCart }) => {
                 {item.label}
               </Link>
             ))}
+            {/* Lien panier dans le menu mobile */}
             <button className="nav-link cart-link-mobile" onClick={handleCartClick}>
               <FaShoppingCart />
               Panier ({cart.itemCount})

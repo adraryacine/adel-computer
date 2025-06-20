@@ -1,3 +1,7 @@
+// ===============================
+// PAGE MAGASIN
+// Affiche la liste des produits, la recherche et les filtres par catégorie
+// ===============================
 import { useState, useEffect } from 'react';
 import { products, categories } from '../data/products';
 import ProductCard from '../components/ProductCard';
@@ -5,14 +9,19 @@ import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
 
 const Magasin = () => {
+  // État local pour les produits filtrés
   const [filteredProducts, setFilteredProducts] = useState(products);
+  // Catégorie sélectionnée ("all" = toutes)
   const [selectedCategory, setSelectedCategory] = useState('all');
+  // Terme de recherche saisi par l'utilisateur
   const [searchTerm, setSearchTerm] = useState('');
+  // Indique si les produits sont en cours de chargement (pour l'effet de loading)
   const [isLoading, setIsLoading] = useState(false);
 
+  // À chaque changement de filtre ou de recherche, on filtre les produits
   useEffect(() => {
     setIsLoading(true);
-    // Simulate loading delay
+    // Simule un délai de chargement
     const timeoutId = setTimeout(() => {
       filterProducts();
       setIsLoading(false);
@@ -20,6 +29,7 @@ const Magasin = () => {
     return () => clearTimeout(timeoutId);
   }, [selectedCategory, searchTerm]);
 
+  // Fonction pour filtrer les produits selon la catégorie et la recherche
   const filterProducts = () => {
     let filtered = products;
     if (selectedCategory !== 'all') {
@@ -36,14 +46,17 @@ const Magasin = () => {
     setFilteredProducts(filtered);
   };
 
+  // Gère la recherche utilisateur
   const handleSearch = (term) => {
     setSearchTerm(term);
   };
 
+  // Gère le changement de catégorie
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
   };
 
+  // Génère le texte d'information sur les résultats affichés
   const getResultsText = () => {
     const count = filteredProducts.length;
     if (searchTerm && selectedCategory !== 'all') {
@@ -60,6 +73,7 @@ const Magasin = () => {
   return (
     <div className="magasin-page">
       <div className="container">
+        {/* En-tête de la page magasin */}
         <div className="magasin-header">
           <h1>Notre Magasin</h1>
           <p className="magasin-subtitle">
@@ -68,6 +82,7 @@ const Magasin = () => {
         </div>
 
         <div className="magasin-content">
+          {/* Section recherche et filtres */}
           <div className="search-filters-section">
             <SearchBar onSearch={handleSearch} />
             <CategoryFilter
@@ -77,23 +92,28 @@ const Magasin = () => {
             />
           </div>
 
+          {/* Affichage du nombre de résultats */}
           <div className="results-info">
             <p className="results-text">{getResultsText()}</p>
           </div>
 
+          {/* Section d'affichage des produits */}
           <div className="products-section">
             {isLoading ? (
+              // Affichage du loader pendant le chargement
               <div className="loading">
                 <div className="loading-spinner"></div>
                 <p>Chargement des produits...</p>
               </div>
             ) : filteredProducts.length > 0 ? (
+              // Affichage de la grille de produits
               <div className="products-grid">
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             ) : (
+              // Message si aucun produit trouvé
               <div className="no-results">
                 <div className="no-results-icon">🔍</div>
                 <h3>Aucun produit trouvé</h3>

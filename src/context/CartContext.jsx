@@ -1,29 +1,35 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
 
+// ===============================
+// CONTEXTE DU PANIER (CART CONTEXT)
+// Permet de gérer l'état global du panier dans toute l'application
+// ===============================
+
 // État initial du panier
 const initialState = {
-  items: [],
-  total: 0,
-  itemCount: 0
+  items: [], // Liste des produits dans le panier
+  total: 0, // Prix total
+  itemCount: 0 // Nombre total d'articles
 };
 
-// Actions du reducer
+// Actions possibles pour le reducer du panier
 const CART_ACTIONS = {
-  ADD_ITEM: 'ADD_ITEM',
-  REMOVE_ITEM: 'REMOVE_ITEM',
-  UPDATE_QUANTITY: 'UPDATE_QUANTITY',
-  CLEAR_CART: 'CLEAR_CART',
-  LOAD_CART: 'LOAD_CART'
+  ADD_ITEM: 'ADD_ITEM', // Ajouter un produit
+  REMOVE_ITEM: 'REMOVE_ITEM', // Supprimer un produit
+  UPDATE_QUANTITY: 'UPDATE_QUANTITY', // Modifier la quantité d'un produit
+  CLEAR_CART: 'CLEAR_CART', // Vider le panier
+  LOAD_CART: 'LOAD_CART' // Charger le panier depuis le stockage local
 };
 
-// Reducer pour gérer les actions du panier
+// Reducer : fonction qui gère les modifications de l'état du panier
 const cartReducer = (state, action) => {
   switch (action.type) {
     case CART_ACTIONS.ADD_ITEM: {
+      // Vérifie si le produit est déjà dans le panier
       const existingItem = state.items.find(item => item.id === action.payload.id);
       
       if (existingItem) {
-        // Si l'item existe déjà, augmenter la quantité
+        // Si le produit existe, on augmente la quantité
         const updatedItems = state.items.map(item =>
           item.id === action.payload.id
             ? { ...item, quantity: item.quantity + 1 }
@@ -37,7 +43,7 @@ const cartReducer = (state, action) => {
           itemCount: updatedItems.reduce((sum, item) => sum + item.quantity, 0)
         };
       } else {
-        // Si c'est un nouvel item, l'ajouter avec quantité 1
+        // Sinon, on ajoute le produit avec une quantité de 1
         const newItems = [...state.items, { ...action.payload, quantity: 1 }];
         
         return {
@@ -50,6 +56,7 @@ const cartReducer = (state, action) => {
     }
     
     case CART_ACTIONS.REMOVE_ITEM: {
+      // Supprime un produit du panier
       const updatedItems = state.items.filter(item => item.id !== action.payload);
       
       return {
@@ -61,10 +68,11 @@ const cartReducer = (state, action) => {
     }
     
     case CART_ACTIONS.UPDATE_QUANTITY: {
+      // Met à jour la quantité d'un produit
       const { id, quantity } = action.payload;
       
       if (quantity <= 0) {
-        // Si la quantité est 0 ou négative, supprimer l'item
+        // Si la quantité est 0 ou négative, on supprime le produit
         return cartReducer(state, { type: CART_ACTIONS.REMOVE_ITEM, payload: id });
       }
       
@@ -81,9 +89,11 @@ const cartReducer = (state, action) => {
     }
     
     case CART_ACTIONS.CLEAR_CART:
+      // Vide complètement le panier
       return initialState;
     
     case CART_ACTIONS.LOAD_CART:
+      // Charge le panier depuis le stockage local
       return action.payload;
     
     default:
@@ -91,10 +101,10 @@ const cartReducer = (state, action) => {
   }
 };
 
-// Création du contexte
+// Création du contexte du panier
 const CartContext = createContext();
 
-// Hook personnalisé pour utiliser le contexte
+// Hook personnalisé pour accéder facilement au contexte du panier
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
@@ -103,16 +113,17 @@ export const useCart = () => {
   return context;
 };
 
-// Provider du contexte
+// Provider du contexte : englobe l'application pour fournir l'accès au panier
 export const CartProvider = ({ children }) => {
+  // On utilise useReducer pour gérer l'état complexe du panier
   const [cart, dispatch] = useReducer(cartReducer, initialState);
 
-  // Sauvegarder le panier dans localStorage à chaque changement
+  // À chaque modification du panier, on sauvegarde dans le localStorage
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Charger le panier depuis localStorage au montage
+  // Au montage, on charge le panier depuis le localStorage s'il existe
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
@@ -125,7 +136,7 @@ export const CartProvider = ({ children }) => {
     }
   }, []);
 
-  // Fonctions pour manipuler le panier
+  // Fonctions utilitaires pour manipuler le panier
   const addToCart = (product) => {
     dispatch({ type: CART_ACTIONS.ADD_ITEM, payload: product });
   };
@@ -142,6 +153,7 @@ export const CartProvider = ({ children }) => {
     dispatch({ type: CART_ACTIONS.CLEAR_CART });
   };
 
+  // Valeur fournie à tous les composants enfants
   const value = {
     cart,
     addToCart,
@@ -150,6 +162,7 @@ export const CartProvider = ({ children }) => {
     clearCart
   };
 
+  // On englobe les enfants avec le provider du contexte
   return (
     <CartContext.Provider value={value}>
       {children}

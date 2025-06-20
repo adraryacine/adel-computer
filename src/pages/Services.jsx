@@ -120,7 +120,7 @@ const Services = () => {
                 <p className="service-description" style={{color: 'var(--text-secondary)'}}>{service.description}</p>
                 <ul className="service-features">
                   {service.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} style={{color: 'var(--accent-success)'}}>{feature}</li>
+                    <li key={featureIndex}>{feature}</li>
                   ))}
                 </ul>
               </div>
