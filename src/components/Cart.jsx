@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { FaShoppingCart, FaTrash, FaMinus, FaPlus, FaArrowLeft } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { formatPrice } from '../utils/formatPrice';
 
 const Cart = ({ isOpen, onClose }) => {
   // Accès au contexte du panier et aux fonctions de gestion
@@ -17,14 +18,6 @@ const Cart = ({ isOpen, onClose }) => {
 
   console.log('Cart component rendering, isOpen:', isOpen);
   console.log('Cart component props:', { isOpen, onClose });
-
-  // Formate le prix en euros
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(price);
-  };
 
   // Gère le changement de quantité d'un article
   const handleQuantityChange = (productId, newQuantity) => {
@@ -92,7 +85,7 @@ const Cart = ({ isOpen, onClose }) => {
                   <div className="cart-item-details">
                     <h4>{item.name}</h4>
                     <p className="cart-item-category">{item.category}</p>
-                    <p className="cart-item-price">{formatPrice(item.price)}</p>
+                    <p className="cart-item-price">{formatPrice(item.price)} DA</p>
                   </div>
                   
                   {/* Gestion de la quantité */}
@@ -115,7 +108,7 @@ const Cart = ({ isOpen, onClose }) => {
                   
                   {/* Total pour cet article */}
                   <div className="cart-item-total">
-                    {formatPrice(item.price * item.quantity)}
+                    {formatPrice(item.price * item.quantity)} DA
                   </div>
                   
                   {/* Bouton pour supprimer l'article */}
@@ -135,7 +128,7 @@ const Cart = ({ isOpen, onClose }) => {
               <div className="cart-summary">
                 <div className="cart-total">
                   <span>Total:</span>
-                  <span className="total-amount">{formatPrice(cart.total)}</span>
+                  <span className="total-amount">{formatPrice(cart.total)} DA</span>
                 </div>
                 
                 <div className="cart-actions">

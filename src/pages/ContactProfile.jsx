@@ -38,7 +38,7 @@ const ContactProfile = () => {
     return () => {
       if (infoCards.length > 0) {
         infoCards.forEach(card => card.style.opacity = 1);
-      }
+    }
     };
   }, []);
 

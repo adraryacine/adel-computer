@@ -56,32 +56,32 @@ function App() {
     // Fournit le contexte du panier à toute l'application
     <CartProvider>
       {/* Router pour la navigation entre les pages */}
-      <Router>
-        <div className="app">
+    <Router>
+      <div className="app">
           {/* Barre de navigation en haut de la page */}
           <Header onOpenCart={handleOpenCart} />
           {/* Contenu principal de la page (affiche la page selon l'URL) */}
-          <main className="page-content">
-            <Routes>
+        <main className="page-content">
+          <Routes>
               {/* Page d'accueil et magasin */}
-              <Route path="/" element={<Magasin />} />
-              <Route path="/magasin" element={<Magasin />} />
+            <Route path="/" element={<Magasin />} />
+            <Route path="/magasin" element={<Magasin />} />
               {/* Page des services */}
-              <Route path="/services" element={<Services />} />
+            <Route path="/services" element={<Services />} />
               {/* Page à propos */}
-              <Route path="/about" element={<AboutUs />} />
+            <Route path="/about" element={<AboutUs />} />
               {/* Page de contact */}
-              <Route path="/contact" element={<ContactProfile />} />
+            <Route path="/contact" element={<ContactProfile />} />
               {/* Détails d'un produit (avec id dynamique) */}
               <Route path="/product/:id" element={<ProductDetails />} />
-            </Routes>
-          </main>
+          </Routes>
+        </main>
           {/* Pied de page */}
-          <Footer />
+        <Footer />
           {/* Composant du panier (affiché en overlay si ouvert) */}
           <Cart isOpen={isCartOpen} onClose={handleCloseCart} />
-        </div>
-      </Router>
+      </div>
+    </Router>
     </CartProvider>
   );
 }

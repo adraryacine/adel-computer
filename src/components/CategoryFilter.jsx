@@ -55,20 +55,6 @@ const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }) => {
         ))}
       </div>
       
-      {selectedCategory !== 'all' && (
-        <div className="active-filter">
-          <span className="active-filter-text">
-            Filtre actif : <strong>{categories.find(c => c.id === selectedCategory)?.name}</strong>
-          </span>
-          <button
-            className="clear-filter-btn"
-            onClick={() => handleCategoryClick('all')}
-            aria-label="Effacer le filtre"
-          >
-            Effacer
-          </button>
-        </div>
-      )}
     </div>
   );
 };

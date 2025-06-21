@@ -76,7 +76,7 @@ const Services = () => {
       icon: FaCog,
       title: "Upgrade & Personnalisation",
       description: "Amélioration des performances par l'ajout de composants (RAM, SSD, carte graphique) et personnalisation selon vos besoins.",
-      features: ["Conseils personnalisés", "Installation professionnelle", "Test de performance"]
+      features: ["Conseils personnalisés", "Installation rapide", "Test de performance"]
     }
   ];
 

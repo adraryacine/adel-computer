@@ -95,6 +95,17 @@ const Magasin = () => {
           {/* Affichage du nombre de résultats */}
           <div className="results-info">
             <p className="results-text">{getResultsText()}</p>
+            {(searchTerm || selectedCategory !== 'all') && (
+              <button
+                className="clear-filters-btn"
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory('all');
+                }}
+              >
+                Effacer les filtres
+              </button>
+            )}
           </div>
 
           {/* Section d'affichage des produits */}
@@ -121,15 +132,6 @@ const Magasin = () => {
                   Aucun produit ne correspond à vos critères de recherche.
                   Essayez de modifier vos filtres ou votre recherche.
                 </p>
-                <button
-                  className="btn"
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSelectedCategory('all');
-                  }}
-                >
-                  Effacer les filtres
-                </button>
               </div>
             )}
           </div>

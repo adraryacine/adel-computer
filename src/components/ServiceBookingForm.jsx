@@ -18,29 +18,34 @@ const ServiceBookingForm = () => {
   const formRef = useRef(null);
 
   useEffect(() => {
-    // Animate form on mount
-    const form = document.querySelector('.booking-form');
-    if (form) {
-      gsap.from(form, {
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power2.out',
-        delay: 0.3
-      });
+    // Only run animations when the form is visible
+    if (!isSubmitted) {
+      // Use a short timeout to ensure the form is rendered before animating
+      const timer = setTimeout(() => {
+        if (formRef.current) {
+          gsap.from(formRef.current, {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+          });
+          const formGroups = formRef.current.querySelectorAll('.form-group');
+          if (formGroups.length > 0) {
+            gsap.from(formGroups, {
+              x: -30,
+              opacity: 0,
+              duration: 0.6,
+              stagger: 0.1,
+              delay: 0.2,
+              ease: 'power2.out'
+            });
+          }
+        }
+      }, 100); // 100ms delay
+
+      return () => clearTimeout(timer);
     }
-    const formGroups = document.querySelectorAll('.form-group');
-    if (formGroups.length > 0) {
-      gsap.from(formGroups, {
-        x: -30,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        delay: 0.5,
-        ease: 'power2.out'
-      });
-    }
-  }, []);
+  }, [isSubmitted]);
 
   const serviceTypes = [
     { value: 'reparation', label: 'Réparation PC' },

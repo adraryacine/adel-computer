@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { FaShoppingCart } from 'react-icons/fa';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { formatPrice } from '../utils/formatPrice';
 
 const ProductDetails = () => {
   // Récupère l'id du produit depuis l'URL
@@ -60,7 +61,7 @@ const ProductDetails = () => {
             <h1 className="product-details-title">{product.name}</h1>
           </div>
           <div className="product-details-pricebox">
-            <span className="product-details-price">{product.price.toFixed(2)} €</span>
+            <span className="product-details-price">{formatPrice(product.price)} DA</span>
             <span className={`product-details-stock ${product.inStock ? 'in-stock' : 'out-stock'}`}>{product.inStock ? 'En stock' : 'Rupture de stock'}</span>
           </div>
           <p className="product-details-description">{product.description}</p>

@@ -104,13 +104,13 @@ const Header = ({ onOpenCart }) => {
             </button>
 
             {/* Bouton pour ouvrir/fermer le menu mobile */}
-            <button
-              className="mobile-menu-toggle"
-              onClick={toggleMobileMenu}
-              aria-label="Toggle mobile menu"
-            >
-              {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
-            </button>
+          <button
+            className="mobile-menu-toggle"
+            onClick={toggleMobileMenu}
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
           </div>
         </div>
 

@@ -4,7 +4,7 @@ export const products = [
     id: 1,
     name: "PC Gaming Pro RTX 4080",
     category: "PC",
-    price: 2499.99,
+    price: 650000,
     description: "PC Gaming haut de gamme avec RTX 4080, Intel i9-13900K, 32GB RAM",
     image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop",
     specs: {
@@ -20,7 +20,7 @@ export const products = [
     id: 2,
     name: "PC Bureau Économique",
     category: "PC",
-    price: 599.99,
+    price: 156000,
     description: "PC de bureau pour usage quotidien, parfait pour la bureautique",
     image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&h=300&fit=crop",
     specs: {
@@ -36,7 +36,7 @@ export const products = [
     id: 3,
     name: "PC Portable Gaming",
     category: "PC",
-    price: 1299.99,
+    price: 338000,
     description: "PC Portable gaming avec RTX 4060, écran 15.6\" 144Hz",
     image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop",
     specs: {
@@ -54,7 +54,7 @@ export const products = [
     id: 4,
     name: "Imprimante Laser Multifonction",
     category: "Imprimantes",
-    price: 299.99,
+    price: 78000,
     description: "Imprimante laser couleur, impression, scan, copie, fax",
     image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=300&fit=crop",
     specs: {
@@ -70,7 +70,7 @@ export const products = [
     id: 5,
     name: "Imprimante Jet d'Encre Photo",
     category: "Imprimantes",
-    price: 149.99,
+    price: 39000,
     description: "Imprimante jet d'encre spécialisée pour photos haute qualité",
     image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=300&fit=crop",
     specs: {
@@ -88,7 +88,7 @@ export const products = [
     id: 6,
     name: "Clavier Mécanique Gaming",
     category: "Claviers",
-    price: 129.99,
+    price: 33800,
     description: "Clavier mécanique RGB avec switches Cherry MX Red",
     image: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=300&fit=crop",
     specs: {
@@ -104,7 +104,7 @@ export const products = [
     id: 7,
     name: "Clavier Sans Fil Ergonomique",
     category: "Claviers",
-    price: 89.99,
+    price: 23400,
     description: "Clavier sans fil ergonomique pour confort de frappe optimal",
     image: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=300&fit=crop",
     specs: {
@@ -122,7 +122,7 @@ export const products = [
     id: 8,
     name: "Souris Gaming RGB",
     category: "Souris",
-    price: 79.99,
+    price: 20800,
     description: "Souris gaming avec capteur optique 25K DPI et RGB",
     image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=300&fit=crop",
     specs: {
@@ -138,7 +138,7 @@ export const products = [
     id: 9,
     name: "Souris Sans Fil Logitech",
     category: "Souris",
-    price: 59.99,
+    price: 15600,
     description: "Souris sans fil ergonomique avec autonomie 2 ans",
     image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=300&fit=crop",
     specs: {
@@ -156,7 +156,7 @@ export const products = [
     id: 10,
     name: "Casque Gaming 7.1",
     category: "Casques",
-    price: 159.99,
+    price: 41600,
     description: "Casque gaming avec son surround 7.1 et micro détachable",
     image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
     specs: {
@@ -172,7 +172,7 @@ export const products = [
     id: 11,
     name: "Casque Bluetooth Bose",
     category: "Casques",
-    price: 299.99,
+    price: 78000,
     description: "Casque Bluetooth avec réduction de bruit active",
     image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
     specs: {
@@ -190,7 +190,7 @@ export const products = [
     id: 12,
     name: "Écran Gaming 27\" 144Hz",
     category: "Écrans",
-    price: 349.99,
+    price: 91000,
     description: "Écran gaming 27\" avec 144Hz, 1ms, FreeSync",
     image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop",
     specs: {
@@ -206,7 +206,7 @@ export const products = [
     id: 13,
     name: "Écran 4K 32\"",
     category: "Écrans",
-    price: 599.99,
+    price: 156000,
     description: "Écran 4K 32\" pour montage vidéo et design",
     image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop",
     specs: {
@@ -224,7 +224,7 @@ export const products = [
     id: 14,
     name: "Webcam HD 1080p",
     category: "Accessoires",
-    price: 89.99,
+    price: 23400,
     description: "Webcam HD avec micro intégré, parfaite pour visioconférence",
     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
     specs: {
@@ -240,7 +240,7 @@ export const products = [
     id: 15,
     name: "Disque Dur Externe 2TB",
     category: "Accessoires",
-    price: 79.99,
+    price: 20800,
     description: "Disque dur externe 2TB USB 3.0 pour sauvegarde",
     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
     specs: {

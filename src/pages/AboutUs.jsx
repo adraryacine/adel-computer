@@ -86,7 +86,7 @@ const AboutUs = () => {
     {
       name: "Sarah Martin",
       role: "Technicienne Senior",
-      photo: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face",
+      photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face",
       description: "Spécialiste en réparation et maintenance informatique. Certifiée sur les dernières technologies.",
       specialties: ["Réparation PC", "Maintenance", "Formation"]
     },
@@ -107,21 +107,21 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="about-page" style={{opacity: 1}}>
-      <div className="container" style={{opacity: 1}}>
+    <div className="about-page">
+      <div className="container">
         {/* Header Section */}
-        <div className="about-header" style={{opacity: 1}}>
-          <h1 style={{color: 'var(--text-primary)'}}>À Propos d'Adel Computer</h1>
-          <p className="about-subtitle" style={{color: 'var(--text-secondary)'}}>
+        <div className="about-header">
+          <h1>À Propos d'Adel Computer</h1>
+          <p className="about-subtitle">
             Votre partenaire de confiance pour tous vos besoins informatiques
           </p>
         </div>
 
         {/* About Content */}
-        <div className="about-content" style={{opacity: 1}}>
+        <div className="about-content">
           {/* History & Mission Section */}
-          <div className="about-section" style={{opacity: 1}}>
-            <div className="section-content" style={{opacity: 1}}>
+          <div className="about-section">
+            <div className="section-content">
               <h2>Notre Histoire et Mission</h2>
               <div className="history-text">
                 <p>
@@ -144,42 +144,42 @@ const AboutUs = () => {
           </div>
 
           {/* Values Section */}
-          <div className="about-section" style={{opacity: 1}}>
+          <div className="about-section">
             <h2>Nos Valeurs</h2>
-            <div className="values-grid" style={{opacity: 1}}>
+            <div className="values-grid">
               {values.map((value, index) => (
-                <div key={index} className="value-card" style={{opacity: 1}}>
-                  <div className="value-icon" style={{color: 'var(--accent-primary)'}}>
+                <div key={index} className="value-card">
+                  <div className="value-icon">
                     <value.icon />
                   </div>
-                  <h3 style={{color: 'var(--text-primary)'}}>{value.title}</h3>
-                  <p style={{color: 'var(--text-secondary)'}}>{value.description}</p>
+                  <h3>{value.title}</h3>
+                  <p>{value.description}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Team Section */}
-          <div className="about-section" style={{opacity: 1}}>
+          <div className="about-section">
             <h2>Rencontrez Notre Équipe</h2>
             <p className="team-intro">
               Une équipe passionnée et expérimentée à votre service
             </p>
-            <div className="team-grid" style={{opacity: 1}}>
+            <div className="team-grid">
               {team.map((member, index) => (
-                <div key={index} className="team-member" style={{opacity: 1}}>
+                <div key={index} className="team-member">
                   <div className="member-photo">
                     <img src={member.photo} alt={member.name} />
                   </div>
                   <div className="member-info">
-                    <h3 className="member-name" style={{color: 'var(--text-primary)'}}>{member.name}</h3>
-                    <p className="member-role" style={{color: 'var(--accent-primary)'}}>{member.role}</p>
-                    <p className="member-description" style={{color: 'var(--text-secondary)'}}>{member.description}</p>
+                    <h3 className="member-name">{member.name}</h3>
+                    <p className="member-role">{member.role}</p>
+                    <p className="member-description">{member.description}</p>
                     <div className="member-specialties">
-                      <h4 style={{color: 'var(--text-primary)'}}>Spécialités :</h4>
+                      <h4>Spécialités :</h4>
                       <ul>
                         {member.specialties.map((specialty, specIndex) => (
-                          <li key={specIndex} style={{color: 'var(--accent-success)'}}>{specialty}</li>
+                          <li key={specIndex}>{specialty}</li>
                         ))}
                       </ul>
                     </div>
@@ -190,21 +190,21 @@ const AboutUs = () => {
           </div>
 
           {/* Stats Section */}
-          <div className="about-section" style={{opacity: 1}}>
-            <div className="stats-grid" style={{opacity: 1}}>
-              <div className="stat-item" style={{opacity: 1}}>
+          <div className="about-section">
+            <div className="stats-grid">
+              <div className="stat-item">
                 <div className="stat-number">8+</div>
                 <div className="stat-label">Années d'expérience</div>
               </div>
-              <div className="stat-item" style={{opacity: 1}}>
+              <div className="stat-item">
                 <div className="stat-number">1000+</div>
                 <div className="stat-label">Clients satisfaits</div>
               </div>
-              <div className="stat-item" style={{opacity: 1}}>
+              <div className="stat-item">
                 <div className="stat-number">5000+</div>
                 <div className="stat-label">Interventions réalisées</div>
               </div>
-              <div className="stat-item" style={{opacity: 1}}>
+              <div className="stat-item">
                 <div className="stat-number">98%</div>
                 <div className="stat-label">Taux de satisfaction</div>
               </div>

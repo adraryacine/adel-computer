@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaInfoCircle } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
+import { formatPrice } from '../utils/formatPrice';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ const ProductCard = ({ product }) => {
         <p className="product-description">{product.description}</p>
         
         <div className="product-price">
-          <span className="price">{product.price} €</span>
+          <span className="price">{formatPrice(product.price)} DA</span>
           <span className={`stock-status ${product.inStock ? 'in-stock' : ''}`}>
             {product.inStock ? 'En stock' : 'Rupture de stock'}
           </span>
