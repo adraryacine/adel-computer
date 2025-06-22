@@ -251,7 +251,24 @@ export const products = [
     },
     inStock: true,
     rating: 4.4
+  },
+  {
+    id: 16,
+    name: "Disque Dur Externe 2TB",
+    category: "Accessoires",
+    price: 20800,
+    description: "Disque dur externe 2TB USB 3.0 pour sauvegarde",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+    specs: {
+      capacite: "2TB",
+      interface: "USB 3.0",
+      vitesse: "5400 RPM",
+      format: "2.5\""
+    },
+    inStock: true,
+    rating: 4.4
   }
+  
 ];
 
 export const categories = [
@@ -263,4 +280,5 @@ export const categories = [
   { id: 'Casques', name: 'Casques', icon: '🎧' },
   { id: 'Écrans', name: 'Écrans', icon: '🖥️' },
   { id: 'Accessoires', name: 'Accessoires', icon: '🔧' }
+  
 ]; 
