@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import ContactForm from '../components/ContactForm';
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaUser, FaLock } from 'react-icons/fa';
 import gsap from 'gsap';
 
 const ContactProfile = () => {
   const contactRef = useRef(null);
-  const [formKey, setFormKey] = useState(0);
 
   useEffect(() => {
     const header = document.querySelector('.contact-header');
@@ -59,14 +58,13 @@ const ContactProfile = () => {
     {
       icon: FaEnvelope,
       title: "Email",
-      content: "adelcomputer.dz@gmail.com",
-      link: "mailto:contact@adelcomputer.fr",
-      
+      content: "contact@adelcomputer.fr",
+      link: "mailto:contact@adelcomputer.fr"
     },
     {
       icon: FaClock,
       title: "Horaires",
-      content: "samdi-jeudi: 9h-17h<br />vendredi: fermé"
+      content: "Lun-Ven: 9h-18h<br />Sam: 9h-17h<br />Dim: Fermé"
     }
   ];
 
@@ -118,7 +116,7 @@ const ContactProfile = () => {
               Vous avez une question ou besoin d'assistance ? 
               N'hésitez pas à nous contacter via le formulaire ci-dessous.
             </p>
-            <ContactForm key={formKey} onResetForm={() => setFormKey(k => k + 1)} />
+            <ContactForm />
           </div>
 
           {/* Profile Section */}

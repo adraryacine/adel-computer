@@ -16,38 +16,33 @@ const ContactForm = ({ onResetForm }) => {
   const formContainerRef = useRef(null);
 
   useEffect(() => {
-    // Animate form on mount
-    const form = document.querySelector('.contact-form');
-    if (form) {
-      gsap.from(form, {
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power2.out',
-        delay: 0.3
-      });
-      // Fix: force opacity to 1 after animation
-      form.style.opacity = 1;
-      const allChildren = form.querySelectorAll('*');
-      allChildren.forEach(child => child.style.opacity = 1);
-    }
-    const formGroups = document.querySelectorAll('.form-group');
-    if (formGroups.length > 0) {
-      gsap.from(formGroups, {
-        x: -30,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        delay: 0.5,
-        ease: 'power2.out'
-      });
-      // Fix: force opacity to 1 after animation
-      formGroups.forEach(group => group.style.opacity = 1);
-    }
-    // Fix border issue on container (like ServiceBookingForm)
-    if (formContainerRef.current) {
-      formContainerRef.current.style.border = '1.5px solid var(--border-light)';
-      formContainerRef.current.style.borderRadius = 'var(--radius-xl)';
+    // Only run animations when the form is visible
+    if (!isSubmitted) {
+      // Use a short timeout to ensure the form is rendered before animating
+      const timer = setTimeout(() => {
+        const form = document.querySelector('.contact-form');
+        if (form) {
+          gsap.from(form, {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+          });
+          const formGroups = form.querySelectorAll('.form-group');
+          if (formGroups.length > 0) {
+            gsap.from(formGroups, {
+              x: -30,
+              opacity: 0,
+              duration: 0.6,
+              stagger: 0.1,
+              delay: 0.2,
+              ease: 'power2.out'
+            });
+          }
+        }
+      }, 100); // 100ms delay
+
+      return () => clearTimeout(timer);
     }
   }, [isSubmitted]);
 
