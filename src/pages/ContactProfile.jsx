@@ -1,10 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ContactForm from '../components/ContactForm';
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaUser, FaLock } from 'react-icons/fa';
 import gsap from 'gsap';
 
 const ContactProfile = () => {
   const contactRef = useRef(null);
+  const [formKey, setFormKey] = useState(0);
 
   useEffect(() => {
     const header = document.querySelector('.contact-header');
@@ -58,21 +59,22 @@ const ContactProfile = () => {
     {
       icon: FaEnvelope,
       title: "Email",
-      content: "contact@adelcomputer.fr",
-      link: "mailto:contact@adelcomputer.fr"
+      content: "adelcomputer.dz@gmail.com",
+      link: "mailto:contact@adelcomputer.fr",
+      
     },
     {
       icon: FaClock,
       title: "Horaires",
-      content: "Lun-Ven: 9h-18h<br />Sam: 9h-17h<br />Dim: Fermé"
+      content: "samdi-jeudi: 9h-17h<br />vendredi: fermé"
     }
   ];
 
   return (
-    <div className="contact-profile-page" style={{opacity: 1}}>
-      <div className="container" style={{opacity: 1}}>
+    <div className="contact-profile-page">
+      <div className="container">
         {/* Header Section */}
-        <div className="contact-header" style={{opacity: 1}}>
+        <div className="contact-header">
           <h1 style={{color: 'var(--text-primary)'}}>Contact & Mon Compte</h1>
           <p className="contact-subtitle" style={{color: 'var(--text-secondary)'}}>
             Contactez-nous ou gérez votre profil utilisateur
@@ -80,13 +82,13 @@ const ContactProfile = () => {
         </div>
 
         {/* Contact Content */}
-        <div className="contact-content" style={{opacity: 1}}>
+        <div className="contact-content">
           {/* Contact Information Section */}
-          <div className="contact-section" style={{opacity: 1}}>
+          <div className="contact-section">
             <h2>Informations de Contact</h2>
-            <div className="contact-info-grid" style={{opacity: 1}}>
+            <div className="contact-info-grid">
               {contactInfo.map((info, index) => (
-                <div key={index} className="contact-info-card" style={{opacity: 1}}>
+                <div key={index} className="contact-info-card">
                   <div className="contact-icon" style={{color: 'var(--accent-primary)'}}>
                     <info.icon />
                   </div>
@@ -110,17 +112,17 @@ const ContactProfile = () => {
           </div>
 
           {/* Contact Form Section */}
-          <div className="contact-section" style={{opacity: 1}}>
+          <div className="contact-section">
             <h2>Nous Contacter</h2>
             <p className="contact-form-intro">
               Vous avez une question ou besoin d'assistance ? 
               N'hésitez pas à nous contacter via le formulaire ci-dessous.
             </p>
-            <ContactForm />
+            <ContactForm key={formKey} onResetForm={() => setFormKey(k => k + 1)} />
           </div>
 
           {/* Profile Section */}
-          <div className="contact-section" style={{opacity: 1}}>
+          <div className="contact-section">
             <div className="profile-section">
               <div className="profile-header">
                 <div className="profile-icon">
@@ -155,7 +157,7 @@ const ContactProfile = () => {
           </div>
 
           {/* Map Section */}
-          <div className="contact-section" style={{opacity: 1}}>
+          <div className="contact-section">
             <h2>Notre Localisation</h2>
             <div className="map-container">
               <div className="map-placeholder">

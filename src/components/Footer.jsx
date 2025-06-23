@@ -28,8 +28,8 @@ const Footer = () => {
   }, []);
 
   const socialLinks = [
-    { icon: FaFacebook, href: '#', label: 'Facebook' },
-    { icon: FaInstagram, href: '#', label: 'Instagram' },
+    { icon: FaFacebook, href: 'https://web.facebook.com/profile.php?id=100069773268161&locale=fr_FR', label: 'Facebook' },
+    { icon: FaInstagram, href: 'https://www.instagram.com/adel.computers/?hl=fr', label: 'Instagram' },
     { icon: FaLinkedin, href: '#', label: 'LinkedIn' },
     { icon: FaTwitter, href: '#', label: 'Twitter' }
   ];
@@ -66,7 +66,7 @@ const Footer = () => {
             <Link to="/services">Maintenance & Réparation</Link>
             <Link to="/services">Installation Logicielle</Link>
             <Link to="/services">Support Technique</Link>
-            <Link to="/services">Formation</Link>
+          
           </div>
 
           <div className="footer-section">
@@ -78,7 +78,7 @@ const Footer = () => {
             </p>
             <p>
               <FaPhone style={{ marginRight: '8px' }} />
-              +33 1 23 45 67 89
+              034 12 45 17
             </p>
             <p>
               <FaEnvelope style={{ marginRight: '8px' }} />

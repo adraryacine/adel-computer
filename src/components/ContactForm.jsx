@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FaUser, FaEnvelope, FaPaperPlane, FaComments } from 'react-icons/fa';
 import gsap from 'gsap';
 
-const ContactForm = () => {
+const ContactForm = ({ onResetForm }) => {
   const [formData, setFormData] = useState({
     nom: '',
     email: '',
@@ -13,6 +13,7 @@ const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const formRef = useRef(null);
+  const formContainerRef = useRef(null);
 
   useEffect(() => {
     // Animate form on mount
@@ -25,6 +26,10 @@ const ContactForm = () => {
         ease: 'power2.out',
         delay: 0.3
       });
+      // Fix: force opacity to 1 after animation
+      form.style.opacity = 1;
+      const allChildren = form.querySelectorAll('*');
+      allChildren.forEach(child => child.style.opacity = 1);
     }
     const formGroups = document.querySelectorAll('.form-group');
     if (formGroups.length > 0) {
@@ -36,8 +41,15 @@ const ContactForm = () => {
         delay: 0.5,
         ease: 'power2.out'
       });
+      // Fix: force opacity to 1 after animation
+      formGroups.forEach(group => group.style.opacity = 1);
     }
-  }, []);
+    // Fix border issue on container (like ServiceBookingForm)
+    if (formContainerRef.current) {
+      formContainerRef.current.style.border = '1.5px solid var(--border-light)';
+      formContainerRef.current.style.borderRadius = 'var(--radius-xl)';
+    }
+  }, [isSubmitted]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -126,6 +138,9 @@ const ContactForm = () => {
     });
     setErrors({});
     setIsSubmitted(false);
+    if (typeof onResetForm === 'function') {
+      onResetForm();
+    }
   };
 
   if (isSubmitted) {
@@ -144,7 +159,7 @@ const ContactForm = () => {
   }
 
   return (
-    <div className="contact-form-container">
+    <div className="contact-form-container" ref={formContainerRef}>
       <form ref={formRef} onSubmit={handleSubmit} className="contact-form">
         <div className="form-row">
           <div className="form-group">
