@@ -97,13 +97,7 @@ const AboutUs = () => {
       description: "Conseiller commercial spécialisé dans les solutions informatiques pour entreprises et particuliers.",
       specialties: ["Conseil client", "Solutions sur mesure", "Support commercial"]
     },
-    {
-      name: "Julie Moreau",
-      role: "Responsable Service Client",
-      photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face",
-      description: "Dédiée à l'excellence du service client et à la satisfaction de nos utilisateurs.",
-      specialties: ["Support client", "Gestion projet", "Communication"]
-    }
+  
   ];
 
   return (
@@ -125,7 +119,7 @@ const AboutUs = () => {
               <h2>Notre Histoire et Mission</h2>
               <div className="history-text">
                 <p>
-                  Fondée en 2015, Adel Computer est née de la passion pour la technologie 
+                  Fondée en 2003, Adel Computer est née de la passion pour la technologie 
                   et du désir d'offrir des solutions informatiques accessibles et de qualité 
                   aux particuliers et aux entreprises.
                 </p>
@@ -193,7 +187,7 @@ const AboutUs = () => {
           <div className="about-section">
             <div className="stats-grid">
               <div className="stat-item">
-                <div className="stat-number">8+</div>
+                <div className="stat-number">12+</div>
                 <div className="stat-label">Années d'expérience</div>
               </div>
               <div className="stat-item">

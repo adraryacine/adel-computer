@@ -7,6 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { FaBars, FaTimes, FaShoppingCart } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import gsap from 'gsap';
+import logoAdel from '../assets/logo-adel.png';
 
 const Header = ({ onOpenCart }) => {
   // État pour savoir si la page est scrollée (pour effet visuel)
@@ -70,8 +71,8 @@ const Header = ({ onOpenCart }) => {
       <div className="container">
         <div className="header-content">
           {/* Logo cliquable */}
-          <Link to="/" className="logo" onClick={closeMobileMenu}>
-            Adel Computer
+          <Link to="/" className="logo" onClick={closeMobileMenu} style={{display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.2rem 0'}}>
+            <img src={logoAdel} alt="Adel Computer Logo" style={{height: '40px', width: '40px', objectFit: 'contain', display: 'block'}} />
           </Link>
 
           {/* Menu de navigation principal (desktop) */}
