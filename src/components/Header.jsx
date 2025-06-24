@@ -61,6 +61,7 @@ const Header = ({ onOpenCart }) => {
   // Liste des liens de navigation
   const navItems = [
     { path: '/magasin', label: 'Magasin' },
+    { path: '/promotions', label: 'Promotions' },
     { path: '/services', label: 'Services' },
     { path: '/about', label: 'À Propos' },
     { path: '/contact', label: 'Contact' }

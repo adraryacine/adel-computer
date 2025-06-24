@@ -4,6 +4,7 @@ export const products = [
     id: 1,
     name: "PC Gaming Pro RTX 4080",
     category: "PC",
+    computerType: "desktop",
     price: 650000,
     description: "PC Gaming haut de gamme avec RTX 4080, Intel i9-13900K, 32GB RAM",
     image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop",
@@ -20,6 +21,7 @@ export const products = [
     id: 2,
     name: "PC Bureau Économique",
     category: "PC",
+    computerType: "desktop",
     price: 156000,
     description: "PC de bureau pour usage quotidien, parfait pour la bureautique",
     image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&h=300&fit=crop",
@@ -36,6 +38,7 @@ export const products = [
     id: 3,
     name: "PC Portable Gaming",
     category: "PC",
+    computerType: "laptop",
     price: 338000,
     description: "PC Portable gaming avec RTX 4060, écran 15.6\" 144Hz",
     image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop",
@@ -238,22 +241,6 @@ export const products = [
   },
   {
     id: 15,
-    name: "Disque Dur Externe 2TB",
-    category: "Accessoires",
-    price: 20800,
-    description: "Disque dur externe 2TB USB 3.0 pour sauvegarde",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-    specs: {
-      capacite: "2TB",
-      interface: "USB 3.0",
-      vitesse: "5400 RPM",
-      format: "2.5\""
-    },
-    inStock: true,
-    rating: 4.4
-  },
-  {
-    id: 16,
     name: "Disque Dur Externe 2TB",
     category: "Accessoires",
     price: 20800,

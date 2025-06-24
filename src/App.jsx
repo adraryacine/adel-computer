@@ -18,6 +18,7 @@ import Services from './pages/Services';
 import AboutUs from './pages/AboutUs';
 import ContactProfile from './pages/ContactProfile';
 import ProductDetails from './pages/ProductDetails';
+import Promotions from './pages/Promotions';
 // Importation des styles globaux
 import './App.css';
 
@@ -72,6 +73,8 @@ function App() {
             <Route path="/about" element={<AboutUs />} />
               {/* Page de contact */}
             <Route path="/contact" element={<ContactProfile />} />
+              {/* Page des promotions */}
+            <Route path="/promotions" element={<Promotions />} />
               {/* Détails d'un produit (avec id dynamique) */}
               <Route path="/product/:id" element={<ProductDetails />} />
           </Routes>
