@@ -105,7 +105,7 @@ const AboutUs = () => {
       <div className="container">
         {/* Header Section */}
         <div className="about-header">
-          <h1>À Propos d'Adel Computer</h1>
+          <h1>À Propos d'Adel Computers</h1>
           <p className="about-subtitle">
             Votre partenaire de confiance pour tous vos besoins informatiques
           </p>
@@ -119,7 +119,7 @@ const AboutUs = () => {
               <h2>Notre Histoire et Mission</h2>
               <div className="history-text">
                 <p>
-                  Fondée en 2003, Adel Computer est née de la passion pour la technologie 
+                  Fondée en 2003, Adel Computers est née de la passion pour la technologie 
                   et du désir d'offrir des solutions informatiques accessibles et de qualité 
                   aux particuliers et aux entreprises.
                 </p>

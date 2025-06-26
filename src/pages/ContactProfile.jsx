@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import ContactForm from '../components/ContactForm';
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaUser, FaLock } from 'react-icons/fa';
 import gsap from 'gsap';
+import qrCodeImage from '../assets/qr-code.png';
 
 const ContactProfile = () => {
   const contactRef = useRef(null);
@@ -157,14 +158,11 @@ const ContactProfile = () => {
           {/* Map Section */}
           <div className="contact-section">
             <h2>Notre Localisation</h2>
-            <div className="map-container">
-              <div className="map-placeholder">
-                <div className="map-icon">
-                  <FaMapMarkerAlt />
-                </div>
-                <p>Carte interactive en cours de développement</p>
-                <p className="map-address">
-                  123 Rue de la Technologie, 75001 Paris, France
+            <div className="map-container" style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}>
+              <div className="qr-code-container" style={{ textAlign: 'center' }}>
+                <img src={qrCodeImage} alt="QR code pour notre localisation" style={{ width: '180px', height: '180px', borderRadius: '8px', border: '2px solid var(--border-color)' }} />
+                <p style={{ marginTop: '10px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                  Scannez pour nous trouver !
                 </p>
               </div>
             </div>

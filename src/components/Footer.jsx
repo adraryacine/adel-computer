@@ -39,7 +39,7 @@ const Footer = () => {
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>Adel Computer</h3>
+            <h3>Adel Computers</h3>
             <p>
               Votre partenaire de confiance pour tous vos besoins informatiques. 
               Nous proposons des solutions sur mesure pour particuliers et entreprises.
@@ -97,7 +97,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; 2024 Adel Computer. Tous droits réservés.</p>
+          <p>&copy; 2024 Adel Computers. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

@@ -386,11 +386,19 @@
     opacity: 0;
     transition: all var(--transition-normal);
     z-index: var(--z-dropdown);
+    pointer-events: none;
   }
   
   .mobile-menu.active {
     transform: translateY(0);
     opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .mobile-menu .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
   }
   
   /* ========================================
@@ -1772,7 +1780,7 @@
   .booking-form-container {
     max-width: 1000px;
     margin: 0 auto;
-    margin-left: 2rem;
+    
   }
   .booking-form {
     background: var(--bg-tertiary);
@@ -2231,7 +2239,7 @@
   
   .contact-form-container {
     max-width: 1000px;
-    margin-left: 2rem;
+    
   }
   
   .contact-form {

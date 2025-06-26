@@ -36,6 +36,7 @@ const Header = ({ onOpenCart }) => {
 
   // Ouvre ou ferme le menu mobile
   const toggleMobileMenu = () => {
+    console.log('Mobile menu button clicked!');
     setIsMobileMenuOpen(!isMobileMenuOpen);
     // Animation GSAP désactivée
   };
@@ -73,7 +74,7 @@ const Header = ({ onOpenCart }) => {
         <div className="header-content">
           {/* Logo cliquable */}
           <Link to="/" className="logo" onClick={closeMobileMenu} style={{display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.2rem 0'}}>
-            <img src={logoAdel} alt="Adel Computer Logo" style={{height: '40px', width: '40px', objectFit: 'contain', display: 'block'}} />
+            <img src={logoAdel} alt="Adel Computers Logo" style={{height: '40px', width: '40px', objectFit: 'contain', display: 'block'}} />
           </Link>
 
           {/* Menu de navigation principal (desktop) */}
@@ -106,13 +107,13 @@ const Header = ({ onOpenCart }) => {
             </button>
 
             {/* Bouton pour ouvrir/fermer le menu mobile */}
-          <button
-            className="mobile-menu-toggle"
-            onClick={toggleMobileMenu}
-            aria-label="Toggle mobile menu"
-          >
-            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
-          </button>
+            <button
+              className="mobile-menu-toggle"
+              onClick={(e) => { console.log('Button onClick fired'); toggleMobileMenu(); }}
+              aria-label="Toggle mobile menu"
+            >
+              {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+            </button>
           </div>
         </div>
 

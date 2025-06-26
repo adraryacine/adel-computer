@@ -98,7 +98,7 @@ const Services = () => {
             <div className="description-text">
               <h2>Notre Expertise</h2>
               <p>
-                Chez Adel Computer, nous mettons notre expertise au service de vos besoins informatiques. 
+                Chez Adel Computers, nous mettons notre expertise au service de vos besoins informatiques. 
                 Notre équipe de techniciens qualifiés vous accompagne dans tous vos projets, 
                 de la simple maintenance à la configuration de solutions complexes.
               </p>
