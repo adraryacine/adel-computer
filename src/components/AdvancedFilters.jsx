@@ -1,16 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaDesktop, FaLaptop, FaMicrochip, FaMemory, FaHdd, FaGamepad, FaEuroSign, FaFilter, FaTimes } from 'react-icons/fa';
 
-const AdvancedFilters = ({ onFiltersChange, isVisible, onToggle }) => {
-  const [filters, setFilters] = useState({
-    computerType: [],
-    processor: [],
-    ram: [],
-    storage: [],
-    graphics: [],
-    priceRange: []
-  });
-
+const AdvancedFilters = ({ filters, onFiltersChange, onReset }) => {
   const filterOptions = {
     computerType: [
       { id: 'desktop', name: 'PC Bureau', icon: <FaDesktop /> },
@@ -59,22 +50,23 @@ const AdvancedFilters = ({ onFiltersChange, isVisible, onToggle }) => {
   };
 
   const handleFilterChange = (category, filterId) => {
-    setFilters(prev => {
-      const newFilters = { ...prev };
-      const currentFilters = newFilters[category];
-      
-      if (currentFilters.includes(filterId)) {
-        newFilters[category] = currentFilters.filter(id => id !== filterId);
-      } else {
-        newFilters[category] = [...currentFilters, filterId];
-      }
-      
-      return newFilters;
-    });
+    const currentFilters = filters[category] || [];
+    
+    if (currentFilters.includes(filterId)) {
+      onFiltersChange({
+        ...filters,
+        [category]: currentFilters.filter(id => id !== filterId)
+      });
+    } else {
+      onFiltersChange({
+        ...filters,
+        [category]: [...currentFilters, filterId]
+      });
+    }
   };
 
   const clearAllFilters = () => {
-    setFilters({
+    onFiltersChange({
       computerType: [],
       processor: [],
       ram: [],
@@ -82,32 +74,14 @@ const AdvancedFilters = ({ onFiltersChange, isVisible, onToggle }) => {
       graphics: [],
       priceRange: []
     });
+    if (onReset) {
+      onReset();
+    }
   };
 
   const getActiveFiltersCount = () => {
-    return Object.values(filters).reduce((total, category) => total + category.length, 0);
+    return Object.values(filters || {}).reduce((total, category) => total + (category?.length || 0), 0);
   };
-
-  // Apply filters when they change
-  useEffect(() => {
-    onFiltersChange(filters);
-  }, [filters, onFiltersChange]);
-
-  if (!isVisible) {
-    return (
-      <button 
-        className="advanced-filters-toggle"
-        onClick={onToggle}
-        aria-label="Ouvrir les filtres avancés"
-      >
-        <FaFilter />
-        <span>Filtres Avancés</span>
-        {getActiveFiltersCount() > 0 && (
-          <span className="filter-badge">{getActiveFiltersCount()}</span>
-        )}
-      </button>
-    );
-  }
 
   return (
     <div className="advanced-filters">
@@ -127,13 +101,6 @@ const AdvancedFilters = ({ onFiltersChange, isVisible, onToggle }) => {
               Effacer
             </button>
           )}
-          <button 
-            className="close-filters-btn"
-            onClick={onToggle}
-            aria-label="Fermer les filtres"
-          >
-            <FaTimes />
-          </button>
         </div>
       </div>
 
@@ -149,7 +116,7 @@ const AdvancedFilters = ({ onFiltersChange, isVisible, onToggle }) => {
               <label key={option.id} className="filter-option">
                 <input
                   type="checkbox"
-                  checked={filters.computerType.includes(option.id)}
+                  checked={(filters?.computerType || []).includes(option.id)}
                   onChange={() => handleFilterChange('computerType', option.id)}
                 />
                 <span className="filter-option-icon">{option.icon}</span>
@@ -170,7 +137,7 @@ const AdvancedFilters = ({ onFiltersChange, isVisible, onToggle }) => {
               <label key={option.id} className="filter-option">
                 <input
                   type="checkbox"
-                  checked={filters.processor.includes(option.id)}
+                  checked={(filters?.processor || []).includes(option.id)}
                   onChange={() => handleFilterChange('processor', option.id)}
                 />
                 <span className="filter-option-name">{option.name}</span>
@@ -190,7 +157,7 @@ const AdvancedFilters = ({ onFiltersChange, isVisible, onToggle }) => {
               <label key={option.id} className="filter-option">
                 <input
                   type="checkbox"
-                  checked={filters.ram.includes(option.id)}
+                  checked={(filters?.ram || []).includes(option.id)}
                   onChange={() => handleFilterChange('ram', option.id)}
                 />
                 <span className="filter-option-name">{option.name}</span>
@@ -210,7 +177,7 @@ const AdvancedFilters = ({ onFiltersChange, isVisible, onToggle }) => {
               <label key={option.id} className="filter-option">
                 <input
                   type="checkbox"
-                  checked={filters.storage.includes(option.id)}
+                  checked={(filters?.storage || []).includes(option.id)}
                   onChange={() => handleFilterChange('storage', option.id)}
                 />
                 <span className="filter-option-name">{option.name}</span>
@@ -230,7 +197,7 @@ const AdvancedFilters = ({ onFiltersChange, isVisible, onToggle }) => {
               <label key={option.id} className="filter-option">
                 <input
                   type="checkbox"
-                  checked={filters.graphics.includes(option.id)}
+                  checked={(filters?.graphics || []).includes(option.id)}
                   onChange={() => handleFilterChange('graphics', option.id)}
                 />
                 <span className="filter-option-name">{option.name}</span>
@@ -250,7 +217,7 @@ const AdvancedFilters = ({ onFiltersChange, isVisible, onToggle }) => {
               <label key={option.id} className="filter-option">
                 <input
                   type="checkbox"
-                  checked={filters.priceRange.includes(option.id)}
+                  checked={(filters?.priceRange || []).includes(option.id)}
                   onChange={() => handleFilterChange('priceRange', option.id)}
                 />
                 <span className="filter-option-name">{option.name}</span>

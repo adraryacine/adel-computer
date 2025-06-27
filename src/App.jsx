@@ -19,6 +19,8 @@ import AboutUs from './pages/AboutUs';
 import ContactProfile from './pages/ContactProfile';
 import ProductDetails from './pages/ProductDetails';
 import Promotions from './pages/Promotions';
+// Importation du composant de test Supabase
+import SupabaseTest from './SupabaseTest';
 // Importation des styles globaux
 import './App.css';
 
@@ -77,6 +79,8 @@ function App() {
             <Route path="/promotions" element={<Promotions />} />
               {/* Détails d'un produit (avec id dynamique) */}
               <Route path="/product/:id" element={<ProductDetails />} />
+              {/* Test de connexion Supabase */}
+              <Route path="/supabase-test" element={<SupabaseTest />} />
           </Routes>
         </main>
           {/* Pied de page */}
