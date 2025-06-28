@@ -218,7 +218,7 @@ const Magasin = () => {
       <div className="filters-section">
         <SearchBar 
           value={searchTerm} 
-          onChange={setSearchTerm} 
+          onSearch={setSearchTerm} 
           placeholder="Rechercher un produit..."
         />
         
