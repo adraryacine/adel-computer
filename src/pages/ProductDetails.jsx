@@ -8,6 +8,7 @@ import { FaShoppingCart } from 'react-icons/fa';
 import { fetchProductById } from '../services/productService.js';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatPrice';
+import ImageGallery from '../components/ImageGallery';
 
 const ProductDetails = () => {
   // Récupère l'id du produit depuis l'URL
@@ -115,9 +116,12 @@ const ProductDetails = () => {
         ← Retour au magasin
       </button>
       <div className="product-details-flex">
-        {/* Image du produit */}
+        {/* Image Gallery */}
         <div className="product-details-imgbox">
-          <img src={product.image} alt={product.name} className="product-details-image" />
+          <ImageGallery 
+            images={product.images || [product.image]} 
+            productName={product.name}
+          />
         </div>
         {/* Informations détaillées */}
         <div className="product-details-info">

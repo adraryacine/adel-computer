@@ -37,6 +37,11 @@ const ProductCard = ({ product }) => {
         {!product.inStock && (
           <div className="out-of-stock">Rupture de stock</div>
         )}
+        {product.images && product.images.length > 1 && (
+          <div className="multiple-images-indicator">
+            {product.images.length} photos
+          </div>
+        )}
         {isHovered && (
           <div className="product-overlay">
             <button 

@@ -18,8 +18,19 @@ const transformProduct = (dbProduct) => {
 
   // Get image URL with fallback
   const getImageUrl = (product) => {
-    if (product.photos && product.photos.length > 0) {
-      return product.photos[0]; // Assuming photos is an array of URLs
+    if (product.photos) {
+      try {
+        // Try to parse as JSON array first
+        const photosArray = JSON.parse(product.photos);
+        if (Array.isArray(photosArray) && photosArray.length > 0) {
+          return photosArray[0]; // Return first image for main display
+        }
+      } catch (e) {
+        // If parsing fails, treat as single URL string
+        if (product.photos.trim() !== '') {
+          return product.photos;
+        }
+      }
     }
     
     // Fallback images based on category
@@ -36,6 +47,39 @@ const transformProduct = (dbProduct) => {
     };
     
     return fallbackImages[product.category] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop';
+  };
+
+  // Get all images for gallery
+  const getAllImages = (product) => {
+    if (product.photos) {
+      try {
+        // Try to parse as JSON array first
+        const photosArray = JSON.parse(product.photos);
+        if (Array.isArray(photosArray) && photosArray.length > 0) {
+          return photosArray;
+        }
+      } catch (e) {
+        // If parsing fails, treat as single URL string
+        if (product.photos.trim() !== '') {
+          return [product.photos];
+        }
+      }
+    }
+    
+    // Return fallback image as array
+    const fallbackImages = {
+      'PC Portables': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop',
+      'PC': 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop',
+      'Réseau': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
+      'Imprimantes': 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=300&fit=crop',
+      'Claviers': 'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=300&fit=crop',
+      'Souris': 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=300&fit=crop',
+      'Casques': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
+      'Écrans': 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop',
+      'Accessoires': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop'
+    };
+    
+    return [fallbackImages[product.category] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop'];
   };
 
   // Transform specs to match expected format
@@ -72,6 +116,7 @@ const transformProduct = (dbProduct) => {
     price: dbProduct.selling_price,
     description: dbProduct.description,
     image: getImageUrl(dbProduct),
+    images: getAllImages(dbProduct), // All images for gallery
     specs: transformSpecs(dbProduct.specs),
     inStock: dbProduct.in_stock,
     rating: dbProduct.rating || 4.0,

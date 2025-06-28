@@ -608,6 +608,20 @@
     animation: pulse 2s infinite;
   }
   
+  .multiple-images-indicator {
+    position: absolute;
+    top: var(--space-md);
+    left: var(--space-md);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 2;
+    box-shadow: var(--shadow-sm);
+  }
+  
   .product-info {
     padding: var(--space-lg);
     flex: 1;
@@ -2815,5 +2829,287 @@
   .product-details-extra strong {
     color: var(--text-primary);
     margin-right: var(--space-sm);
+  }
+  
+  /* ========================================
+     IMAGE GALLERY STYLES
+     ======================================== */
+  
+  .image-gallery {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+  
+  .main-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+  }
+  
+  .main-image-container:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--bg-tertiary);
+    transition: transform var(--transition-slow);
+  }
+  
+  .main-image:hover {
+    transform: scale(1.05);
+  }
+  
+  .image-counter {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 600;
+    z-index: 2;
+  }
+  
+  .nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    z-index: 2;
+  }
+  
+  .nav-arrow:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  .nav-arrow-left {
+    left: var(--space-sm);
+  }
+  
+  .nav-arrow-right {
+    right: var(--space-sm);
+  }
+  
+  .thumbnails-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: var(--space-sm) 0;
+  }
+  
+  .thumbnails {
+    display: flex;
+    gap: var(--space-sm);
+    min-width: max-content;
+  }
+  
+  .thumbnail {
+    width: 80px;
+    height: 60px;
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    background: var(--bg-tertiary);
+    flex-shrink: 0;
+  }
+  
+  .thumbnail:hover {
+    border-color: var(--accent-primary);
+    transform: scale(1.05);
+  }
+  
+  .thumbnail.active {
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Modal Styles */
+  .image-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+    padding: var(--space-md);
+  }
+  
+  .image-modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    z-index: 3;
+  }
+  
+  .modal-close:hover {
+    background: var(--accent-error);
+    transform: scale(1.1);
+  }
+  
+  .modal-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  
+  .modal-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    z-index: 3;
+  }
+  
+  .modal-nav-arrow:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  .modal-nav-left {
+    left: var(--space-lg);
+  }
+  
+  .modal-nav-right {
+    right: var(--space-lg);
+  }
+  
+  .modal-counter {
+    position: absolute;
+    bottom: var(--space-lg);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-full);
+    font-size: 1rem;
+    font-weight: 600;
+    z-index: 3;
+  }
+  
+  /* Responsive Design for Image Gallery */
+  @media (max-width: 768px) {
+    .main-image-container {
+      aspect-ratio: 4/3;
+    }
+    
+    .thumbnail {
+      width: 60px;
+      height: 45px;
+    }
+    
+    .nav-arrow {
+      width: 35px;
+      height: 35px;
+    }
+    
+    .modal-nav-arrow {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .modal-nav-left {
+      left: var(--space-sm);
+    }
+    
+    .modal-nav-right {
+      right: var(--space-sm);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .thumbnails {
+      gap: var(--space-xs);
+    }
+    
+    .thumbnail {
+      width: 50px;
+      height: 37px;
+    }
+    
+    .nav-arrow {
+      width: 30px;
+      height: 30px;
+    }
+    
+    .modal-nav-arrow {
+      width: 35px;
+      height: 35px;
+    }
   }
   
