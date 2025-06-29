@@ -19,6 +19,7 @@ import AboutUs from './pages/AboutUs';
 import ContactProfile from './pages/ContactProfile';
 import ProductDetails from './pages/ProductDetails';
 import Promotions from './pages/Promotions';
+import Admin from './pages/Admin';
 // Importation du composant de test Supabase
 import SupabaseTest from './SupabaseTest';
 // Importation des styles globaux
@@ -77,6 +78,8 @@ function App() {
             <Route path="/contact" element={<ContactProfile />} />
               {/* Page des promotions */}
             <Route path="/promotions" element={<Promotions />} />
+              {/* Page d'administration */}
+            <Route path="/admin" element={<Admin />} />
               {/* Détails d'un produit (avec id dynamique) */}
               <Route path="/product/:id" element={<ProductDetails />} />
               {/* Test de connexion Supabase */}

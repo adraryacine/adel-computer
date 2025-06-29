@@ -114,8 +114,8 @@ const ContactProfile = () => {
           <div className="contact-section">
             <h2>Nous Contacter</h2>
             <p className="contact-form-intro">
-           Si vous remarquez un probléme ou un bug n'hesiter pas a le signalé!
-              notre équipe s'en chargera dans les plus bref délais.
+           Si vous remarquez un probléme ou un bug n'hesiter pas a le signalé! <br />  
+                 notre équipe s'en chargera dans les plus bref délais.
             </p>
             <ContactForm />
           </div>

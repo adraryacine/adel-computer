@@ -118,7 +118,7 @@ const transformProduct = (dbProduct) => {
     image: getImageUrl(dbProduct),
     images: getAllImages(dbProduct), // All images for gallery
     specs: transformSpecs(dbProduct.specs),
-    inStock: dbProduct.in_stock,
+    inStock: dbProduct.in_stock !== null && dbProduct.in_stock !== undefined ? Number(dbProduct.in_stock) : 0,
     rating: dbProduct.rating || 4.0,
     // Additional fields from database
     brand: dbProduct.brand,
@@ -302,4 +302,155 @@ const getCategoryIcon = (category) => {
   };
   
   return iconMap[category] || '📦';
+};
+
+/**
+ * Save new product to database
+ */
+export const saveProduct = async (productData) => {
+  try {
+    console.log('💾 Saving new product:', productData);
+    
+    const { data, error } = await supabase
+      .from('products')
+      .insert([{
+        name: productData.name,
+        category: productData.category,
+        selling_price: productData.selling_price,
+        description: productData.description,
+        in_stock: productData.in_stock,
+        brand: productData.brand,
+        reference: productData.reference,
+        photos: JSON.stringify(productData.photos),
+        specs: productData.specs
+      }])
+      .select();
+
+    if (error) {
+      console.error('Error saving product:', error);
+      throw error;
+    }
+
+    console.log('✅ Product saved successfully:', data);
+    
+    // Check if data exists and has content
+    if (!data || data.length === 0) {
+      throw new Error('No data returned after saving product');
+    }
+    
+    return transformProduct(data[0]);
+  } catch (error) {
+    console.error('Failed to save product:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update existing product
+ */
+export const updateProduct = async (productId, productData) => {
+  try {
+    console.log('🔄 Updating product:', productId, productData);
+    
+    // Build update object with only provided fields
+    const updateObject = {};
+    
+    if (productData.name !== undefined) updateObject.name = productData.name;
+    if (productData.category !== undefined) updateObject.category = productData.category;
+    if (productData.selling_price !== undefined) updateObject.selling_price = productData.selling_price;
+    if (productData.description !== undefined) updateObject.description = productData.description;
+    if (productData.in_stock !== undefined) updateObject.in_stock = productData.in_stock;
+    if (productData.brand !== undefined) updateObject.brand = productData.brand;
+    if (productData.reference !== undefined) updateObject.reference = productData.reference;
+    if (productData.photos !== undefined) {
+      updateObject.photos = JSON.stringify(productData.photos);
+    }
+    if (productData.specs !== undefined) {
+      updateObject.specs = JSON.stringify(productData.specs);
+    }
+    
+    // Always update the updated_at timestamp
+    updateObject.updated_at = new Date().toISOString();
+    
+    // First, do the update without select
+    const { error: updateError } = await supabase
+      .from('products')
+      .update(updateObject)
+      .eq('id', productId);
+
+    if (updateError) {
+      console.error('Error updating product:', updateError);
+      throw updateError;
+    }
+
+    console.log('✅ Product updated successfully');
+    
+    // Now fetch the updated product separately
+    return await fetchProductById(productId);
+  } catch (error) {
+    console.error('Failed to update product:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete product from database
+ */
+export const deleteProduct = async (productId) => {
+  try {
+    console.log('🗑️ Deleting product:', productId);
+    
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', productId);
+
+    if (error) {
+      console.error('Error deleting product:', error);
+      throw error;
+    }
+
+    console.log('✅ Product deleted successfully');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete product:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update product stock
+ */
+export const updateProductStock = async (productId, newStock) => {
+  try {
+    console.log('📦 Updating stock for product:', productId, 'to:', newStock);
+    
+    const { data, error } = await supabase
+      .from('products')
+      .update({
+        in_stock: newStock,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', productId)
+      .select();
+
+    if (error) {
+      console.error('Error updating stock:', error);
+      throw error;
+    }
+
+    console.log('✅ Stock updated successfully:', data);
+    
+    // Check if data exists and has content
+    if (!data || data.length === 0) {
+      console.warn('⚠️ No data returned from stock update, fetching updated product...');
+      // If no data returned, fetch the updated product
+      return await fetchProductById(productId);
+    }
+    
+    return transformProduct(data[0]);
+  } catch (error) {
+    console.error('Failed to update stock:', error);
+    throw error;
+  }
 }; 
