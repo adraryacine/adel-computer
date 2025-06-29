@@ -3,15 +3,17 @@
 // Gestion des produits, stocks et commandes
 // ===============================
 import { useState, useEffect } from 'react';
-import { FaBox, FaShoppingCart, FaChartBar, FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
-import { fetchProducts, fetchCategories, deleteProduct, updateProductStock } from '../services/productService.js';
+import { FaBox, FaShoppingCart, FaChartBar, FaPlus, FaEdit, FaTrash, FaSignOutAlt } from 'react-icons/fa';
+import { fetchProducts, fetchCategories, deleteProduct, updateProductStock, checkProductSchema } from '../services/productService.js';
 import { getOrders } from '../services/orderService.js';
 import ProductForm from '../components/admin/ProductForm';
 import OrderList from '../components/admin/OrderList';
 import StockManagement from '../components/admin/StockManagement';
+import Login from '../components/admin/Login';
 import '../styles/admin.css';
 
 const Admin = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -22,13 +24,57 @@ const Admin = () => {
   const [editingProduct, setEditingProduct] = useState(null);
 
   useEffect(() => {
-    loadData();
+    checkLoginStatus();
   }, []);
+
+  const checkLoginStatus = () => {
+    const loginTime = localStorage.getItem('adminLoginTime');
+    const isLoggedInStorage = localStorage.getItem('adminLoggedIn') === 'true';
+    
+    // Check if login is still valid (24 hours)
+    if (isLoggedInStorage && loginTime) {
+      const loginTimestamp = parseInt(loginTime);
+      const currentTime = Date.now();
+      const hoursSinceLogin = (currentTime - loginTimestamp) / (1000 * 60 * 60);
+      
+      if (hoursSinceLogin < 24) {
+        setIsLoggedIn(true);
+        loadData();
+      } else {
+        // Login expired
+        localStorage.removeItem('adminLoggedIn');
+        localStorage.removeItem('adminLoginTime');
+        setIsLoggedIn(false);
+        setIsLoading(false);
+      }
+    } else {
+      setIsLoggedIn(false);
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    loadData();
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminLoggedIn');
+    localStorage.removeItem('adminLoginTime');
+    setIsLoggedIn(false);
+    setActiveTab('products');
+    setProducts([]);
+    setOrders([]);
+    setCategories([]);
+  };
 
   const loadData = async () => {
     try {
       setIsLoading(true);
       setError(null);
+      
+      // First check the schema to understand the database structure
+      await checkProductSchema();
       
       const [productsData, categoriesData, ordersData] = await Promise.all([
         fetchProducts(),
@@ -93,6 +139,11 @@ const Admin = () => {
     }
   };
 
+  // Show login page if not logged in
+  if (!isLoggedIn) {
+    return <Login onLogin={handleLogin} />;
+  }
+
   if (isLoading) {
     return (
       <div className="admin-container">
@@ -122,8 +173,20 @@ const Admin = () => {
     <div className="admin-container">
       {/* Header */}
       <div className="admin-header">
-        <h1>Administration</h1>
-        <p>Gestion des produits, stocks et commandes</p>
+        <div className="admin-header-content">
+          <div>
+            <h1>Administration</h1>
+            <p>Gestion des produits, stocks et commandes</p>
+          </div>
+          <button 
+            className="admin-btn admin-btn-secondary admin-logout-btn"
+            onClick={handleLogout}
+            title="Se déconnecter"
+          >
+            <FaSignOutAlt />
+            Déconnexion
+          </button>
+        </div>
       </div>
 
       {/* Navigation Tabs */}

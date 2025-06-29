@@ -57,8 +57,28 @@ const OrderList = ({ orders, onOrderUpdate }) => {
   };
 
   const calculateTotal = (items) => {
+    if (!items || !Array.isArray(items)) return 0;
     return items.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
+
+  // Transform order data to match expected format
+  const transformOrder = (order) => {
+    return {
+      ...order,
+      customer: {
+        name: order.customer_name || 'Client inconnu',
+        email: order.email || 'Email non fourni',
+        phone: order.phone_number || 'Téléphone non fourni',
+        address: order.address || 'Adresse non fournie',
+        wilaya: order.wilaya || 'Wilaya non fournie'
+      },
+      created_at: order.order_date || order.created_at,
+      items: Array.isArray(order.items) ? order.items : []
+    };
+  };
+
+  // Transform all orders
+  const transformedOrders = orders.map(transformOrder);
 
   return (
     <div className="admin-section">
@@ -70,19 +90,19 @@ const OrderList = ({ orders, onOrderUpdate }) => {
       <div className="admin-order-stats">
         <div className="admin-stat">
           <FaBox />
-          Total: {orders.length}
+          Total: {transformedOrders.length}
         </div>
         <div className="admin-stat">
           <FaCheck />
-          Livrées: {orders.filter(o => o.status === 'delivered').length}
+          Livrées: {transformedOrders.filter(o => o.status === 'delivered').length}
         </div>
         <div className="admin-stat">
           <FaTruck />
-          En cours: {orders.filter(o => ['pending', 'confirmed', 'processing', 'shipped'].includes(o.status)).length}
+          En cours: {transformedOrders.filter(o => ['pending', 'confirmed', 'processing', 'shipped'].includes(o.status)).length}
         </div>
         <div className="admin-stat">
           <FaTimes />
-          Annulées: {orders.filter(o => o.status === 'cancelled').length}
+          Annulées: {transformedOrders.filter(o => o.status === 'cancelled').length}
         </div>
       </div>
 
@@ -100,15 +120,15 @@ const OrderList = ({ orders, onOrderUpdate }) => {
             </tr>
           </thead>
           <tbody>
-            {orders.map(order => (
+            {transformedOrders.map(order => (
               <tr key={order.id}>
                 <td className="admin-order-id">#{order.id}</td>
                 <td className="admin-customer-info">
                   <h4>{order.customer.name}</h4>
-                  <p>{order.customer.email}</p>
+                  <p>{order.customer.phone}</p>
                 </td>
                 <td className="admin-order-date">{formatDate(order.created_at)}</td>
-                <td className="admin-order-total">{calculateTotal(order.items)} DA</td>
+                <td className="admin-order-total">{order.final_total || calculateTotal(order.items)} DA</td>
                 <td>
                   <span className={`admin-status ${getStatusColor(order.status)}`}>
                     {getStatusText(order.status)}
@@ -203,9 +223,12 @@ const OrderList = ({ orders, onOrderUpdate }) => {
                 </h3>
                 <div className="admin-customer-details">
                   <p><strong>Nom:</strong> {selectedOrder.customer.name}</p>
-                  <p><strong>Email:</strong> {selectedOrder.customer.email}</p>
                   <p><strong>Téléphone:</strong> {selectedOrder.customer.phone}</p>
                   <p><strong>Adresse:</strong> {selectedOrder.customer.address}</p>
+                  <p><strong>Wilaya:</strong> {selectedOrder.customer.wilaya}</p>
+                  {selectedOrder.notes && (
+                    <p><strong>Notes:</strong> {selectedOrder.notes}</p>
+                  )}
                 </div>
               </div>
 
@@ -216,19 +239,24 @@ const OrderList = ({ orders, onOrderUpdate }) => {
                   Articles commandés
                 </h3>
                 <div className="admin-order-items">
-                  {selectedOrder.items.map((item, index) => (
-                    <div key={index} className="admin-order-item">
-                      <img src={item.image} alt={item.name} className="admin-item-image" />
-                      <div className="admin-item-details">
-                        <h4>{item.name}</h4>
-                        <p className="admin-item-category">{item.category}</p>
-                        <p className="admin-item-price">{item.price} DA</p>
+                  {selectedOrder.items && selectedOrder.items.length > 0 ? (
+                    selectedOrder.items.map((item, index) => (
+                      <div key={index} className="admin-order-item">
+                        <img src={item.image} alt={item.name} className="admin-item-image" />
+                        <div className="admin-item-details">
+                          <h4>{item.name}</h4>
+                          <p className="admin-item-category">{item.category}</p>
+                          <p className="admin-item-price">{item.price} DA</p>
+                          <p className="admin-item-quantity">Quantité: {item.quantity}</p>
+                        </div>
+                        <div className="admin-item-total">
+                          {item.price * item.quantity} DA
+                        </div>
                       </div>
-                      <div className="admin-item-total">
-                        {item.price * item.quantity} DA
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p>Aucun article trouvé pour cette commande.</p>
+                  )}
                 </div>
               </div>
 
@@ -236,11 +264,17 @@ const OrderList = ({ orders, onOrderUpdate }) => {
               <div className="admin-order-summary">
                 <div className="admin-summary-row">
                   <span>Sous-total:</span>
-                  <span>{calculateTotal(selectedOrder.items)} DA</span>
+                  <span>{selectedOrder.total_price || calculateTotal(selectedOrder.items)} DA</span>
                 </div>
+                {selectedOrder.delivery_fee && (
+                  <div className="admin-summary-row">
+                    <span>Frais de livraison:</span>
+                    <span>{selectedOrder.delivery_fee} DA</span>
+                  </div>
+                )}
                 <div className="admin-summary-row admin-summary-total">
                   <span>Total:</span>
-                  <span>{calculateTotal(selectedOrder.items)} DA</span>
+                  <span>{selectedOrder.final_total || calculateTotal(selectedOrder.items)} DA</span>
                 </div>
               </div>
 

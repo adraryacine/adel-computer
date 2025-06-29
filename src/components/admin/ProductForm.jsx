@@ -37,6 +37,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
         category: product.category || '',
         price: product.price !== undefined && product.price !== null ? String(product.price) : '',
         description: product.description || '',
+        // Convert boolean inStock to number for form display
         inStock: product.inStock !== undefined && product.inStock !== null ? String(product.inStock) : '0',
         brand: product.brand || '',
         reference: product.reference || '',
@@ -115,6 +116,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
           category: formData.category,
           selling_price: parseFloat(formData.price) || 0,
           description: formData.description.trim(),
+          // Send the numeric value, the service will convert to boolean
           in_stock: parseInt(formData.inStock) || 0,
           brand: formData.brand.trim(),
           reference: formData.reference.trim(),
@@ -166,6 +168,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
         
         const newStock = parseInt(formData.inStock) || 0;
         if (newStock !== product.inStock) {
+          // Send the numeric value, the service will convert to boolean
           updateData.in_stock = newStock;
         }
         
