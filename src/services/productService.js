@@ -1,6 +1,20 @@
 import { supabase } from '../../supabaseClient.js';
 
 /**
+ * Helper to parse JSON if value is a string
+ */
+const parseIfString = (value) => {
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  }
+  return value;
+};
+
+/**
  * Transform database product to app format
  */
 const transformProduct = (dbProduct) => {
@@ -19,20 +33,13 @@ const transformProduct = (dbProduct) => {
   // Get image URL with fallback
   const getImageUrl = (product) => {
     if (product.photos) {
-      try {
-        // Try to parse as JSON array first
-        const photosArray = JSON.parse(product.photos);
-        if (Array.isArray(photosArray) && photosArray.length > 0) {
-          return photosArray[0]; // Return first image for main display
-        }
-      } catch (e) {
-        // If parsing fails, treat as single URL string
-        if (product.photos.trim() !== '') {
-          return product.photos;
-        }
+      if (Array.isArray(product.photos) && product.photos.length > 0) {
+        return product.photos[0]; // Return first image for main display
+      }
+      if (typeof product.photos === 'string' && product.photos.trim() !== '') {
+        return product.photos;
       }
     }
-    
     // Fallback images based on category
     const fallbackImages = {
       'PC Portables': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop',
@@ -45,27 +52,19 @@ const transformProduct = (dbProduct) => {
       'Écrans': 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop',
       'Accessoires': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop'
     };
-    
     return fallbackImages[product.category] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop';
   };
 
   // Get all images for gallery
   const getAllImages = (product) => {
     if (product.photos) {
-      try {
-        // Try to parse as JSON array first
-        const photosArray = JSON.parse(product.photos);
-        if (Array.isArray(photosArray) && photosArray.length > 0) {
-          return photosArray;
-        }
-      } catch (e) {
-        // If parsing fails, treat as single URL string
-        if (product.photos.trim() !== '') {
-          return [product.photos];
-        }
+      if (Array.isArray(product.photos) && product.photos.length > 0) {
+        return product.photos;
+      }
+      if (typeof product.photos === 'string' && product.photos.trim() !== '') {
+        return [product.photos];
       }
     }
-    
     // Return fallback image as array
     const fallbackImages = {
       'PC Portables': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop',
@@ -78,33 +77,39 @@ const transformProduct = (dbProduct) => {
       'Écrans': 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop',
       'Accessoires': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop'
     };
-    
     return [fallbackImages[product.category] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop'];
   };
 
   // Transform specs to match expected format
   const transformSpecs = (specs) => {
     if (!specs) return {};
-    
     const transformed = {};
-    
-    // Map database specs to app specs
-    if (specs.processeur) transformed.processor = specs.processeur;
-    if (specs.ram) transformed.ram = specs.ram;
-    if (specs.stockage) transformed.storage = specs.stockage;
-    if (specs.carte_graphique) transformed.graphics = specs.carte_graphique;
-    if (specs.ecran) transformed.ecran = specs.ecran;
-    if (specs.marque) transformed.brand = specs.marque;
-    if (specs.type) transformed.type = specs.type;
-    if (specs.connectivite) transformed.connectivite = specs.connectivite;
-    
-    // Add any other specs that exist
+    // Map database specs to app specs, only if they exist and are not empty
+    const mapping = {
+      processeur: 'processor',
+      processor: 'processor', // in case some rows already have 'processor'
+      ram: 'ram',
+      stockage: 'storage',
+      carte_graphique: 'graphics',
+      ecran: 'ecran',
+      marque: 'brand',
+      type: 'type',
+      connectivite: 'connectivite',
+    };
+    const mappedKeys = new Set();
+    Object.entries(mapping).forEach(([dbKey, appKey]) => {
+      if (specs[dbKey] !== undefined && specs[dbKey] !== null && specs[dbKey] !== '') {
+        transformed[appKey] = specs[dbKey];
+        mappedKeys.add(dbKey);
+        mappedKeys.add(appKey); // Prevent both 'processor' and 'processeur'
+      }
+    });
+    // Add any other specs that exist, but skip already mapped keys
     Object.keys(specs).forEach(key => {
-      if (!transformed[key]) {
+      if (!mappedKeys.has(key) && specs[key] !== undefined && specs[key] !== null && specs[key] !== '') {
         transformed[key] = specs[key];
       }
     });
-    
     return transformed;
   };
 
@@ -115,9 +120,9 @@ const transformProduct = (dbProduct) => {
     computerType: getComputerType(dbProduct),
     price: dbProduct.selling_price,
     description: dbProduct.description,
-    image: getImageUrl(dbProduct),
-    images: getAllImages(dbProduct), // All images for gallery
-    specs: transformSpecs(dbProduct.specs),
+    image: getImageUrl({ ...dbProduct, photos: parseIfString(dbProduct.photos) }),
+    images: getAllImages({ ...dbProduct, photos: parseIfString(dbProduct.photos) }), // All images for gallery
+    specs: transformSpecs(parseIfString(dbProduct.specs)),
     inStock: dbProduct.in_stock === true ? 1 : 0,
     rating: dbProduct.rating || 4.0,
     // Additional fields from database
