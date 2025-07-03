@@ -234,40 +234,44 @@ const Admin = () => {
 
             <div className="admin-products-grid">
               {products.map(product => (
-                <div key={product.id} className="admin-product-card">
-                  <div className="admin-product-image">
-                    <img src={product.image} alt={product.name} />
-                    <div className="admin-product-status">
-                      {product.inStock > 0 ? (
-                        <span className="admin-status admin-status-success">En stock ({product.inStock})</span>
-                      ) : (
-                        <span className="admin-status admin-status-error">Rupture de stock</span>
-                      )}
+                <div key={product.id} className="product-card admin-product-card">
+                  <div className="product-image-container">
+                    <img src={product.image} alt={product.name} className="product-image" />
+                    {product.inStock <= 0 && (
+                      <div className="out-of-stock">Rupture de stock</div>
+                    )}
+                    {product.images && product.images.length > 1 && (
+                      <div className="multiple-images-indicator">
+                        {product.images.length} photos
+                      </div>
+                    )}
+                    <div className="product-overlay">
+                      <button 
+                        className="btn-overlay"
+                        onClick={() => handleEditProduct(product)}
+                        title="Modifier"
+                      >
+                        <FaEdit /> Modifier
+                      </button>
+                      <button 
+                        className="btn-overlay"
+                        onClick={() => handleDeleteProduct(product.id)}
+                        title="Supprimer"
+                      >
+                        <FaTrash /> Supprimer
+                      </button>
                     </div>
                   </div>
-                  
-                  <div className="admin-product-info">
-                    <h3>{product.name}</h3>
-                    <p className="admin-product-category">{product.category}</p>
-                    <p className="admin-product-price">{product.price} DA</p>
-                    <p className="admin-product-description">{product.description.substring(0, 100)}...</p>
-                  </div>
-                  
-                  <div className="admin-product-actions">
-                    <button 
-                      className="admin-btn admin-btn-secondary admin-btn-sm"
-                      onClick={() => handleEditProduct(product)}
-                      title="Modifier"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button 
-                      className="admin-btn admin-btn-danger admin-btn-sm"
-                      onClick={() => handleDeleteProduct(product.id)}
-                      title="Supprimer"
-                    >
-                      <FaTrash />
-                    </button>
+                  <div className="product-info">
+                    <div className="product-category">{product.category}</div>
+                    <h3 className="product-name">{product.name}</h3>
+                    <p className="product-description">{product.description.substring(0, 100)}...</p>
+                    <div className="product-price">
+                      <span className="price">{product.price} DA</span>
+                      <span className={`stock-status ${product.inStock > 0 ? 'in-stock' : ''}`}>
+                        {product.inStock > 0 ? `En stock (${product.inStock})` : 'Rupture de stock'}
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}

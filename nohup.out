@@ -1,0 +1,14 @@
+MESA-INTEL: warning: Haswell Vulkan support is incomplete
+libva error: /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so init failed
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1751464820.758547    4431 voice_transcription.cc:58] Registering VoiceTranscriptionCapability
+Created TensorFlow Lite XNNPACK delegate for CPU.
+Attempting to use a delegate that only supports static-sized tensors with a graph that has dynamic-sized tensors (tensor#-1 is a dynamic-sized tensor).
+[4394:4434:0702/150021.302424:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4394:4394:0702/150027.514074:ERROR:CONSOLE:1] "Uncaught TypeError: Cannot read properties of null (reading 'addEventListener')", source: chrome-extension://edlifbnjlicfpckhgjhflgkeeibhhcii/js/share-modal.js (1)
+[4394:4434:0702/150041.780653:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4394:4434:0702/150139.821471:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4394:4434:0702/150317.962977:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4394:4434:0702/150620.195546:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4394:4434:0702/151510.249264:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4394:4394:0702/151532.159839:ERROR:chrome/browser/ui/webui/new_tab_page/new_tab_page_handler.cc:1353] NewTabPage loaded into a non-browser-tab context
