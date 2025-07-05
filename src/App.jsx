@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 import gsap from 'gsap';
 // Importation du provider du panier pour le contexte global
 import { CartProvider } from './context/CartContext';
+// Importation de Vercel Analytics pour le tracking
+import { Analytics } from '@vercel/analytics/react';
 // Importation des composants principaux de l'interface
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -91,6 +93,8 @@ function App() {
           {/* Composant du panier (affiché en overlay si ouvert) */}
           <Cart isOpen={isCartOpen} onClose={handleCloseCart} />
       </div>
+      {/* Vercel Analytics pour le tracking de toutes les pages */}
+      <Analytics />
     </Router>
     </CartProvider>
   );

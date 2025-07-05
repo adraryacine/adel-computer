@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { FaEye, FaCheck, FaTimes, FaTruck, FaBox, FaUser, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 import { updateOrderStatus } from '../../services/orderService';
 
+const ALLOWED_STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+
 const OrderList = ({ orders, onOrderUpdate }) => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -34,6 +36,11 @@ const OrderList = ({ orders, onOrderUpdate }) => {
   };
 
   const handleStatusUpdate = async (orderId, newStatus) => {
+    if (!ALLOWED_STATUSES.includes(newStatus)) {
+      console.error('❌ Invalid status value:', newStatus);
+      alert('Statut de commande invalide: ' + newStatus);
+      return;
+    }
     setIsUpdating(true);
     try {
       await updateOrderStatus(orderId, newStatus);
