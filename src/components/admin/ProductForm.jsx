@@ -4,11 +4,9 @@
 import { useState, useEffect } from 'react';
 import { FaTimes, FaSave, FaImage, FaBox, FaTag, FaDollarSign, FaInfoCircle } from 'react-icons/fa';
 import { saveProduct, updateProduct } from '../../services/productService';
-import { v4 as uuidv4 } from 'uuid';
 
 const ProductForm = ({ product, categories, onSave, onClose }) => {
   const [formData, setFormData] = useState({
-    id: uuidv4(),
     name: '',
     category: '',
     price: '',
@@ -35,9 +33,8 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
     if (product) {
       // Editing existing product
       setFormData({
-        id: product.id,
         name: product.name || '',
-        category: product.category || '',
+        category: typeof product.category === 'object' && product.category !== null ? product.category.id : product.category || '',
         price: product.price !== undefined && product.price !== null ? String(product.price) : '',
         description: product.description || '',
         quantity: product.quantity !== undefined && product.quantity !== null ? String(product.quantity) : '0',
@@ -114,7 +111,6 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
       // For new products, send all data
       if (!product?.id) {
         const productData = {
-          id: formData.id,
           name: formData.name.trim(),
           category: formData.category,
           selling_price: parseFloat(formData.price) || 0,
@@ -278,8 +274,8 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
                     >
                       <option value="">Sélectionner une catégorie</option>
                       {categories.map(category => (
-                        <option key={category} value={category}>
-                          {category}
+                        <option key={category.id} value={category.id}>
+                          {category.icon ? `${category.icon} ` : ''}{category.name}
                         </option>
                       ))}
                     </select>

@@ -3,12 +3,13 @@
 // Gestion des produits, stocks et commandes
 // ===============================
 import { useState, useEffect } from 'react';
-import { FaBox, FaShoppingCart, FaChartBar, FaPlus, FaEdit, FaTrash, FaSignOutAlt, FaTools } from 'react-icons/fa';
+import { FaBox, FaShoppingCart, FaChartBar, FaPlus, FaEdit, FaTrash, FaSignOutAlt, FaTools, FaGift } from 'react-icons/fa';
 import { fetchProducts, fetchCategories, deleteProduct, updateProductStock, checkProductSchema } from '../services/productService.js';
 import { getOrders } from '../services/orderService.js';
 import ProductForm from '../components/admin/ProductForm';
 import OrderList from '../components/admin/OrderList';
 import StockManagement from '../components/admin/StockManagement';
+import PromotionList from '../components/admin/PromotionList';
 import Login from '../components/admin/Login';
 import ServiceList from '../components/admin/ServiceList';
 import { getServices } from '../services/serviceService';
@@ -77,41 +78,27 @@ const Admin = () => {
       setIsLoading(true);
       setError(null);
       
-      // First check the schema to understand the database structure
-      await checkProductSchema();
-      
-      const [productsData, categoriesData, ordersData, servicesData] = await Promise.all([
+      const [productsData, ordersData, categoriesData, servicesData] = await Promise.all([
         fetchProducts(),
-        fetchCategories(),
         getOrders(),
+        fetchCategories(),
         getServices()
       ]);
       
       setProducts(productsData);
-      // Extract just the category names for the form, filtering out 'all' category
-      const categoryNames = categoriesData
-        .filter(cat => cat.id !== 'all') // Remove 'all' category
-        .map(cat => typeof cat === 'string' ? cat : cat.name);
-      setCategories(categoryNames);
       setOrders(ordersData);
+      setCategories(categoriesData);
       setServices(servicesData);
-      
     } catch (err) {
-      console.error('Error loading admin data:', err);
-      setError(`Erreur de chargement: ${err.message}`);
+      console.error('Failed to load data:', err);
+      setError('Erreur lors du chargement des données');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleProductUpdate = (updatedProduct) => {
-    if (editingProduct) {
-      // Update existing product
-      setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
-    } else {
-      // Add new product
-      setProducts(prev => [updatedProduct, ...prev]);
-    }
+  const handleProductUpdate = async () => {
+    await loadData();
     setShowProductForm(false);
     setEditingProduct(null);
   };
@@ -122,30 +109,29 @@ const Admin = () => {
   };
 
   const handleDeleteProduct = async (productId) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-      try {
-        await deleteProduct(productId);
-        setProducts(prev => prev.filter(p => p.id !== productId));
-      } catch (err) {
-        console.error('Error deleting product:', err);
-        alert('Erreur lors de la suppression du produit: ' + err.message);
-      }
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+      return;
+    }
+
+    try {
+      await deleteProduct(productId);
+      await loadData();
+    } catch (err) {
+      console.error('Failed to delete product:', err);
+      alert('Erreur lors de la suppression du produit');
     }
   };
 
   const handleStockUpdate = async (productId, newQuantity) => {
     try {
       await updateProductStock(productId, newQuantity);
-      setProducts(prev => prev.map(p => 
-        p.id === productId ? { ...p, quantity: newQuantity } : p
-      ));
+      await loadData();
     } catch (err) {
-      console.error('Error updating stock:', err);
-      alert('Erreur lors de la mise à jour du stock: ' + err.message);
+      console.error('Failed to update stock:', err);
+      alert('Erreur lors de la mise à jour du stock');
     }
   };
 
-  // Show login page if not logged in
   if (!isLoggedIn) {
     return <Login onLogin={handleLogin} />;
   }
@@ -165,9 +151,12 @@ const Admin = () => {
     return (
       <div className="admin-container">
         <div className="admin-error">
-          <h2>Erreur de chargement</h2>
+          <h2>Erreur</h2>
           <p>{error}</p>
-          <button className="admin-btn admin-btn-primary" onClick={loadData}>
+          <button 
+            className="admin-btn admin-btn-primary"
+            onClick={loadData}
+          >
             Réessayer
           </button>
         </div>
@@ -203,6 +192,13 @@ const Admin = () => {
         >
           <FaBox />
           Produits ({products.length})
+        </button>
+        <button 
+          className={`admin-tab ${activeTab === 'promotions' ? 'active' : ''}`}
+          onClick={() => setActiveTab('promotions')}
+        >
+          <FaGift />
+          Promotions
         </button>
         <button 
           className={`admin-tab ${activeTab === 'orders' ? 'active' : ''}`}
@@ -278,7 +274,7 @@ const Admin = () => {
                   <div className="product-info">
                     <div className="product-category">{product.category}</div>
                     <h3 className="product-name">{product.name}</h3>
-                    <p className="product-description">{product.description.substring(0, 100)}...</p>
+                    <p className="product-description">{product.description && typeof product.description === 'string' ? product.description.substring(0, 100) : ''}...</p>
                     <div className="product-price">
                       <span className="price">{product.price} DA</span>
                       <span className={`stock-status ${product.quantity > 0 ? 'in-stock' : ''}`}>
@@ -290,6 +286,10 @@ const Admin = () => {
               ))}
             </div>
           </div>
+        )}
+
+        {activeTab === 'promotions' && (
+          <PromotionList onPromotionUpdate={loadData} />
         )}
 
         {activeTab === 'orders' && (

@@ -1,5 +1,4 @@
 import { supabase } from '../../supabaseClient.js';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Helper to parse JSON if value is a string
@@ -347,10 +346,8 @@ export const checkProductSchema = async () => {
 export const saveProduct = async (productData) => {
   try {
     console.log('💾 Saving new product:', productData);
-    // Generate a UUID if not provided
-    const id = productData.id || uuidv4();
+    // Don't generate ID - let database auto-increment
     const minimalData = {
-      id, // Always include id
       name: productData.name,
       category: productData.category,
       selling_price: parseFloat(productData.selling_price) || 0,

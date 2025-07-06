@@ -196,7 +196,7 @@ const ServiceBookingForm = () => {
     } catch (error) {
       alert('Erreur lors du renvoi du code OTP.');
     } finally {
-      setIsSubmitting(false);
+    setIsSubmitting(false);
     }
   };
 
@@ -233,161 +233,161 @@ const ServiceBookingForm = () => {
   return (
     <div className="booking-form-container">
       {step === 1 && (
-        <form ref={formRef} onSubmit={handleSubmit} className="booking-form">
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="nom">
-                <FaUser />
-                Nom Complet *
-              </label>
-              <input
-                type="text"
-                id="nom"
-                name="nom"
-                value={formData.nom}
-                onChange={handleInputChange}
-                className={errors.nom ? 'error' : ''}
-                placeholder="Votre nom complet"
-              />
-              {errors.nom && <span className="error-message">{errors.nom}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="email">
-                <FaEnvelope />
-                Email *
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={errors.email ? 'error' : ''}
-                placeholder="votre.email@exemple.com"
-              />
-              {errors.email && <span className="error-message">{errors.email}</span>}
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="telephone">
-                <FaPhone />
-                Téléphone *
-              </label>
-              <input
-                type="tel"
-                id="telephone"
-                name="telephone"
-                value={formData.telephone}
-                onChange={handleInputChange}
-                className={errors.telephone ? 'error' : ''}
-                placeholder="06 12 34 56 78"
-              />
-              {errors.telephone && <span className="error-message">{errors.telephone}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="typeService">
-                <FaTools />
-                Type de Service *
-              </label>
-              <select
-                id="typeService"
-                name="typeService"
-                value={formData.typeService}
-                onChange={handleInputChange}
-                className={errors.typeService ? 'error' : ''}
-              >
-                <option value="">Sélectionnez un service</option>
-                {serviceTypes.map(service => (
-                  <option key={service.value} value={service.value}>
-                    {service.label}
-                  </option>
-                ))}
-              </select>
-              {errors.typeService && <span className="error-message">{errors.typeService}</span>}
-            </div>
+      <form ref={formRef} onSubmit={handleSubmit} className="booking-form">
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="nom">
+              <FaUser />
+              Nom Complet *
+            </label>
+            <input
+              type="text"
+              id="nom"
+              name="nom"
+              value={formData.nom}
+              onChange={handleInputChange}
+              className={errors.nom ? 'error' : ''}
+              placeholder="Votre nom complet"
+            />
+            {errors.nom && <span className="error-message">{errors.nom}</span>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">
-              Description du Problème *
+            <label htmlFor="email">
+              <FaEnvelope />
+              Email *
             </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
               onChange={handleInputChange}
-              className={errors.description ? 'error' : ''}
-              placeholder="Décrivez votre problème ou vos besoins..."
-              rows="4"
+              className={errors.email ? 'error' : ''}
+              placeholder="votre.email@exemple.com"
             />
-            {errors.description && <span className="error-message">{errors.description}</span>}
+            {errors.email && <span className="error-message">{errors.email}</span>}
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="telephone">
+              <FaPhone />
+              Téléphone *
+            </label>
+            <input
+              type="tel"
+              id="telephone"
+              name="telephone"
+              value={formData.telephone}
+              onChange={handleInputChange}
+              className={errors.telephone ? 'error' : ''}
+              placeholder="06 12 34 56 78"
+            />
+            {errors.telephone && <span className="error-message">{errors.telephone}</span>}
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="datePreferee">
-                <FaCalendar />
-                Date Préférée *
-              </label>
-              <input
-                type="date"
-                id="datePreferee"
-                name="datePreferee"
-                value={formData.datePreferee}
-                onChange={handleInputChange}
-                className={errors.datePreferee ? 'error' : ''}
-                min={new Date().toISOString().split('T')[0]}
-              />
-              {errors.datePreferee && <span className="error-message">{errors.datePreferee}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="heurePreferee">
-                <FaClock />
-                Heure Préférée *
-              </label>
-              <select
-                id="heurePreferee"
-                name="heurePreferee"
-                value={formData.heurePreferee}
-                onChange={handleInputChange}
-                className={errors.heurePreferee ? 'error' : ''}
-              >
-                <option value="">Sélectionnez une heure</option>
-                {timeSlots.map(time => (
-                  <option key={time} value={time}>
-                    {time}
-                  </option>
-                ))}
-              </select>
-              {errors.heurePreferee && <span className="error-message">{errors.heurePreferee}</span>}
-            </div>
-          </div>
-
-          <div className="form-actions">
-            <button
-              type="submit"
-              className={`btn btn-primary ${isSubmitting ? 'loading' : ''}`}
-              disabled={isSubmitting}
+          <div className="form-group">
+            <label htmlFor="typeService">
+              <FaTools />
+              Type de Service *
+            </label>
+            <select
+              id="typeService"
+              name="typeService"
+              value={formData.typeService}
+              onChange={handleInputChange}
+              className={errors.typeService ? 'error' : ''}
             >
-              {isSubmitting ? (
-                <>
-                  <div className="spinner"></div>
-                  Envoi du code par email...
-                </>
-              ) : (
-                <>
-                  <FaPaperPlane />
-                  Envoyer la Demande
-                </>
-              )}
-            </button>
+              <option value="">Sélectionnez un service</option>
+              {serviceTypes.map(service => (
+                <option key={service.value} value={service.value}>
+                  {service.label}
+                </option>
+              ))}
+            </select>
+            {errors.typeService && <span className="error-message">{errors.typeService}</span>}
           </div>
-        </form>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="description">
+            Description du Problème *
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            className={errors.description ? 'error' : ''}
+            placeholder="Décrivez votre problème ou vos besoins..."
+            rows="4"
+          />
+          {errors.description && <span className="error-message">{errors.description}</span>}
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="datePreferee">
+              <FaCalendar />
+              Date Préférée *
+            </label>
+            <input
+              type="date"
+              id="datePreferee"
+              name="datePreferee"
+              value={formData.datePreferee}
+              onChange={handleInputChange}
+              className={errors.datePreferee ? 'error' : ''}
+              min={new Date().toISOString().split('T')[0]}
+            />
+            {errors.datePreferee && <span className="error-message">{errors.datePreferee}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="heurePreferee">
+              <FaClock />
+              Heure Préférée *
+            </label>
+            <select
+              id="heurePreferee"
+              name="heurePreferee"
+              value={formData.heurePreferee}
+              onChange={handleInputChange}
+              className={errors.heurePreferee ? 'error' : ''}
+            >
+              <option value="">Sélectionnez une heure</option>
+              {timeSlots.map(time => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
+            {errors.heurePreferee && <span className="error-message">{errors.heurePreferee}</span>}
+          </div>
+        </div>
+
+        <div className="form-actions">
+          <button
+            type="submit"
+            className={`btn btn-primary ${isSubmitting ? 'loading' : ''}`}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <div className="spinner"></div>
+                  Envoi du code par email...
+              </>
+            ) : (
+              <>
+                <FaPaperPlane />
+                Envoyer la Demande
+              </>
+            )}
+          </button>
+        </div>
+      </form>
       )}
       {step === 2 && (
         <form onSubmit={handleOTPSubmit} className="booking-form">
