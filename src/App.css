@@ -3625,3 +3625,34 @@
     text-align: center;
   }
   
+  @media (max-width: 600px) {
+    .form-row {
+      grid-template-columns: 1fr !important;
+      gap: var(--space-md) !important;
+    }
+    .form-group {
+      margin-bottom: var(--space-md);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      font-size: 1rem;
+      padding: var(--space-md);
+      width: 100%;
+    }
+    .form-actions {
+      margin-top: var(--space-lg);
+      text-align: center;
+    }
+    .form-actions .btn,
+    .form-actions button {
+      width: 100%;
+      font-size: 1.1rem;
+      padding: var(--space-md);
+    }
+    .contact-form,
+    .booking-form {
+      padding: var(--space-md);
+    }
+  }
+  
