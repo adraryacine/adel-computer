@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaCalendar, FaClock, FaUser, FaEnvelope, FaPhone, FaTools, FaPaperPlane } from 'react-icons/fa';
 import gsap from 'gsap';
+import { sendServiceOTP, verifyServiceOTP, saveServiceBooking } from '../services/serviceService';
 
 const ServiceBookingForm = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,8 @@ const ServiceBookingForm = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [step, setStep] = useState(1); // 1: Info, 2: OTP, 3: Confirmation
+  const [otp, setOtp] = useState('');
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -114,7 +117,6 @@ const ServiceBookingForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) {
       // Animate error shake
       if (formRef.current) {
@@ -126,24 +128,75 @@ const ServiceBookingForm = () => {
       }
       return;
     }
-
     setIsSubmitting(true);
+    try {
+      // Send OTP
+      const result = await sendServiceOTP(formData.email);
+      if (result.success) {
+        setStep(2);
+        if (result.otp) {
+          console.log('🔐 OTP for testing:', result.otp);
+          alert(`Code OTP généré avec succès!\n\nVotre code de vérification est: ${result.otp}\n\nVérifiez votre email ou utilisez ce code pour continuer.`);
+        }
+      } else {
+        alert("Erreur lors de l'envoi du code OTP. Veuillez réessayer.");
+      }
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      alert("Erreur lors de l'envoi du code OTP. Veuillez réessayer.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
+  const handleOTPSubmit = async (e) => {
+    e.preventDefault();
+    if (!otp.trim()) {
+      setErrors({ otp: 'Le code OTP est requis' });
+      return;
+    }
+    if (otp.length !== 6) {
+      setErrors({ otp: 'Le code OTP doit contenir 6 chiffres' });
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await verifyServiceOTP(formData.email, otp);
+      // Save booking to database
+      const serviceData = {
+        ...formData,
+        otpCode: otp
+      };
+      await saveServiceBooking(serviceData);
+      setStep(3);
+    } catch (error) {
+      console.error('Error verifying OTP or saving booking:', error);
+      if (error.message === 'Invalid OTP') {
+        alert('Code OTP incorrect. Veuillez réessayer.');
+      } else {
+        alert('Erreur lors de la vérification. Veuillez réessayer.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-
-    // Animate success
-    const successMessage = document.querySelector('.success-message');
-    if (successMessage) {
-      gsap.to(successMessage, {
-        scale: [0.8, 1.1, 1],
-        opacity: 1,
-        duration: 0.6,
-        ease: 'back.out(1.7)'
-      });
+  const resendServiceOTP = async () => {
+    setIsSubmitting(true);
+    try {
+      const result = await sendServiceOTP(formData.email);
+      if (result.success) {
+        alert('Code OTP renvoyé avec succès!');
+        if (result.otp) {
+          console.log('🔐 New OTP for testing:', result.otp);
+        }
+      } else {
+        alert('Erreur lors du renvoi du code OTP.');
+      }
+    } catch (error) {
+      alert('Erreur lors du renvoi du code OTP.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -158,16 +211,16 @@ const ServiceBookingForm = () => {
       heurePreferee: ''
     });
     setErrors({});
-    setIsSubmitted(false);
+    setStep(1);
   };
 
-  if (isSubmitted) {
+  if (step === 3) {
     return (
       <div className="success-message">
         <div className="success-icon">✅</div>
         <h3>Demande envoyée avec succès !</h3>
         <p>
-          Votre demande a été envoyée. Un professionnel vous contactera sous peu 
+          Votre demande a été envoyée et confirmée. Un professionnel vous contactera sous peu
           pour confirmer votre rendez-vous.
         </p>
         <button className="btn btn-primary" onClick={resetForm}>
@@ -179,161 +232,215 @@ const ServiceBookingForm = () => {
 
   return (
     <div className="booking-form-container">
-      <form ref={formRef} onSubmit={handleSubmit} className="booking-form">
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="nom">
-              <FaUser />
-              Nom Complet *
-            </label>
-            <input
-              type="text"
-              id="nom"
-              name="nom"
-              value={formData.nom}
-              onChange={handleInputChange}
-              className={errors.nom ? 'error' : ''}
-              placeholder="Votre nom complet"
-            />
-            {errors.nom && <span className="error-message">{errors.nom}</span>}
+      {step === 1 && (
+        <form ref={formRef} onSubmit={handleSubmit} className="booking-form">
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="nom">
+                <FaUser />
+                Nom Complet *
+              </label>
+              <input
+                type="text"
+                id="nom"
+                name="nom"
+                value={formData.nom}
+                onChange={handleInputChange}
+                className={errors.nom ? 'error' : ''}
+                placeholder="Votre nom complet"
+              />
+              {errors.nom && <span className="error-message">{errors.nom}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="email">
+                <FaEnvelope />
+                Email *
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className={errors.email ? 'error' : ''}
+                placeholder="votre.email@exemple.com"
+              />
+              {errors.email && <span className="error-message">{errors.email}</span>}
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="telephone">
+                <FaPhone />
+                Téléphone *
+              </label>
+              <input
+                type="tel"
+                id="telephone"
+                name="telephone"
+                value={formData.telephone}
+                onChange={handleInputChange}
+                className={errors.telephone ? 'error' : ''}
+                placeholder="06 12 34 56 78"
+              />
+              {errors.telephone && <span className="error-message">{errors.telephone}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="typeService">
+                <FaTools />
+                Type de Service *
+              </label>
+              <select
+                id="typeService"
+                name="typeService"
+                value={formData.typeService}
+                onChange={handleInputChange}
+                className={errors.typeService ? 'error' : ''}
+              >
+                <option value="">Sélectionnez un service</option>
+                {serviceTypes.map(service => (
+                  <option key={service.value} value={service.value}>
+                    {service.label}
+                  </option>
+                ))}
+              </select>
+              {errors.typeService && <span className="error-message">{errors.typeService}</span>}
+            </div>
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">
-              <FaEnvelope />
-              Email *
+            <label htmlFor="description">
+              Description du Problème *
             </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
               onChange={handleInputChange}
-              className={errors.email ? 'error' : ''}
-              placeholder="votre.email@exemple.com"
+              className={errors.description ? 'error' : ''}
+              placeholder="Décrivez votre problème ou vos besoins..."
+              rows="4"
             />
-            {errors.email && <span className="error-message">{errors.email}</span>}
-          </div>
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="telephone">
-              <FaPhone />
-              Téléphone *
-            </label>
-            <input
-              type="tel"
-              id="telephone"
-              name="telephone"
-              value={formData.telephone}
-              onChange={handleInputChange}
-              className={errors.telephone ? 'error' : ''}
-              placeholder="06 12 34 56 78"
-            />
-            {errors.telephone && <span className="error-message">{errors.telephone}</span>}
+            {errors.description && <span className="error-message">{errors.description}</span>}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="typeService">
-              <FaTools />
-              Type de Service *
-            </label>
-            <select
-              id="typeService"
-              name="typeService"
-              value={formData.typeService}
-              onChange={handleInputChange}
-              className={errors.typeService ? 'error' : ''}
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="datePreferee">
+                <FaCalendar />
+                Date Préférée *
+              </label>
+              <input
+                type="date"
+                id="datePreferee"
+                name="datePreferee"
+                value={formData.datePreferee}
+                onChange={handleInputChange}
+                className={errors.datePreferee ? 'error' : ''}
+                min={new Date().toISOString().split('T')[0]}
+              />
+              {errors.datePreferee && <span className="error-message">{errors.datePreferee}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="heurePreferee">
+                <FaClock />
+                Heure Préférée *
+              </label>
+              <select
+                id="heurePreferee"
+                name="heurePreferee"
+                value={formData.heurePreferee}
+                onChange={handleInputChange}
+                className={errors.heurePreferee ? 'error' : ''}
+              >
+                <option value="">Sélectionnez une heure</option>
+                {timeSlots.map(time => (
+                  <option key={time} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
+              {errors.heurePreferee && <span className="error-message">{errors.heurePreferee}</span>}
+            </div>
+          </div>
+
+          <div className="form-actions">
+            <button
+              type="submit"
+              className={`btn btn-primary ${isSubmitting ? 'loading' : ''}`}
+              disabled={isSubmitting}
             >
-              <option value="">Sélectionnez un service</option>
-              {serviceTypes.map(service => (
-                <option key={service.value} value={service.value}>
-                  {service.label}
-                </option>
-              ))}
-            </select>
-            {errors.typeService && <span className="error-message">{errors.typeService}</span>}
+              {isSubmitting ? (
+                <>
+                  <div className="spinner"></div>
+                  Envoi du code par email...
+                </>
+              ) : (
+                <>
+                  <FaPaperPlane />
+                  Envoyer la Demande
+                </>
+              )}
+            </button>
           </div>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="description">
-            Description du Problème *
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            className={errors.description ? 'error' : ''}
-            placeholder="Décrivez votre problème ou vos besoins..."
-            rows="4"
-          />
-          {errors.description && <span className="error-message">{errors.description}</span>}
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="datePreferee">
-              <FaCalendar />
-              Date Préférée *
-            </label>
-            <input
-              type="date"
-              id="datePreferee"
-              name="datePreferee"
-              value={formData.datePreferee}
-              onChange={handleInputChange}
-              className={errors.datePreferee ? 'error' : ''}
-              min={new Date().toISOString().split('T')[0]}
-            />
-            {errors.datePreferee && <span className="error-message">{errors.datePreferee}</span>}
+        </form>
+      )}
+      {step === 2 && (
+        <form onSubmit={handleOTPSubmit} className="booking-form">
+          <div className="otp-section">
+            <div className="otp-info">
+              <h3>Vérification par Email</h3>
+              <p>
+                Nous avons envoyé un code de vérification à <strong>{formData.email}</strong>
+              </p>
+              <p>Veuillez saisir le code à 6 chiffres reçu par email.</p>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
+                <strong>Note:</strong> Vérifiez votre boîte de réception et vos spams.
+              </p>
+            </div>
+            <div className="form-group">
+              <label>Code OTP *</label>
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => {
+                  setOtp(e.target.value.replace(/\D/g, '').slice(0, 6));
+                  if (errors.otp) setErrors({});
+                }}
+                placeholder="000000"
+                maxLength="6"
+                className={errors.otp ? 'error' : ''}
+                autoFocus
+              />
+              {errors.otp && <span className="error-message">{errors.otp}</span>}
+            </div>
+            <div className="otp-actions">
+              <button type="button" className="btn btn-outline" onClick={resendServiceOTP} disabled={isSubmitting}>
+                Renvoyer le code par email
+              </button>
+            </div>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="heurePreferee">
-              <FaClock />
-              Heure Préférée *
-            </label>
-            <select
-              id="heurePreferee"
-              name="heurePreferee"
-              value={formData.heurePreferee}
-              onChange={handleInputChange}
-              className={errors.heurePreferee ? 'error' : ''}
-            >
-              <option value="">Sélectionnez une heure</option>
-              {timeSlots.map(time => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </select>
-            {errors.heurePreferee && <span className="error-message">{errors.heurePreferee}</span>}
+          <div className="form-actions">
+            <button type="button" className="btn btn-secondary" onClick={() => setStep(1)}>
+              Retour
+            </button>
+            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <div className="spinner"></div>
+                  Vérification...
+                </>
+              ) : (
+                'Vérifier et Confirmer'
+              )}
+            </button>
           </div>
-        </div>
-
-        <div className="form-actions">
-          <button
-            type="submit"
-            className={`btn btn-primary ${isSubmitting ? 'loading' : ''}`}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <div className="spinner"></div>
-                Envoi en cours...
-              </>
-            ) : (
-              <>
-                <FaPaperPlane />
-                Envoyer la Demande
-              </>
-            )}
-          </button>
-        </div>
-      </form>
+        </form>
+      )}
     </div>
   );
 };

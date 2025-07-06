@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    if (product.inStock) {
+    if (product.quantity > 0) {
       addToCart(product);
       // Feedback visuel optionnel
       console.log(`${product.name} ajouté au panier`);
@@ -34,7 +34,7 @@ const ProductCard = ({ product }) => {
           alt={product.name} 
           className="product-image"
         />
-        {!product.inStock && (
+        {product.quantity <= 0 && (
           <div className="out-of-stock">Rupture de stock</div>
         )}
         {product.images && product.images.length > 1 && (
@@ -50,7 +50,7 @@ const ProductCard = ({ product }) => {
             >
               <FaInfoCircle /> Détails
             </button>
-            {product.inStock && (
+            {product.quantity > 0 && (
               <button 
                 className="btn-overlay"
                 onClick={handleAddToCart}
@@ -69,8 +69,8 @@ const ProductCard = ({ product }) => {
         
         <div className="product-price">
           <span className="price">{formatPrice(product.price)} DA</span>
-          <span className={`stock-status ${product.inStock ? 'in-stock' : ''}`}>
-            {product.inStock ? 'En stock' : 'Rupture de stock'}
+          <span className={`stock-status ${product.quantity > 0 ? 'in-stock' : ''}`}>
+            {product.quantity > 0 ? 'En stock' : 'Rupture de stock'}
           </span>
         </div>
 
@@ -81,7 +81,7 @@ const ProductCard = ({ product }) => {
           >
             Détails
           </button>
-          {product.inStock && (
+          {product.quantity > 0 && (
             <button 
               className="btn"
               onClick={handleAddToCart}

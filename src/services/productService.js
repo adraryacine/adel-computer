@@ -123,12 +123,11 @@ const transformProduct = (dbProduct) => {
     image: getImageUrl({ ...dbProduct, photos: parseIfString(dbProduct.photos) }),
     images: getAllImages({ ...dbProduct, photos: parseIfString(dbProduct.photos) }), // All images for gallery
     specs: transformSpecs(parseIfString(dbProduct.specs)),
-    inStock: dbProduct.in_stock === true ? 1 : 0,
+    quantity: dbProduct.quantity,
     rating: dbProduct.rating || 4.0,
     // Additional fields from database
     brand: dbProduct.brand,
     reference: dbProduct.reference,
-    quantity: dbProduct.quantity,
     purchasePrice: dbProduct.purchase_price,
     warranty: dbProduct.warranty,
     dateAdded: dbProduct.date_added,
@@ -347,22 +346,18 @@ export const checkProductSchema = async () => {
 export const saveProduct = async (productData) => {
   try {
     console.log('💾 Saving new product:', productData);
-    
-    // Try with minimal data first
     const minimalData = {
       name: productData.name,
       category: productData.category,
       selling_price: parseFloat(productData.selling_price) || 0,
-      description: productData.description
+      description: productData.description,
+      quantity: parseInt(productData.quantity) || 0
     };
-
     console.log('📝 Trying with minimal data:', minimalData);
-    
     const { data, error } = await supabase
       .from('products')
       .insert([minimalData])
       .select();
-
     if (error) {
       console.error('❌ Supabase error details:', {
         message: error.message,
@@ -370,35 +365,27 @@ export const saveProduct = async (productData) => {
         details: error.details,
         hint: error.hint
       });
-      
       // If minimal data fails, try with even more minimal data
       console.log('🔄 Trying with even more minimal data...');
       const basicData = {
         name: productData.name,
         category: productData.category
       };
-      
       const { data: basicResult, error: basicError } = await supabase
         .from('products')
         .insert([basicData])
         .select();
-        
       if (basicError) {
         console.error('❌ Even basic data failed:', basicError);
         throw basicError;
       }
-      
       console.log('✅ Basic data worked:', basicResult);
       return transformProduct(basicResult[0]);
     }
-
     console.log('✅ Product saved successfully:', data);
-    
-    // Check if data exists and has content
     if (!data || data.length === 0) {
       throw new Error('No data returned after saving product');
     }
-    
     return transformProduct(data[0]);
   } catch (error) {
     console.error('❌ Failed to save product:', {
@@ -418,18 +405,12 @@ export const saveProduct = async (productData) => {
 export const updateProduct = async (productId, productData) => {
   try {
     console.log('🔄 Updating product:', productId, productData);
-    
-    // Build update object with only provided fields
     const updateObject = {};
-    
     if (productData.name !== undefined) updateObject.name = productData.name;
     if (productData.category !== undefined) updateObject.category = productData.category;
     if (productData.selling_price !== undefined) updateObject.selling_price = parseFloat(productData.selling_price) || 0;
     if (productData.description !== undefined) updateObject.description = productData.description;
-    if (productData.in_stock !== undefined) {
-      // Convert in_stock to boolean: true if > 0, false if 0
-      updateObject.in_stock = parseInt(productData.in_stock) > 0;
-    }
+    if (productData.quantity !== undefined) updateObject.quantity = parseInt(productData.quantity) || 0;
     if (productData.brand !== undefined) updateObject.brand = productData.brand || null;
     if (productData.reference !== undefined) updateObject.reference = productData.reference || null;
     if (productData.photos !== undefined) {
@@ -438,26 +419,17 @@ export const updateProduct = async (productId, productData) => {
     if (productData.specs !== undefined) {
       updateObject.specs = productData.specs ? JSON.stringify(productData.specs) : null;
     }
-    
-    // Always update the updated_at timestamp
     updateObject.updated_at = new Date().toISOString();
-    
     console.log('📝 Prepared update data:', updateObject);
-    
-    // First, do the update without select
     const { error: updateError } = await supabase
       .from('products')
       .update(updateObject)
       .eq('id', productId);
-
     if (updateError) {
       console.error('Error updating product:', updateError);
       throw updateError;
     }
-
     console.log('✅ Product updated successfully');
-    
-    // Now fetch the updated product separately
     return await fetchProductById(productId);
   } catch (error) {
     console.error('Failed to update product:', error);
@@ -496,31 +468,23 @@ export const deleteProduct = async (productId) => {
 export const updateProductStock = async (productId, newStock) => {
   try {
     console.log('📦 Updating stock for product:', productId, 'to:', newStock);
-    
     const { data, error } = await supabase
       .from('products')
       .update({
-        // Convert stock to boolean: true if > 0, false if 0
-        in_stock: parseInt(newStock) > 0,
+        quantity: parseInt(newStock) || 0,
         updated_at: new Date().toISOString()
       })
       .eq('id', productId)
       .select();
-
     if (error) {
       console.error('Error updating stock:', error);
       throw error;
     }
-
     console.log('✅ Stock updated successfully:', data);
-    
-    // Check if data exists and has content
     if (!data || data.length === 0) {
       console.warn('⚠️ No data returned from stock update, fetching updated product...');
-      // If no data returned, fetch the updated product
       return await fetchProductById(productId);
     }
-    
     return transformProduct(data[0]);
   } catch (error) {
     console.error('Failed to update stock:', error);

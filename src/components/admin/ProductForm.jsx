@@ -11,7 +11,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
     category: '',
     price: '',
     description: '',
-    inStock: '0',
+    quantity: '0',
     brand: '',
     reference: '',
     images: '',
@@ -37,8 +37,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
         category: product.category || '',
         price: product.price !== undefined && product.price !== null ? String(product.price) : '',
         description: product.description || '',
-        // Convert boolean inStock to number for form display
-        inStock: product.inStock !== undefined && product.inStock !== null ? String(product.inStock) : '0',
+        quantity: product.quantity !== undefined && product.quantity !== null ? String(product.quantity) : '0',
         brand: product.brand || '',
         reference: product.reference || '',
         images: Array.isArray(product.images) ? product.images.join('\n') : product.image || '',
@@ -76,9 +75,9 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
       newErrors.description = 'La description est requise';
     }
 
-    const stock = parseInt(formData.inStock);
-    if (formData.inStock === '' || isNaN(stock) || stock < 0) {
-      newErrors.inStock = 'Le stock doit être un nombre valide supérieur ou égal à 0';
+    const quantity = parseInt(formData.quantity);
+    if (formData.quantity === '' || isNaN(quantity) || quantity < 0) {
+      newErrors.quantity = 'Le stock doit être un nombre valide supérieur ou égal à 0';
     }
 
     setErrors(newErrors);
@@ -116,8 +115,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
           category: formData.category,
           selling_price: parseFloat(formData.price) || 0,
           description: formData.description.trim(),
-          // Send the numeric value, the service will convert to boolean
-          in_stock: parseInt(formData.inStock) || 0,
+          quantity: parseInt(formData.quantity) || 0,
           brand: formData.brand.trim(),
           reference: formData.reference.trim(),
           photos: formData.images.trim() ? formData.images.split('\n').filter(url => url.trim()) : [],
@@ -138,7 +136,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
           throw new Error('Le prix doit être un nombre valide supérieur ou égal à 0');
         }
         
-        if (isNaN(productData.in_stock) || productData.in_stock < 0) {
+        if (isNaN(productData.quantity) || productData.quantity < 0) {
           throw new Error('Le stock doit être un nombre valide supérieur ou égal à 0');
         }
 
@@ -166,10 +164,9 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
           updateData.description = formData.description.trim();
         }
         
-        const newStock = parseInt(formData.inStock) || 0;
-        if (newStock !== product.inStock) {
-          // Send the numeric value, the service will convert to boolean
-          updateData.in_stock = newStock;
+        const newQuantity = parseInt(formData.quantity) || 0;
+        if (newQuantity !== product.quantity) {
+          updateData.quantity = newQuantity;
         }
         
         if (formData.brand.trim() !== (product.brand || '')) {
@@ -210,12 +207,12 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
             throw new Error('Le prix doit être un nombre valide supérieur ou égal à 0');
           }
           
-          if (updateData.in_stock !== undefined && (isNaN(updateData.in_stock) || updateData.in_stock < 0)) {
+          if (updateData.quantity !== undefined && (isNaN(updateData.quantity) || updateData.quantity < 0)) {
             throw new Error('Le stock doit être un nombre valide supérieur ou égal à 0');
           }
           
-          const savedProduct = await updateProduct(product.id, updateData);
-          onSave(savedProduct);
+          const updatedProduct = await updateProduct(product.id, updateData);
+          onSave(updatedProduct);
         } else {
           // No changes made
           alert('Aucune modification détectée');
@@ -311,13 +308,13 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
                     </label>
                     <input
                       type="number"
-                      value={String(formData.inStock || '0')}
-                      onChange={(e) => handleInputChange('inStock', e.target.value)}
+                      value={String(formData.quantity || '0')}
+                      onChange={(e) => handleInputChange('quantity', e.target.value)}
                       placeholder="0"
                       min="0"
-                      className={errors.inStock ? 'admin-input-error' : ''}
+                      className={errors.quantity ? 'admin-input-error' : ''}
                     />
-                    {errors.inStock && <span className="admin-error-message">{errors.inStock}</span>}
+                    {errors.quantity && <span className="admin-error-message">{errors.quantity}</span>}
                   </div>
                 </div>
 

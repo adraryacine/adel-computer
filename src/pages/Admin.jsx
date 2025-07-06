@@ -3,13 +3,15 @@
 // Gestion des produits, stocks et commandes
 // ===============================
 import { useState, useEffect } from 'react';
-import { FaBox, FaShoppingCart, FaChartBar, FaPlus, FaEdit, FaTrash, FaSignOutAlt } from 'react-icons/fa';
+import { FaBox, FaShoppingCart, FaChartBar, FaPlus, FaEdit, FaTrash, FaSignOutAlt, FaTools } from 'react-icons/fa';
 import { fetchProducts, fetchCategories, deleteProduct, updateProductStock, checkProductSchema } from '../services/productService.js';
 import { getOrders } from '../services/orderService.js';
 import ProductForm from '../components/admin/ProductForm';
 import OrderList from '../components/admin/OrderList';
 import StockManagement from '../components/admin/StockManagement';
 import Login from '../components/admin/Login';
+import ServiceList from '../components/admin/ServiceList';
+import { getServices } from '../services/serviceService';
 import '../styles/admin.css';
 
 const Admin = () => {
@@ -18,6 +20,7 @@ const Admin = () => {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showProductForm, setShowProductForm] = useState(false);
@@ -66,6 +69,7 @@ const Admin = () => {
     setProducts([]);
     setOrders([]);
     setCategories([]);
+    setServices([]);
   };
 
   const loadData = async () => {
@@ -76,10 +80,11 @@ const Admin = () => {
       // First check the schema to understand the database structure
       await checkProductSchema();
       
-      const [productsData, categoriesData, ordersData] = await Promise.all([
+      const [productsData, categoriesData, ordersData, servicesData] = await Promise.all([
         fetchProducts(),
         fetchCategories(),
-        getOrders()
+        getOrders(),
+        getServices()
       ]);
       
       setProducts(productsData);
@@ -89,6 +94,7 @@ const Admin = () => {
         .map(cat => typeof cat === 'string' ? cat : cat.name);
       setCategories(categoryNames);
       setOrders(ordersData);
+      setServices(servicesData);
       
     } catch (err) {
       console.error('Error loading admin data:', err);
@@ -131,7 +137,7 @@ const Admin = () => {
     try {
       await updateProductStock(productId, newQuantity);
       setProducts(prev => prev.map(p => 
-        p.id === productId ? { ...p, inStock: newQuantity } : p
+        p.id === productId ? { ...p, quantity: newQuantity } : p
       ));
     } catch (err) {
       console.error('Error updating stock:', err);
@@ -206,6 +212,13 @@ const Admin = () => {
           Commandes ({orders.length})
         </button>
         <button 
+          className={`admin-tab ${activeTab === 'services' ? 'active' : ''}`}
+          onClick={() => setActiveTab('services')}
+        >
+          <FaTools />
+          Services ({services.length})
+        </button>
+        <button 
           className={`admin-tab ${activeTab === 'stock' ? 'active' : ''}`}
           onClick={() => setActiveTab('stock')}
         >
@@ -237,7 +250,7 @@ const Admin = () => {
                 <div key={product.id} className="product-card admin-product-card">
                   <div className="product-image-container">
                     <img src={product.image} alt={product.name} className="product-image" />
-                    {product.inStock <= 0 && (
+                    {product.quantity <= 0 && (
                       <div className="out-of-stock">Rupture de stock</div>
                     )}
                     {product.images && product.images.length > 1 && (
@@ -268,8 +281,8 @@ const Admin = () => {
                     <p className="product-description">{product.description.substring(0, 100)}...</p>
                     <div className="product-price">
                       <span className="price">{product.price} DA</span>
-                      <span className={`stock-status ${product.inStock > 0 ? 'in-stock' : ''}`}>
-                        {product.inStock > 0 ? `En stock (${product.inStock})` : 'Rupture de stock'}
+                      <span className={`stock-status ${product.quantity > 0 ? 'in-stock' : ''}`}>
+                        {product.quantity > 0 ? `En stock (${product.quantity})` : 'Rupture de stock'}
                       </span>
                     </div>
                   </div>
@@ -281,6 +294,10 @@ const Admin = () => {
 
         {activeTab === 'orders' && (
           <OrderList orders={orders} onOrderUpdate={loadData} />
+        )}
+
+        {activeTab === 'services' && (
+          <ServiceList services={services} onServiceUpdate={loadData} />
         )}
 
         {activeTab === 'stock' && (

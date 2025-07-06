@@ -1,4 +1,5 @@
 import { supabase } from '../../supabaseClient.js';
+import { sendOTPEmail } from './emailService.js';
 
 /**
  * Save order to Supabase database
@@ -12,6 +13,7 @@ export const saveOrder = async (orderData) => {
       .insert([
         {
           customer_name: orderData.customerName,
+          email: orderData.email,
           phone_number: orderData.phoneNumber,
           wilaya: orderData.wilaya,
           address: orderData.address,
@@ -40,61 +42,55 @@ export const saveOrder = async (orderData) => {
 };
 
 /**
- * Send OTP to customer phone number
- * Note: This is a placeholder. You'll need to integrate with an SMS service
+ * Send email OTP using email service
  */
-export const sendOTP = async (phoneNumber) => {
+export const sendEmailOTP = async (email) => {
   try {
-    console.log('📱 Sending OTP to:', phoneNumber);
+    console.log('📧 Sending email OTP to:', email);
     
-    // Generate a 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Send email with OTP using the email service
+    const result = await sendOTPEmail(email);
     
-    // In a real implementation, you would:
-    // 1. Call your SMS service API (Twilio, Vonage, etc.)
-    // 2. Send the OTP to the phone number
-    // 3. Store the OTP temporarily for verification
-    
-    // For demo purposes, we'll just log it
-    console.log('🔐 Generated OTP:', otp);
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Store OTP in localStorage for demo (in production, use server-side storage)
-    localStorage.setItem('demo_otp', otp);
-    localStorage.setItem('demo_phone', phoneNumber);
-    
-    return { success: true, message: 'OTP sent successfully' };
+    console.log('✅ Email OTP sent successfully');
+    return result; // Return the result from email service (includes OTP)
   } catch (error) {
-    console.error('Failed to send OTP:', error);
+    console.error('Failed to send email OTP:', error);
     throw error;
   }
 };
 
 /**
- * Verify OTP
+ * Verify email OTP from database
  */
-export const verifyOTP = async (phoneNumber, otp) => {
+export const verifyEmailOTP = async (email, otp) => {
   try {
-    console.log('🔐 Verifying OTP:', { phoneNumber, otp });
+    console.log('🔐 Verifying email OTP:', { email, otp });
     
-    // Get stored OTP for demo
-    const storedOTP = localStorage.getItem('demo_otp');
-    const storedPhone = localStorage.getItem('demo_phone');
-    
-    // In production, verify against server-side stored OTP
-    if (storedPhone === phoneNumber && storedOTP === otp) {
-      // Clear stored OTP after successful verification
-      localStorage.removeItem('demo_otp');
-      localStorage.removeItem('demo_phone');
-      
-      return { success: true, message: 'OTP verified successfully' };
-    } else {
+    // Get OTP from database
+    const { data, error } = await supabase
+      .from('otp_codes')
+      .select('*')
+      .eq('email', email)
+      .eq('otp_code', otp)
+      .gte('expires_at', new Date().toISOString())
+      .single();
+
+    if (error || !data) {
+      console.error('Error verifying OTP:', error);
       throw new Error('Invalid OTP');
     }
+
+    // Delete the used OTP
+    await supabase
+      .from('otp_codes')
+      .delete()
+      .eq('email', email)
+      .eq('otp_code', otp);
+
+    console.log('✅ Email OTP verified successfully');
+    return { success: true, message: 'Email OTP verified successfully' };
   } catch (error) {
-    console.error('Failed to verify OTP:', error);
+    console.error('Failed to verify email OTP:', error);
     throw error;
   }
 };

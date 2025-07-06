@@ -20,7 +20,7 @@ const StockManagement = ({ products, onStockUpdate }) => {
   const handleQuickUpdate = (productId, increment) => {
     const currentStock = stockUpdates[productId] !== undefined 
       ? stockUpdates[productId] 
-      : products.find(p => p.id === productId)?.inStock || 0;
+      : products.find(p => p.id === productId)?.quantity || 0;
     
     const newStock = Math.max(0, currentStock + increment);
     setStockUpdates(prev => ({
@@ -77,8 +77,8 @@ const StockManagement = ({ products, onStockUpdate }) => {
     return { status: 'admin-status-success', text: 'En stock', icon: <FaBox /> };
   };
 
-  const lowStockProducts = products.filter(p => p.inStock <= 5);
-  const outOfStockProducts = products.filter(p => p.inStock === 0);
+  const lowStockProducts = products.filter(p => p.quantity <= 5 && p.quantity > 0);
+  const outOfStockProducts = products.filter(p => p.quantity === 0);
 
   return (
     <div className="admin-section">
@@ -121,7 +121,7 @@ const StockManagement = ({ products, onStockUpdate }) => {
         </div>
         <div className="admin-summary-card">
           <h3>En stock</h3>
-          <span className="admin-summary-number">{products.filter(p => p.inStock > 0).length}</span>
+          <span className="admin-summary-number">{products.filter(p => p.quantity > 0).length}</span>
         </div>
         <div className="admin-summary-card">
           <h3>Stock faible</h3>
@@ -150,7 +150,7 @@ const StockManagement = ({ products, onStockUpdate }) => {
             {products.map(product => {
               const currentStock = stockUpdates[product.id] !== undefined 
                 ? stockUpdates[product.id] 
-                : product.inStock;
+                : product.quantity;
               const stockStatus = getStockStatus(currentStock);
               const hasChanges = stockUpdates[product.id] !== undefined;
 
@@ -165,8 +165,8 @@ const StockManagement = ({ products, onStockUpdate }) => {
                   </td>
                   <td>{product.category}</td>
                   <td className="admin-current-stock">
-                    <span className={product.inStock === 0 ? 'admin-out-of-stock' : ''}>
-                      {product.inStock}
+                    <span className={product.quantity === 0 ? 'admin-out-of-stock' : ''}>
+                      {product.quantity}
                     </span>
                   </td>
                   <td className="admin-new-stock">
@@ -227,7 +227,7 @@ const StockManagement = ({ products, onStockUpdate }) => {
             onClick={() => {
               const updates = {};
               products.forEach(p => {
-                updates[p.id] = Math.max(0, p.inStock - 1);
+                updates[p.id] = Math.max(0, p.quantity - 1);
               });
               setStockUpdates(updates);
             }}
@@ -239,7 +239,7 @@ const StockManagement = ({ products, onStockUpdate }) => {
             onClick={() => {
               const updates = {};
               products.forEach(p => {
-                updates[p.id] = p.inStock + 1;
+                updates[p.id] = p.quantity + 1;
               });
               setStockUpdates(updates);
             }}
