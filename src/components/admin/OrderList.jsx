@@ -221,7 +221,8 @@ const OrderList = ({ orders, onOrderUpdate }) => {
               </button>
             </div>
 
-            <div className="admin-modal-content">
+            {/* Printable Ticket Area */}
+            <div className="admin-modal-content printable-ticket" id="printable-ticket">
               {/* Customer Information */}
               <div className="admin-order-section">
                 <h3>
@@ -302,7 +303,14 @@ const OrderList = ({ orders, onOrderUpdate }) => {
               >
                 Fermer
               </button>
-              
+              <button
+                className="admin-btn admin-btn-primary"
+                onClick={() => {
+                  window.print();
+                }}
+              >
+                🖨️ Imprimer le ticket
+              </button>
               {selectedOrder.status === 'pending' && (
                 <>
                   <button 
