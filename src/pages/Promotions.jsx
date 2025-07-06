@@ -358,7 +358,7 @@ const Promotions = () => {
                     <span>{timeRemaining}</span>
                   </div>
                   <div className="stock-status">
-                    {product.inStock ? (
+                    {product.quantity > 0 ? (
                       <span className="in-stock">En stock</span>
                     ) : (
                       <span className="out-of-stock">Rupture</span>
@@ -488,7 +488,7 @@ const Promotions = () => {
                       handleAddToCart(selectedProduct);
                       setShowProductModal(false);
                     }}
-                    disabled={!selectedProduct.inStock}
+                    disabled={selectedProduct.quantity <= 0}
                   >
                     <FaShoppingCart />
                     Ajouter au panier - {selectedProduct.discountedPrice.toLocaleString()} DA

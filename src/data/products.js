@@ -14,7 +14,7 @@ export const products = [
       ram: "32GB DDR5",
       storage: "2TB NVMe SSD"
     },
-    inStock: true,
+    quantity: 5,
     rating: 4.8
   },
   {
@@ -31,7 +31,7 @@ export const products = [
       ram: "16GB DDR4",
       storage: "512GB SSD"
     },
-    inStock: true,
+    quantity: 12,
     rating: 4.2
   },
   {
@@ -48,7 +48,7 @@ export const products = [
       ram: "16GB DDR5",
       storage: "1TB NVMe SSD"
     },
-    inStock: true,
+    quantity: 8,
     rating: 4.6
   },
 
@@ -66,7 +66,7 @@ export const products = [
       resolution: "1200 x 1200 dpi",
       connectivite: "WiFi, USB, Ethernet"
     },
-    inStock: true,
+    quantity: 15,
     rating: 4.4
   },
   {
@@ -82,7 +82,7 @@ export const products = [
       resolution: "4800 x 2400 dpi",
       connectivite: "WiFi, USB"
     },
-    inStock: true,
+    quantity: 20,
     rating: 4.3
   },
 
@@ -100,7 +100,7 @@ export const products = [
       rgb: "Oui",
       connectivite: "USB-C"
     },
-    inStock: true,
+    quantity: 25,
     rating: 4.7
   },
   {
@@ -116,7 +116,7 @@ export const products = [
       autonomie: "6 mois",
       ergonomie: "Oui"
     },
-    inStock: true,
+    quantity: 18,
     rating: 4.5
   },
 
@@ -134,7 +134,7 @@ export const products = [
       rgb: "Oui",
       connectivite: "USB"
     },
-    inStock: true,
+    quantity: 30,
     rating: 4.6
   },
   {
@@ -150,7 +150,7 @@ export const products = [
       connectivite: "Bluetooth",
       autonomie: "2 ans"
     },
-    inStock: true,
+    quantity: 22,
     rating: 4.4
   },
 
@@ -168,7 +168,7 @@ export const products = [
       micro: "Détachable",
       connectivite: "USB + 3.5mm"
     },
-    inStock: true,
+    quantity: 16,
     rating: 4.5
   },
   {
@@ -184,7 +184,7 @@ export const products = [
       autonomie: "20h",
       connectivite: "Bluetooth 5.0"
     },
-    inStock: true,
+    quantity: 10,
     rating: 4.8
   },
 
@@ -202,7 +202,7 @@ export const products = [
       refresh_rate: "144Hz",
       response_time: "1ms"
     },
-    inStock: true,
+    quantity: 10,
     rating: 4.6
   },
   {
@@ -218,7 +218,7 @@ export const products = [
       refresh_rate: "60Hz",
       color_gamut: "99% sRGB"
     },
-    inStock: true,
+    quantity: 10,
     rating: 4.7
   },
 
@@ -236,7 +236,7 @@ export const products = [
       connectivite: "USB",
       autofocus: "Oui"
     },
-    inStock: true,
+    quantity: 10,
     rating: 4.3
   },
   {
@@ -252,7 +252,7 @@ export const products = [
       vitesse: "5400 RPM",
       format: "2.5\""
     },
-    inStock: true,
+    quantity: 10,
     rating: 4.4
   }
   

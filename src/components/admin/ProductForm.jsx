@@ -4,9 +4,11 @@
 import { useState, useEffect } from 'react';
 import { FaTimes, FaSave, FaImage, FaBox, FaTag, FaDollarSign, FaInfoCircle } from 'react-icons/fa';
 import { saveProduct, updateProduct } from '../../services/productService';
+import { v4 as uuidv4 } from 'uuid';
 
 const ProductForm = ({ product, categories, onSave, onClose }) => {
   const [formData, setFormData] = useState({
+    id: uuidv4(),
     name: '',
     category: '',
     price: '',
@@ -33,6 +35,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
     if (product) {
       // Editing existing product
       setFormData({
+        id: product.id,
         name: product.name || '',
         category: product.category || '',
         price: product.price !== undefined && product.price !== null ? String(product.price) : '',
@@ -111,6 +114,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
       // For new products, send all data
       if (!product?.id) {
         const productData = {
+          id: formData.id,
           name: formData.name.trim(),
           category: formData.category,
           selling_price: parseFloat(formData.price) || 0,

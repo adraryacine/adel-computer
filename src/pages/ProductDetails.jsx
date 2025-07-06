@@ -102,7 +102,7 @@ const ProductDetails = () => {
 
   // Ajoute le produit au panier si en stock
   const handleAddToCart = () => {
-    if (product.inStock) {
+    if (product.quantity > 0) {
       addToCart(product);
       // Feedback visuel
       alert(`${product.name} a été ajouté au panier !`);
@@ -131,8 +131,8 @@ const ProductDetails = () => {
           </div>
           <div className="product-details-pricebox">
             <span className="product-details-price">{formatPrice(product.price)} DA</span>
-            <span className={`product-details-stock ${product.inStock ? 'in-stock' : 'out-stock'}`}>
-              {product.inStock ? 'En stock' : 'Rupture de stock'}
+            <span className={`product-details-stock ${product.quantity > 0 ? 'in-stock' : 'out-stock'}`}>
+              {product.quantity > 0 ? 'En stock' : 'Rupture de stock'}
             </span>
           </div>
           <p className="product-details-description">{product.description}</p>
@@ -160,10 +160,10 @@ const ProductDetails = () => {
             <button 
               className="btn btn-primary" 
               onClick={handleAddToCart}
-              disabled={!product.inStock}
+              disabled={product.quantity <= 0}
             >
               <FaShoppingCart />
-              {product.inStock ? 'Ajouter au panier' : 'Rupture de stock'}
+              {product.quantity > 0 ? 'Ajouter au panier' : 'Rupture de stock'}
             </button>
           </div>
         </div>
