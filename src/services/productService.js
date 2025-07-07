@@ -18,6 +18,8 @@ const parseIfString = (value) => {
  * Transform database product to app format
  */
 const transformProduct = (dbProduct) => {
+  console.log('🔄 Transforming product:', dbProduct.name, 'Photos raw:', dbProduct.photos);
+  
   // Determine computer type from specs or category
   const getComputerType = (product) => {
     if (product.category?.toLowerCase().includes('portable')) {
@@ -32,52 +34,40 @@ const transformProduct = (dbProduct) => {
 
   // Get image URL with fallback
   const getImageUrl = (product) => {
+    console.log('🖼️ Getting image URL for:', product.name, 'Photos:', product.photos);
+    
     if (product.photos) {
       if (Array.isArray(product.photos) && product.photos.length > 0) {
+        console.log('✅ Using first photo from array:', product.photos[0]);
         return product.photos[0]; // Return first image for main display
       }
       if (typeof product.photos === 'string' && product.photos.trim() !== '') {
+        console.log('✅ Using photo string:', product.photos);
         return product.photos;
       }
     }
-    // Fallback images based on category
-    const fallbackImages = {
-      'PC Portables': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop',
-      'PC': 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop',
-      'Réseau': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
-      'Imprimantes': 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=300&fit=crop',
-      'Claviers': 'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=300&fit=crop',
-      'Souris': 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=300&fit=crop',
-      'Casques': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
-      'Écrans': 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop',
-      'Accessoires': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop'
-    };
-    return fallbackImages[product.category] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop';
+    
+    console.log('⚠️ No photos found, returning null');
+    return null; // Return null instead of fallback image
   };
 
   // Get all images for gallery
   const getAllImages = (product) => {
+    console.log('🖼️ Getting all images for:', product.name, 'Photos:', product.photos);
+    
     if (product.photos) {
       if (Array.isArray(product.photos) && product.photos.length > 0) {
+        console.log('✅ Returning photo array:', product.photos);
         return product.photos;
       }
       if (typeof product.photos === 'string' && product.photos.trim() !== '') {
+        console.log('✅ Returning photo string as array:', [product.photos]);
         return [product.photos];
       }
     }
-    // Return fallback image as array
-    const fallbackImages = {
-      'PC Portables': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop',
-      'PC': 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop',
-      'Réseau': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
-      'Imprimantes': 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=300&fit=crop',
-      'Claviers': 'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=300&fit=crop',
-      'Souris': 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=300&fit=crop',
-      'Casques': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
-      'Écrans': 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop',
-      'Accessoires': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop'
-    };
-    return [fallbackImages[product.category] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop'];
+    
+    console.log('⚠️ No photos found, returning empty array');
+    return []; // Return empty array instead of fallback image
   };
 
   // Transform specs to match expected format
@@ -113,15 +103,18 @@ const transformProduct = (dbProduct) => {
     return transformed;
   };
 
-  return {
+  const parsedPhotos = parseIfString(dbProduct.photos);
+  console.log('🔄 Parsed photos for', dbProduct.name, ':', parsedPhotos);
+  
+  const result = {
     id: dbProduct.id,
     name: dbProduct.name,
     category: dbProduct.category,
     computerType: getComputerType(dbProduct),
     price: dbProduct.selling_price,
     description: dbProduct.description,
-    image: getImageUrl({ ...dbProduct, photos: parseIfString(dbProduct.photos) }),
-    images: getAllImages({ ...dbProduct, photos: parseIfString(dbProduct.photos) }), // All images for gallery
+    image: getImageUrl({ ...dbProduct, photos: parsedPhotos }),
+    images: getAllImages({ ...dbProduct, photos: parsedPhotos }), // All images for gallery
     specs: transformSpecs(parseIfString(dbProduct.specs)),
     quantity: dbProduct.quantity,
     rating: dbProduct.rating || 4.0,
@@ -132,8 +125,18 @@ const transformProduct = (dbProduct) => {
     warranty: dbProduct.warranty,
     dateAdded: dbProduct.date_added,
     createdAt: dbProduct.created_at,
-    updatedAt: dbProduct.updated_at
+    updatedAt: dbProduct.updated_at,
+    // Keep raw photos for debugging
+    photos: parsedPhotos
   };
+  
+  console.log('✅ Transformed result for', dbProduct.name, ':', {
+    image: result.image,
+    imagesCount: result.images?.length,
+    photos: result.photos
+  });
+  
+  return result;
 };
 
 /**
@@ -346,19 +349,29 @@ export const checkProductSchema = async () => {
 export const saveProduct = async (productData) => {
   try {
     console.log('💾 Saving new product:', productData);
-    // Don't generate ID - let database auto-increment
-    const minimalData = {
+    
+    // Prepare complete data including photos
+    const completeData = {
       name: productData.name,
       category: productData.category,
       selling_price: parseFloat(productData.selling_price) || 0,
       description: productData.description,
-      quantity: parseInt(productData.quantity) || 0
+      quantity: parseInt(productData.quantity) || 0,
+      brand: productData.brand || null,
+      reference: productData.reference || null,
+      photos: productData.photos ? JSON.stringify(productData.photos) : null,
+      specs: productData.specs ? JSON.stringify(productData.specs) : null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
-    console.log('📝 Trying with minimal data:', minimalData);
+    
+    console.log('📝 Saving with complete data:', completeData);
+    
     const { data, error } = await supabase
       .from('products')
-      .insert([minimalData])
+      .insert([completeData])
       .select();
+      
     if (error) {
       console.error('❌ Supabase error details:', {
         message: error.message,
@@ -366,24 +379,32 @@ export const saveProduct = async (productData) => {
         details: error.details,
         hint: error.hint
       });
-      // If minimal data fails, try with even more minimal data
-      console.log('🔄 Trying with even more minimal data...');
-      const basicData = {
+      
+      // Fallback to minimal data if complete data fails
+      console.log('🔄 Trying with minimal data...');
+      const minimalData = {
         name: productData.name,
-        category: productData.category
+        category: productData.category,
+        selling_price: parseFloat(productData.selling_price) || 0,
+        description: productData.description,
+        quantity: parseInt(productData.quantity) || 0
       };
-      const { data: basicResult, error: basicError } = await supabase
+      
+      const { data: minimalResult, error: minimalError } = await supabase
         .from('products')
-        .insert([basicData])
+        .insert([minimalData])
         .select();
-      if (basicError) {
-        console.error('❌ Even basic data failed:', basicError);
-        throw basicError;
+        
+      if (minimalError) {
+        console.error('❌ Minimal data also failed:', minimalError);
+        throw minimalError;
       }
-      console.log('✅ Basic data worked:', basicResult);
-      return transformProduct(basicResult[0]);
+      
+      console.log('✅ Minimal data worked:', minimalResult);
+      return transformProduct(minimalResult[0]);
     }
-    console.log('✅ Product saved successfully:', data);
+    
+    console.log('✅ Product saved successfully with complete data:', data);
     if (!data || data.length === 0) {
       throw new Error('No data returned after saving product');
     }

@@ -3673,3 +3673,26 @@
     }
   }
   
+  .product-image-placeholder {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    color: #6c757d;
+    font-size: 0.9rem;
+    gap: 0.5rem;
+    border-radius: 8px;
+  }
+  
+  .product-image-placeholder svg {
+    font-size: 2rem;
+    opacity: 0.5;
+  }
+  
+  .product-image-placeholder span {
+    font-weight: 500;
+  }
+  

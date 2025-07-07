@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaShoppingCart, FaInfoCircle } from 'react-icons/fa';
+import { FaShoppingCart, FaInfoCircle, FaImage } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatPrice';
 
@@ -29,11 +29,18 @@ const ProductCard = ({ product }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="product-image-container">
-        <img 
-          src={product.image} 
-          alt={product.name} 
-          className="product-image"
-        />
+        {product.image ? (
+          <img 
+            src={product.image} 
+            alt={product.name} 
+            className="product-image"
+          />
+        ) : (
+          <div className="product-image-placeholder">
+            <FaImage />
+            <span>Aucune image</span>
+          </div>
+        )}
         {product.quantity <= 0 && (
           <div className="out-of-stock">Rupture de stock</div>
         )}

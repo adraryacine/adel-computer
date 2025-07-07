@@ -4,7 +4,7 @@
 // ===============================
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart, FaImage } from 'react-icons/fa';
 import { fetchProductById } from '../services/productService.js';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatPrice';
@@ -118,10 +118,22 @@ const ProductDetails = () => {
       <div className="product-details-flex">
         {/* Image Gallery */}
         <div className="product-details-imgbox">
-          <ImageGallery 
-            images={product.images || [product.image]} 
-            productName={product.name}
-          />
+          {product.images && product.images.length > 0 ? (
+            <ImageGallery 
+              images={product.images} 
+              productName={product.name}
+            />
+          ) : product.image ? (
+            <ImageGallery 
+              images={[product.image]} 
+              productName={product.name}
+            />
+          ) : (
+            <div className="product-image-placeholder">
+              <FaImage />
+              <span>Aucune image disponible</span>
+            </div>
+          )}
         </div>
         {/* Informations détaillées */}
         <div className="product-details-info">

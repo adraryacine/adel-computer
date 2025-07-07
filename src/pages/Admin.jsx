@@ -3,7 +3,7 @@
 // Gestion des produits, stocks et commandes
 // ===============================
 import { useState, useEffect } from 'react';
-import { FaBox, FaShoppingCart, FaChartBar, FaPlus, FaEdit, FaTrash, FaSignOutAlt, FaTools, FaGift } from 'react-icons/fa';
+import { FaBox, FaShoppingCart, FaChartBar, FaPlus, FaEdit, FaTrash, FaSignOutAlt, FaTools, FaGift, FaImage } from 'react-icons/fa';
 import { fetchProducts, fetchCategories, deleteProduct, updateProductStock, checkProductSchema } from '../services/productService.js';
 import { getOrders } from '../services/orderService.js';
 import ProductForm from '../components/admin/ProductForm';
@@ -245,7 +245,14 @@ const Admin = () => {
               {products.map(product => (
                 <div key={product.id} className="product-card admin-product-card">
                   <div className="product-image-container">
-                    <img src={product.image} alt={product.name} className="product-image" />
+                    {product.image ? (
+                      <img src={product.image} alt={product.name} className="product-image" />
+                    ) : (
+                      <div className="product-image-placeholder">
+                        <FaImage />
+                        <span>Aucune image</span>
+                      </div>
+                    )}
                     {product.quantity <= 0 && (
                       <div className="out-of-stock">Rupture de stock</div>
                     )}

@@ -1,9 +1,11 @@
 // ===============================
 // PRODUCT FORM - Formulaire d'ajout/modification de produit
 // ===============================
-import { useState, useEffect } from 'react';
-import { FaTimes, FaSave, FaImage, FaBox, FaTag, FaDollarSign, FaInfoCircle } from 'react-icons/fa';
+import { useState, useEffect, useRef } from 'react';
+import { FaTimes, FaSave, FaImage, FaBox, FaTag, FaDollarSign, FaInfoCircle, FaUpload, FaLink, FaTrash } from 'react-icons/fa';
 import { saveProduct, updateProduct } from '../../services/productService';
+import { uploadImage, uploadMultipleImages, getRLSInstructions, deleteImage } from '../../services/uploadService';
+import { testProductImagesBucket } from '../../utils/storageSetup';
 
 const ProductForm = ({ product, categories, onSave, onClose }) => {
   const [formData, setFormData] = useState({
@@ -28,6 +30,55 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageMode, setImageMode] = useState('link'); // 'link' or 'upload'
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const [existingImages, setExistingImages] = useState([]); // For editing existing products
+  const [uploadedImagePaths, setUploadedImagePaths] = useState([]); // Track paths for deletion
+  const [existingImagePaths, setExistingImagePaths] = useState([]); // Track existing image paths
+  const [linkImages, setLinkImages] = useState([]); // Track link images separately
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const [storageReady, setStorageReady] = useState(false);
+  const [storageMessage, setStorageMessage] = useState('');
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    // Test storage bucket access
+    const testStorage = async () => {
+      try {
+        const result = await testProductImagesBucket();
+        setStorageReady(result.success);
+        setStorageMessage(result.message);
+        
+        if (!result.success) {
+          console.warn('⚠️ Storage not ready:', result.message);
+        }
+      } catch (error) {
+        console.error('Failed to test storage:', error);
+        setStorageReady(false);
+        setStorageMessage('Erreur lors du test du stockage');
+      }
+    };
+    
+    testStorage();
+  }, []);
+
+  const refreshStorageTest = async () => {
+    try {
+      const result = await testProductImagesBucket();
+      setStorageReady(result.success);
+      setStorageMessage(result.message);
+      
+      if (result.success) {
+        alert('✅ Stockage d\'images activé avec succès !');
+      } else {
+        alert('❌ ' + result.message);
+      }
+    } catch (error) {
+      console.error('Failed to refresh storage test:', error);
+      setStorageReady(false);
+      setStorageMessage('Erreur lors du test du stockage');
+    }
+  };
 
   useEffect(() => {
     if (product) {
@@ -40,7 +91,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
         quantity: product.quantity !== undefined && product.quantity !== null ? String(product.quantity) : '0',
         brand: product.brand || '',
         reference: product.reference || '',
-        images: Array.isArray(product.images) ? product.images.join('\n') : product.image || '',
+        images: '', // Don't include existing images in the textarea to avoid duplication
         specs: {
           processor: product.specs?.processor || '',
           ram: product.specs?.ram || '',
@@ -52,6 +103,54 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
           connectivite: product.specs?.connectivite || ''
         }
       });
+      
+      // Set existing images for editing
+      const currentImages = Array.isArray(product.images) ? product.images : (product.image ? [product.image] : []);
+      setExistingImages(currentImages);
+      setUploadedImages([]); // Reset uploaded images when editing
+      setUploadedImagePaths([]); // Reset uploaded image paths
+      setLinkImages([]); // Reset link images when editing
+      
+      // Extract paths from existing images (if they're Supabase URLs)
+      const extractPaths = (images) => {
+        return images.map(img => {
+          // Check if it's a Supabase storage URL
+          if (img.includes('supabase.co/storage/v1/object/public/product-images/')) {
+            const pathMatch = img.match(/product-images\/(.+)$/);
+            return pathMatch ? pathMatch[1] : null;
+          }
+          return null;
+        }).filter(path => path !== null);
+      };
+      
+      setExistingImagePaths(extractPaths(currentImages));
+    } else {
+      // New product - reset all state
+      setFormData({
+        name: '',
+        category: '',
+        price: '',
+        description: '',
+        quantity: '0',
+        brand: '',
+        reference: '',
+        images: '',
+        specs: {
+          processor: '',
+          ram: '',
+          storage: '',
+          graphics: '',
+          ecran: '',
+          marque: '',
+          type: '',
+          connectivite: ''
+        }
+      });
+      setExistingImages([]);
+      setUploadedImages([]);
+      setUploadedImagePaths([]);
+      setExistingImagePaths([]);
+      setLinkImages([]);
     }
   }, [product]);
 
@@ -98,6 +197,120 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
     }));
   };
 
+  const handleFileUpload = async (files) => {
+    try {
+      setUploadingImages(true);
+      const fileArray = Array.from(files);
+      
+      console.log('📤 Uploading files:', fileArray.map(f => f.name));
+      
+      const uploadResults = await uploadMultipleImages(fileArray);
+      
+      const newImages = uploadResults.map(result => result.url);
+      const newPaths = uploadResults.map(result => result.path);
+      
+      setUploadedImages(prev => [...prev, ...newImages]);
+      setUploadedImagePaths(prev => [...prev, ...newPaths]);
+      
+      console.log('✅ Files uploaded successfully');
+      
+    } catch (error) {
+      console.error('❌ Upload failed:', error);
+      
+      // Check if it's an RLS error and show specific instructions
+      if (error.message && error.message.includes('politique de sécurité (RLS)')) {
+        const rlsInstructions = getRLSInstructions();
+        const instructionsText = rlsInstructions.steps.join('\n');
+        
+        alert(
+          '❌ Erreur lors de l\'upload des images:\n\n' +
+          error.message + '\n\n' +
+          'Instructions pour résoudre le problème:\n' +
+          instructionsText
+        );
+      } else {
+        alert('Erreur lors de l\'upload des images: ' + error.message);
+      }
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
+  const handleFileSelect = (event) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      handleFileUpload(files);
+    }
+  };
+
+  const removeUploadedImage = async (index) => {
+    try {
+      const imagePath = uploadedImagePaths[index];
+      
+      // Delete from Supabase storage if it's a Supabase image
+      if (imagePath) {
+        console.log('🗑️ Deleting uploaded image from storage:', imagePath);
+        await deleteImage(imagePath);
+      }
+      
+      // Remove from state
+      setUploadedImages(prev => prev.filter((_, i) => i !== index));
+      setUploadedImagePaths(prev => prev.filter((_, i) => i !== index));
+      
+    } catch (error) {
+      console.error('❌ Failed to delete image:', error);
+      alert('Erreur lors de la suppression de l\'image: ' + error.message);
+    }
+  };
+
+  const removeExistingImage = async (index) => {
+    try {
+      const imagePath = existingImagePaths[index];
+      
+      // Delete from Supabase storage if it's a Supabase image
+      if (imagePath) {
+        console.log('🗑️ Deleting existing image from storage:', imagePath);
+        await deleteImage(imagePath);
+      }
+      
+      // Remove from state
+      setExistingImages(prev => prev.filter((_, i) => i !== index));
+      setExistingImagePaths(prev => prev.filter((_, i) => i !== index));
+      
+    } catch (error) {
+      console.error('❌ Failed to delete existing image:', error);
+      alert('Erreur lors de la suppression de l\'image: ' + error.message);
+    }
+  };
+
+  const removeLinkImage = (index) => {
+    setLinkImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleLinkImagesChange = (value) => {
+    // Update form data
+    handleInputChange('images', value);
+    
+    // Parse and update link images state
+    const links = value.trim() ? value.split('\n').filter(url => url.trim()) : [];
+    setLinkImages(links);
+  };
+
+  const isSupabaseImage = (imageUrl) => {
+    return imageUrl && imageUrl.includes('supabase.co/storage/v1/object/public/product-images/');
+  };
+
+  const getAllImages = () => {
+    const allImages = [...existingImages, ...uploadedImages, ...linkImages];
+    
+    // If there are no real images, return empty array (no fallback/mock images)
+    if (allImages.length === 0) {
+      return [];
+    }
+    
+    return allImages;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -108,6 +321,8 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
     setIsSubmitting(true);
     
     try {
+      const allImages = getAllImages();
+      
       // For new products, send all data
       if (!product?.id) {
         const productData = {
@@ -118,7 +333,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
           quantity: parseInt(formData.quantity) || 0,
           brand: formData.brand.trim(),
           reference: formData.reference.trim(),
-          photos: formData.images.trim() ? formData.images.split('\n').filter(url => url.trim()) : [],
+          photos: allImages,
           specs: {
             processeur: formData.specs.processor,
             ram: formData.specs.ram,
@@ -177,10 +392,9 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
           updateData.reference = formData.reference.trim();
         }
         
-        const newImages = formData.images.trim() ? formData.images.split('\n').filter(url => url.trim()) : [];
         const currentImages = Array.isArray(product.images) ? product.images : [product.image];
-        if (JSON.stringify(newImages) !== JSON.stringify(currentImages)) {
-          updateData.photos = newImages;
+        if (JSON.stringify(allImages) !== JSON.stringify(currentImages)) {
+          updateData.photos = allImages;
         }
         
         // Check specs changes
@@ -221,10 +435,49 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
       }
     } catch (error) {
       console.error('Error saving product:', error);
+      
+      // Clean up uploaded images if save failed
+      if (uploadedImagePaths.length > 0) {
+        console.log('🧹 Cleaning up uploaded images due to save error');
+        await cleanupUploadedImages();
+      }
+      
       alert('Erreur lors de la sauvegarde du produit: ' + error.message);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const cleanupUploadedImages = async () => {
+    if (uploadedImagePaths.length > 0) {
+      console.log('🧹 Cleaning up uploaded images:', uploadedImagePaths);
+      
+      const deletePromises = uploadedImagePaths.map(async (path) => {
+        try {
+          await deleteImage(path);
+        } catch (error) {
+          console.error('Failed to delete image during cleanup:', path, error);
+        }
+      });
+      
+      await Promise.all(deletePromises);
+    }
+  };
+
+  const handleClose = async () => {
+    // Clean up uploaded images if form is closed without saving
+    if (uploadedImagePaths.length > 0) {
+      const shouldCleanup = window.confirm(
+        'Vous avez des images uploadées qui n\'ont pas été sauvegardées. ' +
+        'Voulez-vous les supprimer du stockage ?'
+      );
+      
+      if (shouldCleanup) {
+        await cleanupUploadedImages();
+      }
+    }
+    
+    onClose();
   };
 
   return (
@@ -234,7 +487,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
           <h2>
             {product ? 'Modifier le produit' : 'Ajouter un nouveau produit'}
           </h2>
-          <button className="admin-modal-close" onClick={onClose}>
+          <button className="admin-modal-close" onClick={handleClose}>
             <FaTimes />
           </button>
         </div>
@@ -365,19 +618,195 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
               {/* Images */}
               <div className="admin-form-section">
                 <h3>Images</h3>
+                
+                {/* Image Mode Toggle */}
                 <div className="admin-form-group">
-                  <label>
-                    <FaImage />
-                    URLs des images (une par ligne)
-                  </label>
-                  <textarea
-                    value={formData.images}
-                    onChange={(e) => handleInputChange('images', e.target.value)}
-                    placeholder="https://example.com/image1.jpg\nhttps://example.com/image2.jpg"
-                    rows="4"
-                  />
-                  <small>Entrez une URL par ligne pour ajouter plusieurs images</small>
+                  <div className="admin-image-mode-toggle">
+                    <button
+                      type="button"
+                      className={`admin-btn admin-btn-sm ${imageMode === 'link' ? 'admin-btn-primary' : 'admin-btn-secondary'}`}
+                      onClick={() => setImageMode('link')}
+                    >
+                      <FaLink />
+                      Liens
+                    </button>
+                    <button
+                      type="button"
+                      className={`admin-btn admin-btn-sm ${imageMode === 'upload' ? 'admin-btn-primary' : 'admin-btn-secondary'}`}
+                      onClick={() => setImageMode('upload')}
+                    >
+                      <FaUpload />
+                      Upload
+                    </button>
+                  </div>
                 </div>
+
+                {/* Link Mode */}
+                {imageMode === 'link' && (
+                  <div className="admin-form-group">
+                    <label>
+                      <FaImage />
+                      URLs des images (une par ligne)
+                    </label>
+                    <textarea
+                      value={formData.images}
+                      onChange={(e) => handleLinkImagesChange(e.target.value)}
+                      placeholder="https://example.com/image1.jpg\nhttps://example.com/image2.jpg"
+                      rows="4"
+                    />
+                    <small>Entrez une URL par ligne pour ajouter plusieurs images</small>
+                  </div>
+                )}
+
+                {/* Upload Mode */}
+                {imageMode === 'upload' && (
+                  <div className="admin-form-group">
+                    <label>
+                      <FaUpload />
+                      Images du produit
+                    </label>
+                    
+                    {!storageReady ? (
+                      <div className="admin-storage-warning">
+                        <p>⚠️ {storageMessage}</p>
+                        <div className="admin-storage-instructions">
+                          <h5>Pour activer l'upload d'images :</h5>
+                          <ol>
+                            <li>Allez dans votre dashboard Supabase</li>
+                            <li>Naviguez vers <strong>Storage</strong></li>
+                            <li>Cliquez sur <strong>Create a new bucket</strong></li>
+                            <li>Nom : <code>product-images</code></li>
+                            <li>Cochez <strong>Public</strong></li>
+                            <li>Taille max : <code>5MB</code></li>
+                            <li>Types autorisés : <code>image/jpeg, image/png, image/gif, image/webp</code></li>
+                          </ol>
+                        </div>
+                        <button
+                          type="button"
+                          className="admin-btn admin-btn-secondary"
+                          onClick={() => setImageMode('link')}
+                        >
+                          <FaLink />
+                          Utiliser les liens pour l'instant
+                        </button>
+                        <button
+                          type="button"
+                          className="admin-btn admin-btn-info"
+                          onClick={refreshStorageTest}
+                          style={{ marginLeft: '0.5rem' }}
+                        >
+                          🔄 Tester à nouveau
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        {/* File Input */}
+                        <div className="admin-file-upload-area">
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={handleFileSelect}
+                            style={{ display: 'none' }}
+                          />
+                          <button
+                            type="button"
+                            className="admin-btn admin-btn-secondary"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={uploadingImages}
+                          >
+                            <FaUpload />
+                            {uploadingImages ? 'Upload en cours...' : 'Sélectionner des images'}
+                          </button>
+                          <small>Formats acceptés: JPG, PNG, GIF. Taille max: 5MB par image</small>
+                        </div>
+
+                        {/* Uploaded Images Preview */}
+                        {uploadedImages.length > 0 && (
+                          <div className="admin-uploaded-images">
+                            <h4>Images uploadées:</h4>
+                            <div className="admin-images-grid">
+                              {uploadedImages.map((imageUrl, index) => (
+                                <div key={index} className="admin-image-preview">
+                                  <img src={imageUrl} alt={`Image ${index + 1}`} />
+                                  <button
+                                    type="button"
+                                    className="admin-remove-image"
+                                    onClick={() => removeUploadedImage(index)}
+                                    title="Supprimer cette image"
+                                  >
+                                    <FaTrash />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {/* Combined Images Preview */}
+                {getAllImages().length > 0 && (
+                  <div className="admin-form-group">
+                    <h4>Images du produit ({getAllImages().length}):</h4>
+                    <div className="admin-images-grid">
+                      {/* Existing Images */}
+                      {existingImages.map((imageUrl, index) => (
+                        <div key={`existing-${index}`} className="admin-image-preview">
+                          <img src={imageUrl} alt={`Image existante ${index + 1}`} />
+                          {isSupabaseImage(imageUrl) && (
+                            <button
+                              type="button"
+                              className="admin-remove-image"
+                              onClick={() => removeExistingImage(index)}
+                              title="Supprimer cette image du stockage"
+                            >
+                              <FaTrash />
+                            </button>
+                          )}
+                          <div className="admin-image-label">
+                            {isSupabaseImage(imageUrl) ? 'Stockage' : 'Lien externe'}
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {/* Uploaded Images */}
+                      {uploadedImages.map((imageUrl, index) => (
+                        <div key={`uploaded-${index}`} className="admin-image-preview">
+                          <img src={imageUrl} alt={`Image uploadée ${index + 1}`} />
+                          <button
+                            type="button"
+                            className="admin-remove-image"
+                            onClick={() => removeUploadedImage(index)}
+                            title="Supprimer cette image du stockage"
+                          >
+                            <FaTrash />
+                          </button>
+                          <div className="admin-image-label">Nouvelle</div>
+                        </div>
+                      ))}
+                      
+                      {/* Link Images */}
+                      {linkImages.map((imageUrl, index) => (
+                        <div key={`link-${index}`} className="admin-image-preview">
+                          <img src={imageUrl} alt={`Image lien ${index + 1}`} />
+                          <button
+                            type="button"
+                            className="admin-remove-image"
+                            onClick={() => removeLinkImage(index)}
+                            title="Supprimer ce lien"
+                          >
+                            <FaTrash />
+                          </button>
+                          <div className="admin-image-label">Lien</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Specifications */}
@@ -457,7 +886,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
               <button 
                 type="button" 
                 className="admin-btn admin-btn-secondary"
-                onClick={onClose}
+                onClick={handleClose}
                 disabled={isSubmitting}
               >
                 Annuler
