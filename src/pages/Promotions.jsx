@@ -161,15 +161,6 @@ const Promotions = () => {
             <span className="stat-label">Réduction moyenne</span>
           </div>
         </div>
-        <div className="stat-card">
-          <FaEuroSign className="stat-icon" />
-          <div className="stat-content">
-            <span className="stat-number">
-              {filteredProducts.reduce((sum, p) => sum + p.discountAmount, 0).toLocaleString()} DA
-            </span>
-            <span className="stat-label">Économies totales</span>
-          </div>
-        </div>
       </div>
 
       {/* Products Grid */}

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FaSearch, FaTimes } from 'react-icons/fa';
 import gsap from 'gsap';
 
-const SearchBar = ({ onSearch, placeholder = "Rechercher un produit..." }) => {
+const SearchBar = ({ onSearch, onSubmit, placeholder = "Rechercher un produit..." }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const searchRef = useRef(null);
@@ -67,6 +67,7 @@ const SearchBar = ({ onSearch, placeholder = "Rechercher un produit..." }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSearch(searchTerm);
+    if (onSubmit) onSubmit(searchTerm);
   };
 
   return (

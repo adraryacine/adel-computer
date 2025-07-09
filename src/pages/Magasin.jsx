@@ -2,7 +2,7 @@
 // PAGE MAGASIN
 // Affiche la liste des produits, la recherche et les filtres par catégorie
 // ===============================
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
@@ -34,6 +34,8 @@ const Magasin = () => {
     priceRange: []
   });
   const [isAdvancedFiltersVisible, setIsAdvancedFiltersVisible] = useState(false);
+  const productsSectionRef = useRef(null); // Ref for scrolling
+  const [shouldScroll, setShouldScroll] = useState(false); // Track when to scroll
 
   // Charger les produits et catégories au montage du composant
   useEffect(() => {
@@ -77,6 +79,14 @@ const Magasin = () => {
       filterProducts();
     }
   }, [selectedCategory, searchTerm, advancedFilters, products]);
+
+  // Scroll to products section only when shouldScroll is true
+  useEffect(() => {
+    if (shouldScroll && !isLoading && productsSectionRef.current) {
+      productsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setShouldScroll(false);
+    }
+  }, [filteredProducts, shouldScroll, isLoading]);
 
   // Fonction pour filtrer les produits selon la catégorie, la recherche et les filtres avancés
   const filterProducts = () => {
@@ -213,19 +223,21 @@ const Magasin = () => {
         <h1>Magasin</h1>
         <p>Découvrez notre sélection de produits informatiques</p>
       </div>
+      <br />
 
       {/* Barre de recherche et filtres */}
       <div className="filters-section">
         <SearchBar 
           value={searchTerm} 
           onSearch={setSearchTerm} 
+          onSubmit={() => setShouldScroll(true)}
           placeholder="Rechercher un produit..."
         />
         
         <CategoryFilter 
           categories={categories}
           selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
+          onCategoryChange={(cat) => { setSelectedCategory(cat); setShouldScroll(true); }}
         />
         
         <button 
@@ -243,7 +255,7 @@ const Magasin = () => {
         {isAdvancedFiltersVisible && (
           <AdvancedFilters 
             filters={advancedFilters}
-            onFiltersChange={setAdvancedFilters}
+            onFiltersChange={(filters) => { setAdvancedFilters(filters); setShouldScroll(true); }}
             onReset={resetFilters}
           />
         )}
@@ -261,7 +273,7 @@ const Magasin = () => {
       </div>
 
       {/* Grille des produits */}
-      <div className="products-section">
+      <div className="products-section" ref={productsSectionRef}>
         {filteredProducts.length > 0 ? (
           <div className="products-grid">
             {filteredProducts.map(product => (

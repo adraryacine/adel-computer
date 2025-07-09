@@ -97,7 +97,6 @@ const Header = ({ onOpenCart }) => {
               className="cart-button"
               onClick={handleCartClick}
               aria-label="Ouvrir le panier"
-              style={{ border: '2px solid red' }}
             >
               <FaShoppingCart />
               {/* Badge du nombre d'articles dans le panier */}

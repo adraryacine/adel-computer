@@ -4,28 +4,7 @@ import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter, FaMapMarkerAlt, FaPhone
 import gsap from 'gsap';
 
 const Footer = () => {
-  useEffect(() => {
-    // Animate footer elements on scroll
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          gsap.from(entry.target, {
-            y: 30,
-            opacity: 0,
-            duration: 0.6,
-            ease: 'power2.out'
-          });
-        }
-      });
-    }, { threshold: 0.1 });
-
-    const footerElements = document.querySelectorAll('.footer-section');
-    if (footerElements.length > 0) {
-      footerElements.forEach(el => observer.observe(el));
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  // Removed useEffect for footer animation
 
   const socialLinks = [
     { icon: FaFacebook, href: 'https://web.facebook.com/profile.php?id=100069773268161&locale=fr_FR', label: 'Facebook' },
@@ -62,10 +41,10 @@ const Footer = () => {
 
           <div className="footer-section">
             <h3>Nos Services</h3>
-            <Link to="/magasin">Vente de Matériel</Link>
-            <Link to="/services">Maintenance & Réparation</Link>
-            <Link to="/services">Installation Logicielle</Link>
-            <Link to="/services">Support Technique</Link>
+            <Link to="/magasin" onClick={() => window.scrollTo(0,0)}>Vente de Matériel</Link>
+            <Link to="/services" onClick={() => window.scrollTo(0,0)}>Maintenance & Réparation</Link>
+            <Link to="/services" onClick={() => window.scrollTo(0,0)}>Installation Logicielle</Link>
+            <Link to="/services" onClick={() => window.scrollTo(0,0)}>Support Technique</Link>
           
           </div>
 
@@ -88,16 +67,17 @@ const Footer = () => {
 
           <div className="footer-section">
             <h3>Informations</h3>
-            <Link to="/about">À Propos</Link>
-            <Link to="/contact">Contact</Link>
-            <a href="#" target="_blank" rel="noopener noreferrer">Politique de Confidentialité</a>
-            <a href="#" target="_blank" rel="noopener noreferrer">Conditions d'Utilisation</a>
-            <a href="#" target="_blank" rel="noopener noreferrer">Mentions Légales</a>
+            <Link to="/about" onClick={() => window.scrollTo(0,0)}>À Propos</Link>
+            <Link to="/contact" onClick={() => window.scrollTo(0,0)}>Contact</Link>
+            <Link to="/privacy" onClick={() => window.scrollTo(0,0)}>Politique de Confidentialité</Link>
+            <Link to="/terms" onClick={() => window.scrollTo(0,0)}>Conditions d'Utilisation</Link>
+            <Link to="/legal" onClick={() => window.scrollTo(0,0)}>Mentions Légales</Link>
           </div>
         </div>
 
         <div className="footer-bottom">
           <p>&copy; 2024 Adel Computers. Tous droits réservés.</p>
+          <p className="footer-dev">Développé par <strong>yacine adrar</strong></p>
         </div>
       </div>
     </footer>

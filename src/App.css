@@ -320,24 +320,47 @@
   .cart-button {
     position: relative;
     background: var(--gradient-primary);
-    border: none;
+    border: 3px solid transparent;
     padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-full);
     color: white;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all var(--transition-normal);
+    transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
     display: flex;
     align-items: center;
     gap: var(--space-sm);
     z-index: 1030;
     pointer-events: auto;
     user-select: none;
+    box-shadow: 0 0 0 0 rgba(124,58,237,0.5), 0 2px 8px 0 rgba(0,0,0,0.10);
+    overflow: visible;
   }
-  
+  .cart-button svg {
+    font-size: 1.5em;
+    filter: drop-shadow(0 0 6px rgba(124,58,237,0.3));
+  }
+  .cart-button::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(120deg, #7c3aed, #f472b6, #38bdf8, #7c3aed);
+    background-size: 300% 300%;
+    z-index: -1;
+    filter: blur(4px);
+    opacity: 0.7;
+    animation: cart-glow 2.5s linear infinite;
+  }
+  @keyframes cart-glow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
   .cart-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-glow-strong);
+    transform: scale(1.08) translateY(-3px);
+    box-shadow: 0 0 16px 4px #7c3aed99, 0 4px 16px 0 rgba(0,0,0,0.15);
+    filter: brightness(1.08);
   }
   
   .cart-badge {
