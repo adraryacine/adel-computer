@@ -63,10 +63,25 @@ const Promotions = () => {
   };
 
   // Handle add to cart
+  const getProductImage = (product) => {
+    let photos = product.photos;
+    if (typeof photos === 'string') {
+      try {
+        photos = JSON.parse(photos);
+      } catch {
+        // fallback
+      }
+    }
+    return Array.isArray(photos) && photos.length > 0
+      ? photos[0]
+      : photos || 'https://via.placeholder.com/300x200?text=No+Image';
+  };
+
   const handleAddToCart = (product) => {
     addToCart({
       ...product,
-      price: product.discountedPrice
+      price: product.discountedPrice,
+      image: getProductImage(product)
     });
   };
 
