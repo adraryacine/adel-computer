@@ -372,3 +372,56 @@ body:not(.theme-dark):not([data-theme="dark"]) .mobile-menu {
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 2px solid var(--accent-primary);
 } 
+
+.cart-stock-limit-popup {
+  position: absolute;
+  left: 50%;
+  bottom: 110%;
+  transform: translateX(-50%);
+  background: #fff0f0;
+  color: #c0392b;
+  border: 1.5px solid #e74c3c;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(231, 76, 60, 0.10), 0 1.5px 6px rgba(0,0,0,0.04);
+  padding: 0.7em 1.2em;
+  font-size: 1em;
+  z-index: 1001;
+  min-width: 220px;
+  text-align: center;
+  animation: popIn 0.25s cubic-bezier(.68,-0.55,.27,1.55);
+  pointer-events: none;
+  margin-bottom: 0.5em;
+}
+
+.cart-stock-limit-arrow {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 12px solid #fff0f0;
+  filter: drop-shadow(0 1px 1px #e74c3c);
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.7); }
+  100% { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+/* Ensure the parent of .cart-item-quantity is position: relative for absolute popup */
+.cart-item-quantity {
+  position: relative;
+} 
+
+.cart-items .cart-item:first-child {
+  margin-top: 2.5em;
+} 
+
+@media (max-width: 600px) {
+  .cart-items .cart-item:first-child {
+    margin-top: 1.2em;
+  }
+} 

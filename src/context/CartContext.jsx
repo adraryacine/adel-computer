@@ -43,8 +43,8 @@ const cartReducer = (state, action) => {
           itemCount: updatedItems.reduce((sum, item) => sum + item.quantity, 0)
         };
       } else {
-        // Sinon, on ajoute le produit avec une quantité de 1
-        const newItems = [...state.items, { ...action.payload, quantity: 1 }];
+        // Sinon, on ajoute le produit avec une quantité de 1 et on garde la propriété stock
+        const newItems = [...state.items, { ...action.payload, quantity: 1, stock: action.payload.quantity !== undefined ? action.payload.quantity : action.payload.stock }];
         
         return {
           ...state,

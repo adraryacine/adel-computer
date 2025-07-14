@@ -120,9 +120,16 @@ const Cart = ({ isOpen, onClose }) => {
                       <button
                         className="quantity-btn"
                         onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                        disabled={item.quantity >= item.stock}
                       >
                         <FaPlus />
                       </button>
+                      {item.quantity >= item.stock && (
+                        <div className="cart-stock-limit-popup">
+                          <span>Stock maximum atteint pour ce produit.<br />Il reste {item.stock} en stock.</span>
+                          <div className="cart-stock-limit-arrow" />
+                        </div>
+                      )}
                     </div>
                     
                     {/* Total pour cet article */}

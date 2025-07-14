@@ -16,7 +16,7 @@ const ProductCard = ({ product }) => {
   const handleAddToCart = (e) => {
     e.stopPropagation();
     if (product.quantity > 0) {
-      addToCart(product);
+      addToCart({ ...product, stock: product.quantity });
       // Feedback visuel optionnel
       console.log(`${product.name} ajouté au panier`);
     }
