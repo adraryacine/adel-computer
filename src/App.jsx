@@ -25,11 +25,21 @@ import Admin from './pages/Admin';
 // Importation du composant de test Supabase
 import SupabaseTest from './SupabaseTest';
 // Importation des styles globaux
-import './App.css';
+import './App1.css';
 
 function App() {
   // État local pour savoir si le panier est ouvert ou fermé
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
+    document.body.classList.toggle('theme-dark', theme === 'dark');
+    document.body.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
 
   useEffect(() => {
     // Animation d'entrée de page avec GSAP (désactivée pour l'instant)
@@ -92,6 +102,33 @@ function App() {
         <Footer />
           {/* Composant du panier (affiché en overlay si ouvert) */}
           <Cart isOpen={isCartOpen} onClose={handleCloseCart} />
+          {/* Floating Theme Switch Button */}
+          <button
+            className="theme-switch-btn"
+            onClick={toggleTheme}
+            aria-label="Switch theme"
+            style={{
+              position: 'fixed',
+              bottom: '2rem',
+              right: '2rem',
+              zIndex: 2000,
+              background: 'var(--gradient-primary)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '50%',
+              width: '56px',
+              height: '56px',
+              boxShadow: 'var(--shadow-lg)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.6rem',
+              cursor: 'pointer',
+              transition: 'background 0.3s, color 0.3s',
+            }}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
       </div>
       {/* Vercel Analytics pour le tracking de toutes les pages */}
       <Analytics />
