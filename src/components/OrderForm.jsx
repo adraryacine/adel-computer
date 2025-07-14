@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FaUser, FaPhone, FaMapMarkerAlt, FaTruck, FaCreditCard, FaShieldAlt, FaCheckCircle, FaEnvelope } from 'react-icons/fa';
 import { formatPrice } from '../utils/formatPrice';
 import { sendEmailOTP, verifyEmailOTP, saveOrder } from '../services/orderService';
+import { updateProductStock, fetchProductById } from '../services/productService';
 
 const OrderForm = ({ cartItems, totalPrice, onClose, onOrderComplete }) => {
   const [step, setStep] = useState(1); // 1: Customer Info, 2: OTP Verification, 3: Confirmation
@@ -123,11 +124,18 @@ const OrderForm = ({ cartItems, totalPrice, onClose, onOrderComplete }) => {
     }
 
     setIsSubmitting(true);
-    
     try {
+      // Check stock for each product before confirming order
+      for (const item of cartItems) {
+        const product = await fetchProductById(item.id);
+        if (item.quantity > product.quantity) {
+          setIsSubmitting(false);
+          alert(`Stock insuffisant pour le produit "${item.name}". Stock disponible: ${product.quantity}, demandé: ${item.quantity}`);
+          return;
+        }
+      }
       // Verify OTP using the service
       await verifyEmailOTP(formData.email, otp);
-      
       // Save order to database
       const orderData = {
         customerName: formData.customerName,
@@ -142,11 +150,13 @@ const OrderForm = ({ cartItems, totalPrice, onClose, onOrderComplete }) => {
         finalTotal,
         orderDate: new Date().toISOString()
       };
-      
       await saveOrder(orderData);
-      
+      // Update stock for each product
+      for (const item of cartItems) {
+        const product = await fetchProductById(item.id);
+        await updateProductStock(item.id, product.quantity - item.quantity);
+      }
       setStep(3);
-      
       // Call the callback to complete the order
       if (onOrderComplete) {
         onOrderComplete(orderData);
