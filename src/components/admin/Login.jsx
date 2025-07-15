@@ -17,7 +17,7 @@ const Login = ({ onLogin }) => {
     setError('');
 
     // Simple password check
-    if (password === 'adel-mehh6') {
+    if (password === 'adel-mehz6') {
       // Store login state in localStorage
       localStorage.setItem('adminLoggedIn', 'true');
       localStorage.setItem('adminLoginTime', Date.now().toString());
