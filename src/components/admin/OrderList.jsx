@@ -122,6 +122,7 @@ const OrderList = ({ orders, onOrderUpdate }) => {
               <th>Client</th>
               <th>Date</th>
               <th>Total</th>
+              <th>Type Livraison</th>
               <th>Statut</th>
               <th>Actions</th>
             </tr>
@@ -136,6 +137,7 @@ const OrderList = ({ orders, onOrderUpdate }) => {
                 </td>
                 <td className="admin-order-date">{formatDate(order.created_at)}</td>
                 <td className="admin-order-total">{order.final_total || calculateTotal(order.items)} DA</td>
+                <td>{order.delivery_type === 'bureau' ? 'Bureau' : 'Domicile'}</td>
                 <td>
                   <span className={`admin-status ${getStatusColor(order.status)}`}>
                     {getStatusText(order.status)}
@@ -234,6 +236,7 @@ const OrderList = ({ orders, onOrderUpdate }) => {
                   <p><strong>Téléphone:</strong> {selectedOrder.customer.phone}</p>
                   <p><strong>Adresse:</strong> {selectedOrder.customer.address}</p>
                   <p><strong>Wilaya:</strong> {selectedOrder.customer.wilaya}</p>
+                  <p><strong>Type de livraison:</strong> {selectedOrder.delivery_type === 'bureau' ? 'Bureau' : 'Domicile'}</p>
                   {selectedOrder.notes && (
                     <p><strong>Notes:</strong> {selectedOrder.notes}</p>
                   )}

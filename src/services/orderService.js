@@ -23,7 +23,8 @@ export const saveOrder = async (orderData) => {
           delivery_fee: orderData.deliveryFee,
           final_total: orderData.finalTotal,
           status: 'pending',
-          order_date: orderData.orderDate
+          order_date: orderData.orderDate,
+          delivery_type: orderData.deliveryType
         }
       ])
       .select();
