@@ -9,7 +9,7 @@ const Footer = () => {
   const socialLinks = [
     { icon: FaFacebook, href: 'https://web.facebook.com/profile.php?id=100069773268161&locale=fr_FR', label: 'Facebook' },
     { icon: FaInstagram, href: 'https://www.instagram.com/adel.computers/?hl=fr', label: 'Instagram' },
-    { icon: FaLinkedin, href: '#', label: 'LinkedIn' },
+    { icon: FaLinkedin, href: 'https://www.linkedin.com/in/farid-adel-52423234/?originalSubdomain=dz', label: 'LinkedIn' },
     { icon: FaTwitter, href: '#', label: 'Twitter' }
   ];
 
