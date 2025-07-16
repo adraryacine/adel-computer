@@ -47,8 +47,8 @@ const ContactProfile = () => {
     {
       icon: FaMapMarkerAlt,
       title: "Adresse",
-      content: "123 Rue de la Technologie<br />75001 Paris, France",
-      link: "https://maps.google.com"
+      content: "quartier sghir<br />bejaia, Algerie",
+      link: "https://www.google.com/maps/place/Adel+Computers/@36.7482386,5.0540535,17z/data=!3m1!4b1!4m6!3m5!1s0x128d334da53385d9:0x1a42d49c34c43f40!8m2!3d36.7482386!4d5.0566284!16s%2Fg%2F11c5t2_pxg?entry=ttu&g_ep=EgoyMDI1MDcxMy4wIKXMDSoASAFQAw%3D%3D"
     },
     {
       icon: FaPhone,
