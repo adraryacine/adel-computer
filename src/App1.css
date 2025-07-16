@@ -192,8 +192,9 @@ a:hover::after {
 /* ===============================
    CARDS
    =============================== */
-.card {
+.card, .service-card {
   background: var(--bg-secondary);
+  color: var(--text-primary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
