@@ -426,3 +426,38 @@ body:not(.theme-dark):not([data-theme="dark"]) .mobile-menu {
     margin-top: 1.2em;
   }
 } 
+
+/* Legal pages custom card styles */
+.privacy-policy-card, .terms-of-use-card, .legal-notice-card {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2.5em 2em;
+  box-shadow: 0 8px 32px rgba(37,99,235,0.10);
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  animation: fadeInUp 0.7s;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1.5px solid var(--border-light);
+  margin: 1.5em 0;
+}
+
+.privacy-policy-card a,
+.terms-of-use-card a,
+.legal-notice-card a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+.privacy-policy-card a:hover,
+.terms-of-use-card a:hover,
+.legal-notice-card a:hover {
+  color: var(--accent-secondary);
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+} 

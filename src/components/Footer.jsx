@@ -52,8 +52,8 @@ const Footer = () => {
             <h3>Contact</h3>
             <p>
               <FaMapMarkerAlt style={{ marginRight: '8px' }} />
-              123 Rue de la Technologie<br />
-              75001 Paris, France
+              Quartier sghir <br />
+              bejaia, Algerie
             </p>
             <p>
               <FaPhone style={{ marginRight: '8px' }} />
@@ -69,9 +69,9 @@ const Footer = () => {
             <h3>Informations</h3>
             <Link to="/about" onClick={() => window.scrollTo(0,0)}>À Propos</Link>
             <Link to="/contact" onClick={() => window.scrollTo(0,0)}>Contact</Link>
-            <Link to="/privacy" onClick={() => window.scrollTo(0,0)}>Politique de Confidentialité</Link>
-            <Link to="/terms" onClick={() => window.scrollTo(0,0)}>Conditions d'Utilisation</Link>
-            <Link to="/legal" onClick={() => window.scrollTo(0,0)}>Mentions Légales</Link>
+            <Link to="/politique-confidentialite" onClick={() => window.scrollTo(0,0)}>Politique de confidentialité</Link>
+            <Link to="/conditions-utilisation" onClick={() => window.scrollTo(0,0)}>Conditions d’utilisation</Link>
+            <Link to="/mentions-legales" onClick={() => window.scrollTo(0,0)}>Mentions légales</Link>
           </div>
         </div>
 

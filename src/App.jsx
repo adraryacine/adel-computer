@@ -24,6 +24,9 @@ import Promotions from './pages/Promotions';
 import Admin from './pages/Admin';
 // Importation du composant de test Supabase
 import SupabaseTest from './SupabaseTest';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfUse from './pages/TermsOfUse';
+import LegalNotice from './pages/LegalNotice';
 // Importation des styles globaux
 import './App1.css';
 
@@ -96,6 +99,10 @@ function App() {
               <Route path="/product/:id" element={<ProductDetails />} />
               {/* Test de connexion Supabase */}
               <Route path="/supabase-test" element={<SupabaseTest />} />
+              {/* Legal pages */}
+              <Route path="/politique-confidentialite" element={<PrivacyPolicy />} />
+              <Route path="/conditions-utilisation" element={<TermsOfUse />} />
+              <Route path="/mentions-legales" element={<LegalNotice />} />
           </Routes>
         </main>
           {/* Pied de page */}
