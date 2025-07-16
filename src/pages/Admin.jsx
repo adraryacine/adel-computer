@@ -26,6 +26,7 @@ const Admin = () => {
   const [error, setError] = useState(null);
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [productView, setProductView] = useState('grid'); // 'grid' or 'table'
 
   useEffect(() => {
     checkLoginStatus();
@@ -227,71 +228,154 @@ const Admin = () => {
       <div className="admin-content">
         {activeTab === 'products' && (
           <div className="admin-section">
-            <div className="admin-section-header">
+            <div className="admin-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
               <h2>Gestion des Produits</h2>
-              <button 
-                className="admin-btn admin-btn-primary"
-                onClick={() => {
-                  setEditingProduct(null);
-                  setShowProductForm(true);
-                }}
-              >
-                <FaPlus />
-                Ajouter un produit
-              </button>
+              <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                <button 
+                  className="admin-btn admin-btn-primary"
+                  onClick={() => {
+                    setEditingProduct(null);
+                    setShowProductForm(true);
+                  }}
+                >
+                  <FaPlus />
+                  Ajouter un produit
+                </button>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <button
+                    className={`admin-btn admin-btn-secondary admin-btn-sm ${productView === 'grid' ? 'active' : ''}`}
+                    style={{ borderRadius: '0.5rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                    onClick={() => setProductView('grid')}
+                    title="Vue Grille"
+                  >
+                    <FaBox /> Grille
+                  </button>
+                  <button
+                    className={`admin-btn admin-btn-secondary admin-btn-sm ${productView === 'table' ? 'active' : ''}`}
+                    style={{ borderRadius: '0.5rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                    onClick={() => setProductView('table')}
+                    title="Vue Tableau"
+                  >
+                    <FaChartBar /> Tableau
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div className="admin-products-grid">
-              {products.map(product => (
-                <div key={product.id} className="product-card admin-product-card">
-                  <div className="product-image-container">
-                    {product.image ? (
-                      <img src={product.image} alt={product.name} className="product-image" />
-                    ) : (
-                      <div className="product-image-placeholder">
-                        <FaImage />
-                        <span>Aucune image</span>
+            {productView === 'grid' && (
+              <div className="admin-products-grid">
+                {products.map(product => (
+                  <div key={product.id} className="product-card admin-product-card">
+                    <div className="product-image-container">
+                      {product.image ? (
+                        <img src={product.image} alt={product.name} className="product-image" />
+                      ) : (
+                        <div className="product-image-placeholder">
+                          <FaImage />
+                          <span>Aucune image</span>
+                        </div>
+                      )}
+                      {product.quantity <= 0 && (
+                        <div className="out-of-stock">Rupture de stock</div>
+                      )}
+                      {product.images && product.images.length > 1 && (
+                        <div className="multiple-images-indicator">
+                          {product.images.length} photos
+                        </div>
+                      )}
+                      <div className="product-overlay">
+                        <button 
+                          className="btn-overlay"
+                          onClick={() => handleEditProduct(product)}
+                          title="Modifier"
+                        >
+                          <FaEdit /> Modifier
+                        </button>
+                        <button 
+                          className="btn-overlay"
+                          onClick={() => handleDeleteProduct(product.id)}
+                          title="Supprimer"
+                        >
+                          <FaTrash /> Supprimer
+                        </button>
                       </div>
-                    )}
-                    {product.quantity <= 0 && (
-                      <div className="out-of-stock">Rupture de stock</div>
-                    )}
-                    {product.images && product.images.length > 1 && (
-                      <div className="multiple-images-indicator">
-                        {product.images.length} photos
+                    </div>
+                    <div className="product-info">
+                      <div className="product-category">{product.category}</div>
+                      <h3 className="product-name">{product.name}</h3>
+                      <p className="product-description">{product.description && typeof product.description === 'string' ? product.description.substring(0, 100) : ''}...</p>
+                      <div className="product-price">
+                        <span className="price">{product.price} DA</span>
+                        <span className={`stock-status ${product.quantity > 0 ? 'in-stock' : ''}`}>
+                          {product.quantity > 0 ? `En stock (${product.quantity})` : 'Rupture de stock'}
+                        </span>
                       </div>
-                    )}
-                    <div className="product-overlay">
-                      <button 
-                        className="btn-overlay"
-                        onClick={() => handleEditProduct(product)}
-                        title="Modifier"
-                      >
-                        <FaEdit /> Modifier
-                      </button>
-                      <button 
-                        className="btn-overlay"
-                        onClick={() => handleDeleteProduct(product.id)}
-                        title="Supprimer"
-                      >
-                        <FaTrash /> Supprimer
-                      </button>
                     </div>
                   </div>
-                  <div className="product-info">
-                    <div className="product-category">{product.category}</div>
-                    <h3 className="product-name">{product.name}</h3>
-                    <p className="product-description">{product.description && typeof product.description === 'string' ? product.description.substring(0, 100) : ''}...</p>
-                    <div className="product-price">
-                      <span className="price">{product.price} DA</span>
-                      <span className={`stock-status ${product.quantity > 0 ? 'in-stock' : ''}`}>
-                        {product.quantity > 0 ? `En stock (${product.quantity})` : 'Rupture de stock'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
+
+            {productView === 'table' && (
+              <div className="admin-table-container">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Nom</th>
+                      <th>Catégorie</th>
+                      <th>Prix</th>
+                      <th>Stock</th>
+                      <th>Référence</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map(product => (
+                      <tr key={product.id}>
+                        <td>
+                          {product.image ? (
+                            <img src={product.image} alt={product.name} className="admin-product-thumbnail" />
+                          ) : (
+                            <div className="product-image-placeholder" style={{ width: 50, height: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#222', borderRadius: '0.5rem', color: '#aaa' }}>
+                              <FaImage />
+                            </div>
+                          )}
+                        </td>
+                        <td>
+                          <div style={{ fontWeight: 600, color: '#fff' }}>{product.name}</div>
+                          <div style={{ fontSize: '0.85rem', color: '#aaa' }}>{product.brand}</div>
+                        </td>
+                        <td>{product.category}</td>
+                        <td>{product.price} DA</td>
+                        <td>
+                          <span className={product.quantity > 0 ? '' : 'admin-out-of-stock'}>
+                            {product.quantity > 0 ? product.quantity : 'Rupture'}
+                          </span>
+                        </td>
+                        <td>{product.reference}</td>
+                        <td>
+                          <button 
+                            className="admin-btn admin-btn-primary admin-btn-sm"
+                            onClick={() => handleEditProduct(product)}
+                            title="Modifier"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button 
+                            className="admin-btn admin-btn-danger admin-btn-sm"
+                            onClick={() => handleDeleteProduct(product.id)}
+                            title="Supprimer"
+                          >
+                            <FaTrash />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 

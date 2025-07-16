@@ -178,6 +178,14 @@
   min-height: 32px;
 }
 
+.admin-btn-sm.active, .admin-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  border: 1px solid #667eea;
+  transform: translateY(-2px);
+}
+
 /* Admin Products Grid */
 .admin-products-grid {
   display: grid;
