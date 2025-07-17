@@ -317,7 +317,7 @@ const OrderForm = ({ cartItems, totalPrice, onClose, onOrderComplete }) => {
 
             <div className="form-section">
               <h3>Type de Livraison</h3>
-              <div className="form-group" style={{ display: 'flex', justifyContent: 'center', gap: '2em', background: 'var(--bg-tertiary, #f1f5f9)', borderRadius: '12px', padding: '1em 0', margin: '1em 0' }}>
+              <div className="form-group order-delivery-type-group">
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.5em', cursor: 'pointer', fontWeight: 500, fontSize: '1.08em', padding: '0.5em 1.2em', borderRadius: '8px', border: formData.deliveryType === 'domicile' ? '2px solid var(--accent-primary, #2563eb)' : '2px solid transparent', background: formData.deliveryType === 'domicile' ? 'rgba(37,99,235,0.07)' : 'transparent', transition: 'all 0.2s' }}>
                   <input
                     type="radio"

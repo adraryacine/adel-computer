@@ -3775,3 +3775,28 @@
     }
   }
   
+  .order-delivery-type-group {
+    display: flex;
+    justify-content: center;
+    gap: 2em;
+    background: var(--bg-tertiary, #f1f5f9);
+    border-radius: 12px;
+    padding: 1em 0;
+    margin: 1em 0;
+  }
+  @media (max-width: 600px) {
+    .order-delivery-type-group {
+      flex-direction: column;
+      gap: 1em;
+      align-items: stretch;
+      padding: 0.7em 0.2em;
+    }
+    .order-delivery-type-group label {
+      width: 100%;
+      justify-content: flex-start;
+      font-size: 1.08em;
+      padding: 0.7em 0.7em;
+      margin: 0;
+    }
+  }
+  
