@@ -8,6 +8,7 @@ import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
 import AdvancedFilters from '../components/AdvancedFilters';
 import { fetchProducts, fetchCategories } from '../services/productService.js';
+import { FaList } from 'react-icons/fa';
 
 const Magasin = () => {
   // État local pour les produits filtrés
@@ -36,6 +37,7 @@ const Magasin = () => {
   const [isAdvancedFiltersVisible, setIsAdvancedFiltersVisible] = useState(false);
   const productsSectionRef = useRef(null); // Ref for scrolling
   const [shouldScroll, setShouldScroll] = useState(false); // Track when to scroll
+  const [showCategoryFilter, setShowCategoryFilter] = useState(false);
 
   // Charger les produits et catégories au montage du composant
   useEffect(() => {
@@ -218,40 +220,53 @@ const Magasin = () => {
 
   return (
     <div className="container">
-      {/* En-tête de la page */}
-      <div className="page-header">
+      {/* En-tête de la page centrée avec barre de recherche */}
+      <div className="page-header magasin-header-centered">
         <h1>Magasin</h1>
         <p>Découvrez notre sélection de produits informatiques</p>
+        <br />
+        <div className="magasin-searchbar-centered">
+          <SearchBar 
+            value={searchTerm} 
+            onSearch={setSearchTerm} 
+            onSubmit={() => setShouldScroll(true)}
+            placeholder="Rechercher un produit..."
+          />
+        </div>
+        {/* Group filter buttons in a row */}
+        <div className="magasin-filters-row">
+          <button
+            className="btn btn-secondary btn-category-toggle"
+            onClick={() => setShowCategoryFilter((v) => !v)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontWeight: 600 }}
+          >
+            <FaList /> Filtrer par catégorie
+          </button>
+          <button 
+            className="btn btn-secondary"
+            onClick={() => setIsAdvancedFiltersVisible(!isAdvancedFiltersVisible)}
+          >
+            {isAdvancedFiltersVisible ? 'Masquer' : 'Afficher'} les filtres avancés
+            {Object.values(advancedFilters).some(filters => filters.length > 0) && (
+              <span className="filter-badge">
+                {Object.values(advancedFilters).reduce((total, filters) => total + filters.length, 0)}
+              </span>
+            )}
+          </button>
+        </div>
+        {showCategoryFilter && (
+          <div className="category-filter-panel">
+            <CategoryFilter 
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={(cat) => { setSelectedCategory(cat); setShouldScroll(true); setShowCategoryFilter(false); }}
+            />
+          </div>
+        )}
       </div>
       <br />
-
-      {/* Barre de recherche et filtres */}
+      {/* Barre de recherche et filtres avancés */}
       <div className="filters-section">
-        <SearchBar 
-          value={searchTerm} 
-          onSearch={setSearchTerm} 
-          onSubmit={() => setShouldScroll(true)}
-          placeholder="Rechercher un produit..."
-        />
-        
-        <CategoryFilter 
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={(cat) => { setSelectedCategory(cat); setShouldScroll(true); }}
-        />
-        
-        <button 
-          className="btn btn-secondary"
-          onClick={() => setIsAdvancedFiltersVisible(!isAdvancedFiltersVisible)}
-        >
-          {isAdvancedFiltersVisible ? 'Masquer' : 'Afficher'} les filtres avancés
-          {Object.values(advancedFilters).some(filters => filters.length > 0) && (
-            <span className="filter-badge">
-              {Object.values(advancedFilters).reduce((total, filters) => total + filters.length, 0)}
-            </span>
-          )}
-        </button>
-        
         {isAdvancedFiltersVisible && (
           <AdvancedFilters 
             filters={advancedFilters}
@@ -260,7 +275,6 @@ const Magasin = () => {
           />
         )}
       </div>
-
       {/* Informations sur les résultats */}
       <div className="results-info">
         <p className="results-text">
@@ -271,7 +285,6 @@ const Magasin = () => {
             ` avec ${Object.values(advancedFilters).reduce((total, filters) => total + filters.length, 0)} filtre(s) actif(s)`}
         </p>
       </div>
-
       {/* Grille des produits */}
       <div className="products-section" ref={productsSectionRef}>
         {filteredProducts.length > 0 ? (
