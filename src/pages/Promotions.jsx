@@ -94,15 +94,11 @@ const Promotions = () => {
   if (isLoading) {
     return (
       <div className="promotions-page">
-        <div className="promotions-header">
-          <div className="promotions-header-content">
-            <h1 className="promotions-title">
-              <FaGift />
-              Produits en Promotion
-            </h1>
-            <p className="promotions-subtitle">
-              Chargement des promotions...
-            </p>
+        <div className="promotions-header-simple">
+          <FaGift className="promotions-header-icon" />
+          <div>
+            <h1 className="promotions-header-title">Produits en Promotion</h1>
+            <p className="promotions-header-subtitle">Chargement des promotions...</p>
           </div>
         </div>
       </div>
@@ -112,15 +108,11 @@ const Promotions = () => {
   if (error) {
     return (
       <div className="promotions-page">
-        <div className="promotions-header">
-          <div className="promotions-header-content">
-            <h1 className="promotions-title">
-              <FaGift />
-              Produits en Promotion
-            </h1>
-            <p className="promotions-subtitle">
-              {error}
-            </p>
+        <div className="promotions-header-simple">
+          <FaGift className="promotions-header-icon" />
+          <div>
+            <h1 className="promotions-header-title">Produits en Promotion</h1>
+            <p className="promotions-header-subtitle">{error}</p>
           </div>
         </div>
       </div>
@@ -129,19 +121,14 @@ const Promotions = () => {
 
   return (
     <div className="promotions-page">
-      {/* Header */}
-      <div className="promotions-header">
-        <div className="promotions-header-content">
-          <h1 className="promotions-title">
-            <FaGift />
-            Produits en Promotion
-          </h1>
-          <p className="promotions-subtitle">
-            Découvrez nos produits avec des réductions exceptionnelles
-          </p>
+      {/* Header - new simple design */}
+      <div className="promotions-header-simple">
+        <FaGift className="promotions-header-icon" />
+        <div>
+          <h1 className="promotions-header-title">Produits en Promotion</h1>
+          <p className="promotions-header-subtitle">Découvrez nos produits avec des réductions exceptionnelles</p>
         </div>
       </div>
-
       {/* Search Bar */}
       <div className="promotions-controls">
         <div className="search-bar">
