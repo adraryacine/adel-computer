@@ -2,8 +2,9 @@
 // ORDER LIST - Liste des commandes
 // ===============================
 import { useState } from 'react';
-import { FaEye, FaCheck, FaTimes, FaTruck, FaBox, FaUser, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaEye, FaCheck, FaTimes, FaTruck, FaBox, FaUser, FaPhone, FaMapMarkerAlt, FaFileExcel } from 'react-icons/fa';
 import { updateOrderStatus } from '../../services/orderService';
+import * as XLSX from 'xlsx';
 
 const ALLOWED_STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
 
@@ -87,10 +88,36 @@ const OrderList = ({ orders, onOrderUpdate }) => {
   // Transform all orders
   const transformedOrders = orders.map(transformOrder);
 
+  // Excel export function
+  const handleExportExcel = () => {
+    const data = transformedOrders.map(order => ({
+      'ID': order.id,
+      'Nom': order.customer.name,
+      'Téléphone': order.customer.phone,
+      'Email': order.customer.email,
+      'Wilaya': order.customer.wilaya,
+      'Adresse': order.customer.address,
+      'Date': formatDate(order.created_at),
+      'Total': order.final_total || calculateTotal(order.items),
+      'Type Livraison': order.delivery_type === 'bureau' ? 'Bureau' : 'Domicile',
+      'Statut': getStatusText(order.status),
+      'Articles': order.items.map(i => `${i.name} x${i.quantity}`).join(' | '),
+      'Notes': order.notes || ''
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Commandes');
+    XLSX.writeFile(wb, 'commandes.xlsx');
+  };
+
   return (
     <div className="admin-section">
-      <div className="admin-section-header">
+      <div className="admin-section-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
         <h2>Gestion des Commandes</h2>
+        <button className="admin-btn admin-btn-success" onClick={handleExportExcel} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <FaFileExcel />
+          Exporter Excel
+        </button>
       </div>
 
       {/* Order Stats */}
