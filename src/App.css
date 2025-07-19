@@ -97,32 +97,24 @@
     box-sizing: border-box;
   }
   
-  html, body {
+  body {
     min-height: 100vh;
     background: var(--gradient-bg, #0a2342);
-  }
-  body {
     background-attachment: fixed;
-  }
-  body[data-theme="light"], html[data-theme="light"] {
-    background: #f5faff !important;
-  }
-  .app {
-    min-height: 100vh;
-  }
-  @media (max-width: 600px) {
-    body {
-      background-attachment: scroll !important;
-    }
-  }
-  
-  body {
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body[data-theme="light"] {
+    background: #f5faff !important;
+  }
+  
+  body[data-theme="light"] .app {
+    background: #f5faff !important;
   }
   
   /* ===============================
@@ -197,6 +189,7 @@
   
   .app {
     min-height: 100vh;
+    background: inherit;
     display: flex;
     flex-direction: column;
     position: relative;

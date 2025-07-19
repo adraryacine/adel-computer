@@ -101,8 +101,7 @@ const OrderList = ({ orders, onOrderUpdate }) => {
       'Total': order.final_total || calculateTotal(order.items),
       'Type Livraison': order.delivery_type === 'bureau' ? 'Bureau' : 'Domicile',
       'Statut': getStatusText(order.status),
-      'Articles': order.items.map(i => `${i.name} x${i.quantity}`).join(' | '),
-      'Notes': order.notes || ''
+      'Articles': order.items.map(i => `${i.name} x${i.quantity}`).join(' | ')
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -112,11 +111,10 @@ const OrderList = ({ orders, onOrderUpdate }) => {
 
   return (
     <div className="admin-section">
-      <div className="admin-section-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+      <div className="admin-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
         <h2>Gestion des Commandes</h2>
         <button className="admin-btn admin-btn-success" onClick={handleExportExcel} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <FaFileExcel />
-          Exporter Excel
+          <FaFileExcel /> Exporter Excel
         </button>
       </div>
 
