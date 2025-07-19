@@ -4,7 +4,7 @@ import { FaShoppingCart, FaInfoCircle, FaImage } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatPrice';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onAddToCart }) => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const [isHovered, setIsHovered] = useState(false);
@@ -17,8 +17,7 @@ const ProductCard = ({ product }) => {
     e.stopPropagation();
     if (product.quantity > 0) {
       addToCart({ ...product, stock: product.quantity });
-      // Feedback visuel optionnel
-      console.log(`${product.name} ajouté au panier`);
+      if (onAddToCart) onAddToCart();
     }
   };
 

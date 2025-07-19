@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatPrice } from '../utils/formatPrice';
 import OrderForm from './OrderForm';
 
-const Cart = ({ isOpen, onClose }) => {
+const Cart = ({ isOpen, onClose, setUserAlert }) => {
   // Accès au contexte du panier et aux fonctions de gestion
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   // Pour naviguer vers le magasin
@@ -182,6 +182,7 @@ const Cart = ({ isOpen, onClose }) => {
           totalPrice={cart.total}
           onClose={handleCloseOrderForm}
           onOrderComplete={handleOrderComplete}
+          setUserAlert={setUserAlert}
         />
       )}
     </>

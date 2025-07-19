@@ -13,6 +13,7 @@ import PromotionList from '../components/admin/PromotionList';
 import Login from '../components/admin/Login';
 import ServiceList from '../components/admin/ServiceList';
 import { getServices } from '../services/serviceService';
+import AdminAlert from '../components/admin/AdminAlert';
 import '../styles/admin.css';
 
 const Admin = () => {
@@ -27,6 +28,7 @@ const Admin = () => {
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [productView, setProductView] = useState('grid'); // 'grid' or 'table'
+  const [alert, setAlert] = useState({ message: '', type: 'success' });
 
   useEffect(() => {
     checkLoginStatus();
@@ -98,10 +100,14 @@ const Admin = () => {
     }
   };
 
-  const handleProductUpdate = async () => {
+  const handleProductUpdate = async (action = 'edit') => {
     await loadData();
     setShowProductForm(false);
     setEditingProduct(null);
+    setAlert({ 
+      message: action === 'add' ? 'Produit ajouté avec succès !' : 'Produit modifié avec succès !', 
+      type: 'success' 
+    });
   };
 
   const handleEditProduct = (product) => {
@@ -117,8 +123,10 @@ const Admin = () => {
     try {
       await deleteProduct(productId);
       await loadData();
+      setAlert({ message: 'Produit supprimé avec succès !', type: 'success' });
     } catch (err) {
       console.error('Failed to delete product:', err);
+      setAlert({ message: 'Erreur lors de la suppression du produit', type: 'error' });
       alert('Erreur lors de la suppression du produit');
     }
   };
@@ -127,8 +135,10 @@ const Admin = () => {
     try {
       await updateProductStock(productId, newQuantity);
       await loadData();
+      setAlert({ message: 'Stock mis à jour avec succès !', type: 'success' });
     } catch (err) {
       console.error('Failed to update stock:', err);
+      setAlert({ message: 'Erreur lors de la mise à jour du stock', type: 'error' });
       alert('Erreur lors de la mise à jour du stock');
     }
   };
@@ -167,6 +177,7 @@ const Admin = () => {
 
   return (
     <div className="admin-container">
+      <AdminAlert message={alert.message} type={alert.type} onClose={() => setAlert({ message: '', type: 'success' })} />
       {/* Header */}
       <div className="admin-header">
         <div className="admin-header-content">
@@ -384,7 +395,7 @@ const Admin = () => {
         )}
 
         {activeTab === 'orders' && (
-          <OrderList orders={orders} onOrderUpdate={loadData} />
+          <OrderList orders={orders} onOrderUpdate={() => { loadData(); setAlert({ message: 'Action sur la commande effectuée avec succès !', type: 'success' }); }} />
         )}
 
         {activeTab === 'services' && (
@@ -404,7 +415,7 @@ const Admin = () => {
         <ProductForm
           product={editingProduct}
           categories={categories}
-          onSave={handleProductUpdate}
+          onSave={(product) => handleProductUpdate(editingProduct ? 'edit' : 'add')}
           onClose={() => {
             setShowProductForm(false);
             setEditingProduct(null);

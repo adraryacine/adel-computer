@@ -10,7 +10,7 @@ import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatPrice';
 import ImageGallery from '../components/ImageGallery';
 
-const ProductDetails = () => {
+const ProductDetails = ({ setUserAlert }) => {
   // Récupère l'id du produit depuis l'URL
   const { id } = useParams();
   // Permet de naviguer entre les pages
@@ -104,8 +104,9 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     if (product.quantity > 0) {
       addToCart(product);
-      // Feedback visuel
-      alert(`${product.name} a été ajouté au panier !`);
+      if (setUserAlert) setUserAlert({ message: 'Produit ajouté au panier !', type: 'success' });
+    } else {
+      if (setUserAlert) setUserAlert({ message: 'Produit en rupture de stock.', type: 'error' });
     }
   };
 

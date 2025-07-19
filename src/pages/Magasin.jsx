@@ -10,7 +10,7 @@ import AdvancedFilters from '../components/AdvancedFilters';
 import { fetchProducts, fetchCategories } from '../services/productService.js';
 import { FaList } from 'react-icons/fa';
 
-const Magasin = () => {
+const Magasin = ({ setUserAlert }) => {
   // État local pour les produits filtrés
   const [filteredProducts, setFilteredProducts] = useState([]);
   // Produits originaux depuis Supabase
@@ -290,7 +290,11 @@ const Magasin = () => {
         {filteredProducts.length > 0 ? (
           <div className="products-grid">
             {filteredProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                onAddToCart={() => setUserAlert && setUserAlert({ message: 'Produit ajouté au panier !', type: 'success' })}
+              />
             ))}
           </div>
         ) : (

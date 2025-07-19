@@ -356,7 +356,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
         }
 
         const savedProduct = await saveProduct(productData);
-        onSave(savedProduct);
+        onSave(savedProduct, 'add');
       } else {
         // For existing products, only update changed fields
         const updateData = {};
@@ -426,7 +426,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
           }
           
           const updatedProduct = await updateProduct(product.id, updateData);
-          onSave(updatedProduct);
+          onSave(updatedProduct, 'edit');
         } else {
           // No changes made
           alert('Aucune modification détectée');

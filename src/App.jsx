@@ -27,6 +27,7 @@ import SupabaseTest from './SupabaseTest';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import LegalNotice from './pages/LegalNotice';
+import UserAlert from './components/UserAlert';
 // Importation des styles globaux
 import './App1.css';
 
@@ -34,6 +35,7 @@ function App() {
   // État local pour savoir si le panier est ouvert ou fermé
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [theme, setTheme] = useState('dark');
+  const [userAlert, setUserAlert] = useState({ message: '', type: 'success' });
 
   useEffect(() => {
     document.body.classList.toggle('theme-dark', theme === 'dark');
@@ -83,8 +85,8 @@ function App() {
         <main className="page-content">
           <Routes>
               {/* Page d'accueil et magasin */}
-            <Route path="/" element={<Magasin />} />
-            <Route path="/magasin" element={<Magasin />} />
+            <Route path="/" element={<Magasin setUserAlert={setUserAlert} />} />
+            <Route path="/magasin" element={<Magasin setUserAlert={setUserAlert} />} />
               {/* Page des services */}
             <Route path="/services" element={<Services />} />
               {/* Page à propos */}
@@ -96,7 +98,7 @@ function App() {
               {/* Page d'administration */}
             <Route path="/admin" element={<Admin />} />
               {/* Détails d'un produit (avec id dynamique) */}
-              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/product/:id" element={<ProductDetails setUserAlert={setUserAlert} />} />
               {/* Test de connexion Supabase */}
               <Route path="/supabase-test" element={<SupabaseTest />} />
               {/* Legal pages */}
@@ -108,7 +110,7 @@ function App() {
           {/* Pied de page */}
         <Footer />
           {/* Composant du panier (affiché en overlay si ouvert) */}
-          <Cart isOpen={isCartOpen} onClose={handleCloseCart} />
+          <Cart isOpen={isCartOpen} onClose={handleCloseCart} setUserAlert={setUserAlert} />
           {/* Floating Theme Switch Button */}
           <button
             className="theme-switch-btn"
@@ -136,6 +138,8 @@ function App() {
           >
             {theme === 'light' ? '🌙' : '☀️'}
           </button>
+          {/* User Alert */}
+          <UserAlert message={userAlert.message} type={userAlert.type} onClose={() => setUserAlert({ message: '', type: 'success' })} />
       </div>
       {/* Vercel Analytics pour le tracking de toutes les pages */}
       <Analytics />

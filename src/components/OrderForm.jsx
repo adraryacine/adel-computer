@@ -4,7 +4,7 @@ import { formatPrice } from '../utils/formatPrice';
 import { sendEmailOTP, verifyEmailOTP, saveOrder } from '../services/orderService';
 import { updateProductStock, fetchProductById } from '../services/productService';
 
-const OrderForm = ({ cartItems, totalPrice, onClose, onOrderComplete }) => {
+const OrderForm = ({ cartItems, totalPrice, onClose, onOrderComplete, setUserAlert }) => {
   const [step, setStep] = useState(1); // 1: Customer Info, 2: OTP Verification, 3: Confirmation
   const [formData, setFormData] = useState({
     customerName: '',
@@ -167,6 +167,7 @@ const OrderForm = ({ cartItems, totalPrice, onClose, onOrderComplete }) => {
       if (onOrderComplete) {
         onOrderComplete(orderData);
       }
+      if (setUserAlert) setUserAlert({ message: 'Votre commande a bien été envoyée !', type: 'success' });
     } catch (error) {
       console.error('Error verifying OTP or saving order:', error);
       if (error.message === 'Invalid OTP') {
