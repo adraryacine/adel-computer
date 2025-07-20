@@ -53,6 +53,17 @@ const PromotionForm = ({ promotion, products, onSave, onClose }) => {
     }
   };
 
+  // Helper: get selected product and its stock
+  const selectedProduct = products.find(p => p.id === formData.product_id);
+  const productQuantity = selectedProduct && typeof selectedProduct.quantity === 'number' && !isNaN(selectedProduct.quantity)
+    ? selectedProduct.quantity
+    : 0;
+  const isOutOfStock = !!selectedProduct && productQuantity <= 0;
+  if (selectedProduct) {
+    // Debug: log product and quantity
+    console.log('Selected product:', selectedProduct.name, 'Quantity:', selectedProduct.quantity, 'Parsed:', productQuantity, 'Out of stock:', isOutOfStock);
+  }
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -71,6 +82,8 @@ const PromotionForm = ({ promotion, products, onSave, onClose }) => {
 
     if (!formData.product_id) {
       newErrors.product_id = 'Le produit est requis';
+    } else if (isOutOfStock) {
+      newErrors.product_id = 'Ce produit est en rupture de stock.';
     }
 
     if (!formData.valid_until) {
@@ -225,9 +238,12 @@ const PromotionForm = ({ promotion, products, onSave, onClose }) => {
                     ))}
                   </select>
                   {errors.product_id && <span className="admin-error-message">{errors.product_id}</span>}
+                  {isOutOfStock && (
+                    <span className="admin-error-message">Ce produit est en rupture de stock.</span>
+                  )}
                 </div>
 
-                {formData.product_id && (
+                {formData.product_id && selectedProduct && (
                   <div style={{ 
                     padding: '1rem', 
                     background: '#0f3460', 
@@ -238,13 +254,10 @@ const PromotionForm = ({ promotion, products, onSave, onClose }) => {
                       Produit sélectionné:
                     </h4>
                     {(() => {
-                      const selectedProduct = products.find(p => p.id === formData.product_id);
                       if (!selectedProduct) return <p>Produit non trouvé</p>;
-                      
                       const originalPrice = parseFloat(selectedProduct.selling_price) || 0;
                       const discountAmount = (originalPrice * parseInt(formData.discount_percentage || 0)) / 100;
                       const discountedPrice = originalPrice - discountAmount;
-                      
                       return (
                         <div>
                           <p style={{ margin: '0.25rem 0', color: '#a0a0a0' }}>
@@ -265,6 +278,11 @@ const PromotionForm = ({ promotion, products, onSave, onClose }) => {
                                 <strong>Économies:</strong> {discountAmount.toLocaleString()} DA
                               </p>
                             </>
+                          )}
+                          {productQuantity <= 0 && (
+                            <p style={{ margin: '0.25rem 0', color: '#ef4444', fontWeight: 600 }}>
+                              Ce produit est en rupture de stock.
+                            </p>
                           )}
                         </div>
                       );
@@ -322,7 +340,7 @@ const PromotionForm = ({ promotion, products, onSave, onClose }) => {
               <button 
                 type="submit" 
                 className="admin-btn admin-btn-primary"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isOutOfStock}
               >
                 <FaSave />
                 {isSubmitting ? 'Sauvegarde...' : (promotion ? 'Modifier' : 'Ajouter')}

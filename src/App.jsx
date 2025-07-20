@@ -94,7 +94,7 @@ function App() {
               {/* Page de contact */}
             <Route path="/contact" element={<ContactProfile />} />
               {/* Page des promotions */}
-            <Route path="/promotions" element={<Promotions />} />
+            <Route path="/promotions" element={<Promotions setUserAlert={setUserAlert} />} />
               {/* Page d'administration */}
             <Route path="/admin" element={<Admin />} />
               {/* Détails d'un produit (avec id dynamique) */}

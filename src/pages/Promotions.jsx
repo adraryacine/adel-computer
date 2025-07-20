@@ -10,9 +10,10 @@ import {
 } from 'react-icons/fa';
 import { getProductsWithPromotions } from '../services/promotionService';
 import { useCart } from '../context/CartContext';
+import { useState as useLocalState } from 'react';
 import './Promotions.css';
 
-const Promotions = () => {
+const Promotions = ({ setUserAlert }) => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -20,6 +21,7 @@ const Promotions = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showProductModal, setShowProductModal] = useState(false);
   const { addToCart } = useCart();
+  // No local error state needed
 
   useEffect(() => {
     loadPromotions();
@@ -78,11 +80,14 @@ const Promotions = () => {
   };
 
   const handleAddToCart = (product) => {
-    addToCart({
+    const success = addToCart({
       ...product,
       price: product.discountedPrice,
       image: getProductImage(product)
     });
+    if (!success && setUserAlert) {
+      setUserAlert({ message: 'Stock maximum atteint pour ce produit.', type: 'error' });
+    }
   };
 
   // Open product modal
@@ -203,9 +208,11 @@ const Promotions = () => {
                         e.stopPropagation();
                         handleAddToCart(product);
                       }}
+                      disabled={product.quantity <= 0}
+                      style={product.quantity <= 0 ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
                     >
                       <FaShoppingCart />
-                      Ajouter
+                      {product.quantity > 0 ? 'Ajouter' : 'Rupture de stock'}
                     </button>
                   </div>
                 </div>
@@ -311,12 +318,15 @@ const Promotions = () => {
                     className="modal-add-to-cart-btn"
                     onClick={() => {
                       handleAddToCart(selectedProduct);
-                      setShowProductModal(false);
+                      if (selectedProduct.quantity > 0) setShowProductModal(false);
                     }}
                     disabled={selectedProduct.quantity <= 0}
+                    style={selectedProduct.quantity <= 0 ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
                   >
                     <FaShoppingCart />
-                    Ajouter au panier - {selectedProduct.discountedPrice.toLocaleString()} DA
+                    {selectedProduct.quantity > 0
+                      ? `Ajouter au panier - ${selectedProduct.discountedPrice.toLocaleString()} DA`
+                      : 'Rupture de stock'}
                   </button>
                 </div>
               </div>

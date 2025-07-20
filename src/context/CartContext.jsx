@@ -138,7 +138,18 @@ export const CartProvider = ({ children }) => {
 
   // Fonctions utilitaires pour manipuler le panier
   const addToCart = (product) => {
+    // Find if product is already in cart
+    const existingItem = cart.items.find(item => item.id === product.id);
+    const availableStock = typeof product.quantity === 'number' && !isNaN(product.quantity)
+      ? product.quantity
+      : (typeof product.stock === 'number' && !isNaN(product.stock) ? product.stock : 0);
+    const currentQuantity = existingItem ? existingItem.quantity : 0;
+    if (availableStock > 0 && currentQuantity >= availableStock) {
+      // Stock limit reached, do not add
+      return false;
+    }
     dispatch({ type: CART_ACTIONS.ADD_ITEM, payload: product });
+    return true;
   };
 
   const removeFromCart = (productId) => {
