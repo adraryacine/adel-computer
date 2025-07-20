@@ -15,8 +15,7 @@ const ProductDetails = ({ setUserAlert }) => {
   const { id } = useParams();
   // Permet de naviguer entre les pages
   const navigate = useNavigate();
-  // Fonction pour ajouter au panier
-  const { addToCart } = useCart();
+  const { addToCart, cart } = useCart();
   
   // États pour le produit et le chargement
   const [product, setProduct] = useState(null);
@@ -100,13 +99,18 @@ const ProductDetails = ({ setUserAlert }) => {
     navigate('/magasin');
   };
 
+  // Find how many of this product are already in the cart
+  const cartItem = cart.items.find(item => item.id === (product ? product.id : null));
+  const cartQuantity = cartItem ? cartItem.quantity : 0;
+  const stockLimitReached = product && cartQuantity >= product.quantity && product.quantity > 0;
+
   // Ajoute le produit au panier si en stock
   const handleAddToCart = () => {
-    if (product.quantity > 0) {
+    if (product.quantity > 0 && !stockLimitReached) {
       addToCart(product);
       if (setUserAlert) setUserAlert({ message: 'Produit ajouté au panier !', type: 'success' });
-    } else {
-      if (setUserAlert) setUserAlert({ message: 'Produit en rupture de stock.', type: 'error' });
+    } else if (setUserAlert) {
+      setUserAlert({ message: stockLimitReached ? 'Stock maximum atteint pour ce produit.' : 'Produit en rupture de stock.', type: 'error' });
     }
   };
 
@@ -173,7 +177,6 @@ const ProductDetails = ({ setUserAlert }) => {
             <button 
               className="btn btn-primary" 
               onClick={handleAddToCart}
-              disabled={product.quantity <= 0}
             >
               <FaShoppingCart />
               {product.quantity > 0 ? 'Ajouter au panier' : 'Rupture de stock'}

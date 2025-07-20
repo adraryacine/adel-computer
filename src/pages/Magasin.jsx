@@ -293,7 +293,7 @@ const Magasin = ({ setUserAlert }) => {
               <ProductCard 
                 key={product.id} 
                 product={product} 
-                onAddToCart={() => setUserAlert && setUserAlert({ message: 'Produit ajouté au panier !', type: 'success' })}
+                onAddToCart={alertObj => setUserAlert && setUserAlert(alertObj)}
               />
             ))}
           </div>

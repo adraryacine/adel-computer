@@ -6,8 +6,13 @@ import { formatPrice } from '../utils/formatPrice';
 
 const ProductCard = ({ product, onAddToCart }) => {
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { addToCart, cart } = useCart();
   const [isHovered, setIsHovered] = useState(false);
+
+  // Find how many of this product are already in the cart
+  const cartItem = cart.items.find(item => item.id === product.id);
+  const cartQuantity = cartItem ? cartItem.quantity : 0;
+  const stockLimitReached = cartQuantity >= product.quantity && product.quantity > 0;
 
   const handleDetailsClick = () => {
     navigate(`/product/${product.id}`);
@@ -15,9 +20,11 @@ const ProductCard = ({ product, onAddToCart }) => {
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    if (product.quantity > 0) {
+    if (product.quantity > 0 && !stockLimitReached) {
       addToCart({ ...product, stock: product.quantity });
-      if (onAddToCart) onAddToCart();
+      if (onAddToCart) onAddToCart({ message: 'Produit ajouté au panier !', type: 'success' });
+    } else if (onAddToCart) {
+      onAddToCart({ message: stockLimitReached ? 'Stock maximum atteint pour ce produit.' : 'Produit en rupture de stock.', type: 'error' });
     }
   };
 
