@@ -1,14 +1,13 @@
 // ===============================
 // STOCK MANAGEMENT - Gestion des stocks
 // ===============================
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FaBox, FaPlus, FaMinus, FaSave, FaExclamationTriangle } from 'react-icons/fa';
 import { updateProductStock } from '../../services/productService';
 
 const StockManagement = ({ products, onStockUpdate }) => {
   const [stockUpdates, setStockUpdates] = useState({});
   const [isUpdating, setIsUpdating] = useState(false);
-  const [showLowStockAlert, setShowLowStockAlert] = useState(false);
 
   const handleStockChange = (productId, newValue) => {
     const numValue = parseInt(newValue) || 0;
@@ -81,17 +80,6 @@ const StockManagement = ({ products, onStockUpdate }) => {
   const lowStockProducts = products.filter(p => p.quantity <= 5 && p.quantity > 0);
   const outOfStockProducts = products.filter(p => p.quantity === 0);
 
-  // Show low stock alert when lowStockProducts changes and is not empty
-  useEffect(() => {
-    if (lowStockProducts.length > 0) {
-      setShowLowStockAlert(true);
-      const timer = setTimeout(() => setShowLowStockAlert(false), 2000);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLowStockAlert(false);
-    }
-  }, [products]);
-
   return (
     <div className="admin-section">
       <div className="admin-section-header">
@@ -114,12 +102,6 @@ const StockManagement = ({ products, onStockUpdate }) => {
           <div className="admin-alert admin-alert-error">
             <FaExclamationTriangle />
             <strong>{outOfStockProducts.length}</strong> produit(s) en rupture de stock
-          </div>
-        )}
-        {showLowStockAlert && lowStockProducts.length > 0 && (
-          <div className="admin-alert admin-alert-warning" style={{ animation: 'fadeInUpUserAlert 0.4s' }}>
-            <FaExclamationTriangle />
-            <strong>{lowStockProducts.length}</strong> produit(s) avec un stock faible (≤5)
           </div>
         )}
       </div>

@@ -393,7 +393,7 @@ const Admin = () => {
         )}
 
         {activeTab === 'promotions' && (
-          <PromotionList onPromotionUpdate={loadData} />
+          <PromotionList onPromotionUpdate={loadData} onPromotionAlert={setAlert} />
         )}
 
         {activeTab === 'orders' && (
@@ -403,9 +403,8 @@ const Admin = () => {
         {/*
         {activeTab === 'services' && (
           <ServiceList services={services} onServiceUpdate={loadData} />
-        )
-        */}
         )}
+        */}
 
         {activeTab === 'stock' && (
           <StockManagement 

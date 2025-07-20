@@ -18,7 +18,7 @@ import {
 import { fetchProducts } from '../../services/productService';
 import PromotionForm from './PromotionForm';
 
-const PromotionList = ({ onPromotionUpdate }) => {
+const PromotionList = ({ onPromotionUpdate, onPromotionAlert }) => {
   const [promotions, setPromotions] = useState([]);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,6 +59,7 @@ const PromotionList = ({ onPromotionUpdate }) => {
       await deletePromotion(id);
       await loadData();
       if (onPromotionUpdate) onPromotionUpdate();
+      if (onPromotionAlert) onPromotionAlert({ message: 'Promotion supprimée avec succès !', type: 'success' });
     } catch (err) {
       console.error('Failed to delete promotion:', err);
       alert('Erreur lors de la suppression de la promotion');
@@ -70,6 +71,7 @@ const PromotionList = ({ onPromotionUpdate }) => {
       await togglePromotionStatus(id, !currentStatus);
       await loadData();
       if (onPromotionUpdate) onPromotionUpdate();
+      if (onPromotionAlert) onPromotionAlert({ message: `Promotion ${!currentStatus ? 'activée' : 'désactivée'} avec succès !`, type: 'success' });
     } catch (err) {
       console.error('Failed to toggle promotion status:', err);
       alert('Erreur lors de la modification du statut');
@@ -81,11 +83,18 @@ const PromotionList = ({ onPromotionUpdate }) => {
     setShowForm(true);
   };
 
-  const handleSavePromotion = async () => {
+  const handleSavePromotion = async (isAdd = false) => {
     await loadData();
     setShowForm(false);
     setEditingPromotion(null);
     if (onPromotionUpdate) onPromotionUpdate();
+    if (onPromotionAlert) {
+      if (isAdd) {
+        onPromotionAlert({ message: 'Votre promotion a été ajoutée !', type: 'success' });
+      } else {
+        onPromotionAlert({ message: 'Promotion modifiée avec succès !', type: 'success' });
+      }
+    }
   };
 
   const getStatusColor = (isActive, validUntil) => {
@@ -309,11 +318,8 @@ const PromotionList = ({ onPromotionUpdate }) => {
         <PromotionForm
           promotion={editingPromotion}
           products={products}
-          onSave={handleSavePromotion}
-          onClose={() => {
-            setShowForm(false);
-            setEditingPromotion(null);
-          }}
+          onSave={(...args) => handleSavePromotion(!editingPromotion)}
+          onClose={() => setShowForm(false)}
         />
       )}
     </div>
