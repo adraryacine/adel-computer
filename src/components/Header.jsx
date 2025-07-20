@@ -63,7 +63,6 @@ const Header = ({ onOpenCart }) => {
   const navItems = [
     { path: '/magasin', label: 'Magasin' },
     { path: '/promotions', label: 'Promotions' },
-    { path: '/services', label: 'Services' },
     { path: '/about', label: 'À Propos' },
     { path: '/contact', label: 'Contact' }
   ];

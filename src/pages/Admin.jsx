@@ -219,6 +219,7 @@ const Admin = () => {
           <FaShoppingCart />
           Commandes ({orders.length})
         </button>
+        {/*
         <button 
           className={`admin-tab ${activeTab === 'services' ? 'active' : ''}`}
           onClick={() => setActiveTab('services')}
@@ -226,6 +227,7 @@ const Admin = () => {
           <FaTools />
           Services ({services.length})
         </button>
+        */}
         <button 
           className={`admin-tab ${activeTab === 'stock' ? 'active' : ''}`}
           onClick={() => setActiveTab('stock')}
@@ -398,8 +400,11 @@ const Admin = () => {
           <OrderList orders={orders} onOrderUpdate={() => { loadData(); setAlert({ message: 'Action sur la commande effectuée avec succès !', type: 'success' }); }} />
         )}
 
+        {/*
         {activeTab === 'services' && (
           <ServiceList services={services} onServiceUpdate={loadData} />
+        )
+        */}
         )}
 
         {activeTab === 'stock' && (
