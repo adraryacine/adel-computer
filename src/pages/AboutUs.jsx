@@ -84,7 +84,7 @@ const AboutUs = () => {
       specialties: ["Gestion d'entreprise", "Stratégie IT", "Support client"]
     },
     {
-      name: "Sarah Martin",
+      name: "amine sidane",
       role: "Technicienne Senior",
       photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face",
       description: "Spécialiste en réparation et maintenance informatique. Certifiée sur les dernières technologies.",
