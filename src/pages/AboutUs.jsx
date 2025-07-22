@@ -91,7 +91,7 @@ const AboutUs = () => {
       specialties: ["Réparation PC", "Maintenance", "Formation"]
     },
     {
-      name: "Marc Dubois",
+      name: "amine sidane",
       role: "Expert Ventes",
       photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
       description: "Conseiller commercial spécialisé dans les solutions informatiques pour entreprises et particuliers.",
