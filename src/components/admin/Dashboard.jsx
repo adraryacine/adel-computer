@@ -158,7 +158,7 @@ const Dashboard = ({ products, orders, categories, services }) => {
               </div>
             </div>
             <div className="recent-order-details">
-              <div className="recent-order-total">{order.final_total}€</div>
+              <div className="recent-order-total">{order.final_total} DA</div>
               <div className={`recent-order-status status-${order.status}`}>
                 {order.status === 'pending' && <FaClock />}
                 {order.status === 'completed' && <FaCheckCircle />}
@@ -212,10 +212,10 @@ const Dashboard = ({ products, orders, categories, services }) => {
         />
         <StatusCard
           title="Chiffre d'Affaires"
-          value={`${metrics.revenue.total.toFixed(2)}€`}
+          value={`${metrics.revenue.total.toFixed(2)} DA`}
           icon={<FaChartBar />}
           color="#f093fb"
-          subtitle={`Moy: ${metrics.revenue.average.toFixed(2)}€`}
+          subtitle={`Moy: ${metrics.revenue.average.toFixed(2)} DA`}
         />
         <StatusCard
           title="Stock Faible"
