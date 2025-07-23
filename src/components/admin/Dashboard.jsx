@@ -49,15 +49,15 @@ const Dashboard = ({ products, orders, categories, services }) => {
     // Order metrics
     const totalOrders = filteredOrders.length;
     const pendingOrders = filteredOrders.filter(o => o.status === 'pending').length;
-    const completedOrders = filteredOrders.filter(o => o.status === 'completed').length;
+    const deliveredOrders = filteredOrders.filter(o => o.status === 'delivered').length;
     const cancelledOrders = filteredOrders.filter(o => o.status === 'cancelled').length;
 
     // Revenue metrics
     const totalRevenue = filteredOrders
-      .filter(o => o.status === 'completed')
+      .filter(o => o.status === 'delivered')
       .reduce((sum, o) => sum + (o.final_total || 0), 0);
     
-    const averageOrderValue = completedOrders > 0 ? totalRevenue / completedOrders : 0;
+    const averageOrderValue = deliveredOrders > 0 ? totalRevenue / deliveredOrders : 0;
 
     // Category distribution
     const categoryStats = categories.map(cat => ({
@@ -82,7 +82,7 @@ const Dashboard = ({ products, orders, categories, services }) => {
       orders: {
         total: totalOrders,
         pending: pendingOrders,
-        completed: completedOrders,
+        delivered: deliveredOrders,
         cancelled: cancelledOrders
       },
       revenue: {
@@ -161,7 +161,7 @@ const Dashboard = ({ products, orders, categories, services }) => {
               <div className="recent-order-total">{order.final_total} DA</div>
               <div className={`recent-order-status status-${order.status}`}>
                 {order.status === 'pending' && <FaClock />}
-                {order.status === 'completed' && <FaCheckCircle />}
+                {order.status === 'delivered' && <FaCheckCircle />}
                 {order.status === 'cancelled' && <FaTimesCircle />}
                 {order.status}
               </div>
@@ -252,7 +252,7 @@ const Dashboard = ({ products, orders, categories, services }) => {
           <div className="status-card completed">
             <FaCheckCircle />
             <div className="status-info">
-              <div className="status-count">{metrics.orders.completed}</div>
+              <div className="status-count">{metrics.orders.delivered}</div>
               <div className="status-label">Terminées</div>
             </div>
           </div>
