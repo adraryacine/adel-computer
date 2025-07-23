@@ -12,13 +12,14 @@ import StockManagement from '../components/admin/StockManagement';
 import PromotionList from '../components/admin/PromotionList';
 import Login from '../components/admin/Login';
 import ServiceList from '../components/admin/ServiceList';
+import Dashboard from '../components/admin/Dashboard';
 import { getServices } from '../services/serviceService';
 import AdminAlert from '../components/admin/AdminAlert';
 import '../styles/admin.css';
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [activeTab, setActiveTab] = useState('products');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -69,7 +70,7 @@ const Admin = () => {
     localStorage.removeItem('adminLoggedIn');
     localStorage.removeItem('adminLoginTime');
     setIsLoggedIn(false);
-    setActiveTab('products');
+    setActiveTab('dashboard');
     setProducts([]);
     setOrders([]);
     setCategories([]);
@@ -199,6 +200,13 @@ const Admin = () => {
       {/* Navigation Tabs */}
       <div className="admin-tabs">
         <button 
+          className={`admin-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
+          onClick={() => setActiveTab('dashboard')}
+        >
+          <FaChartBar />
+          Tableau de Bord
+        </button>
+        <button 
           className={`admin-tab ${activeTab === 'products' ? 'active' : ''}`}
           onClick={() => setActiveTab('products')}
         >
@@ -239,6 +247,15 @@ const Admin = () => {
 
       {/* Content */}
       <div className="admin-content">
+        {activeTab === 'dashboard' && (
+          <Dashboard 
+            products={products}
+            orders={orders}
+            categories={categories}
+            services={services}
+          />
+        )}
+        
         {activeTab === 'products' && (
           <div className="admin-section">
             <div className="admin-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
