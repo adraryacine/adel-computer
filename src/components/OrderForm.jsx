@@ -77,9 +77,45 @@ const OrderForm = ({ cartItems, totalPrice, onClose, onOrderComplete, setUserAle
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+    
+    // Real-time email validation
+    if (field === 'email') {
+      const newErrors = { ...errors };
+      
+      if (!value.trim()) {
+        newErrors.email = 'L\'email est requis';
+      } else {
+        // Check for specific email format issues
+        if (!value.includes('@')) {
+          newErrors.email = 'L\'email doit contenir le symbole @';
+        } else if (value.indexOf('@') === 0) {
+          newErrors.email = 'L\'email doit avoir un nom avant le @';
+        } else if (value.indexOf('@') === value.length - 1) {
+          newErrors.email = 'L\'email doit avoir un domaine après le @';
+        } else if (value.split('@').length > 2) {
+          newErrors.email = 'L\'email ne peut contenir qu\'un seul @';
+        } else {
+          const [localPart, domainPart] = value.split('@');
+          if (!domainPart.includes('.')) {
+            newErrors.email = 'Le domaine doit contenir un point (ex: .com, .fr)';
+          } else if (domainPart.indexOf('.') === 0) {
+            newErrors.email = 'Le domaine ne peut pas commencer par un point';
+          } else if (domainPart.indexOf('.') === domainPart.length - 1) {
+            newErrors.email = 'Le domaine doit avoir une extension après le point';
+          } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            newErrors.email = 'Format d\'email invalide (pas d\'espaces autorisés)';
+          } else {
+            newErrors.email = '';
+          }
+        }
+      }
+      
+      setErrors(newErrors);
+    } else {
+      // Clear error when user starts typing for other fields
+      if (errors[field]) {
+        setErrors(prev => ({ ...prev, [field]: '' }));
+      }
     }
   };
 
