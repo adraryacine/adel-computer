@@ -11,6 +11,7 @@ import OrderList from '../components/admin/OrderList';
 import StockManagement from '../components/admin/StockManagement';
 import PromotionList from '../components/admin/PromotionList';
 import Login from '../components/admin/Login';
+import AccountCreation from '../components/admin/AccountCreation';
 import ServiceList from '../components/admin/ServiceList';
 import Dashboard from '../components/admin/Dashboard';
 import { getServices } from '../services/serviceService';
@@ -19,6 +20,8 @@ import '../styles/admin.css';
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showAccountCreation, setShowAccountCreation] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -33,7 +36,11 @@ const Admin = () => {
 
   useEffect(() => {
     checkLoginStatus();
-  }, []);
+    // Check secondary admin authentication (account creation/login)
+    const adminAuth = localStorage.getItem('adminAuthenticated') === 'true';
+    setIsAdminAuthenticated(adminAuth);
+    setShowAccountCreation(!adminAuth && isLoggedIn);
+  }, [isLoggedIn]);
 
   const checkLoginStatus = () => {
     const loginTime = localStorage.getItem('adminLoginTime');
@@ -63,13 +70,25 @@ const Admin = () => {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
-    loadData();
+    // Only show account creation/login if not already authenticated
+    const adminAuth = localStorage.getItem('adminAuthenticated') === 'true';
+    setShowAccountCreation(!adminAuth);
+    setIsAdminAuthenticated(adminAuth);
+  };
+
+  const handleAccountCreated = () => {
+    setShowAccountCreation(false);
+    setIsAdminAuthenticated(true);
+    localStorage.setItem('adminAuthenticated', 'true');
+    loadData(); // Now load admin data
   };
 
   const handleLogout = () => {
     localStorage.removeItem('adminLoggedIn');
     localStorage.removeItem('adminLoginTime');
+    localStorage.removeItem('adminAuthenticated');
     setIsLoggedIn(false);
+    setIsAdminAuthenticated(false);
     setActiveTab('dashboard');
     setProducts([]);
     setOrders([]);
@@ -146,6 +165,10 @@ const Admin = () => {
 
   if (!isLoggedIn) {
     return <Login onLogin={handleLogin} />;
+  }
+
+  if (!isAdminAuthenticated || showAccountCreation) {
+    return <AccountCreation onAccountCreated={handleAccountCreated} />;
   }
 
   if (isLoading) {

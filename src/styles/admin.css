@@ -3,6 +3,228 @@
    This CSS is ONLY for admin interface and won't affect main site
    ===================================================== */
 
+/* --- Account Creation Modern Styles --- */
+.account-creation-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+  animation: fadeInBg 0.8s;
+}
+@keyframes fadeInBg {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.account-creation-card {
+  background: #1a1a2e;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+  padding: 2.5rem 2rem 2rem 2rem;
+  max-width: 410px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInCard 0.9s;
+}
+
+/* --- Tabbed Switch Buttons for Account Creation --- */
+.account-creation-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+.account-creation-tab-btn {
+  padding: 0.7rem 2.2rem;
+  font-size: 1.09rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 2rem;
+  background: linear-gradient(90deg, #23234a 0%, #23234a 100%);
+  color: #a0a0a0;
+  box-shadow: 0 2px 8px #23234a33;
+  cursor: pointer;
+  outline: none;
+  letter-spacing: 0.02em;
+  transition: background 0.25s, color 0.18s, box-shadow 0.18s, transform 0.12s;
+}
+.account-creation-tab-btn.active {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  box-shadow: 0 4px 18px #667eea33, 0 1.5px 8px #764ba233;
+  transform: scale(1.08);
+  z-index: 2;
+}
+.account-creation-tab-btn:not(.active):hover {
+  background: linear-gradient(90deg, #23234a 60%, #31316a 100%);
+  color: #fff;
+  transform: scale(1.03);
+  box-shadow: 0 2px 12px #667eea22;
+}
+
+@keyframes fadeInCard {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.account-creation-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.account-creation-avatar {
+  font-size: 3.2rem;
+  color: #667eea;
+  background: #23234a;
+  border-radius: 50%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 10px rgba(102,126,234,0.15);
+}
+.account-creation-header h2 {
+  color: #fff;
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 8px #23234a44;
+}
+.account-creation-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+.account-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  position: relative;
+}
+.account-form-group label {
+  color: #a0a0a0;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.account-form-group input {
+  background: #23234a;
+  border: 2px solid #23234a;
+  color: #fff;
+  border-radius: 0.65rem;
+  padding: 0.85rem 1.1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 8px #23234a22;
+}
+.account-form-group input:focus {
+  border: 2px solid #667eea;
+  box-shadow: 0 2px 12px #667eea33;
+}
+.password-input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.password-input-wrapper input {
+  flex: 1;
+  padding-right: 2.4rem;
+}
+.toggle-password {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0a0a0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  z-index: 2;
+}
+.toggle-password:hover {
+  color: #667eea;
+}
+.cool-btn {
+  margin-top: 0.5rem;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.12rem;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.9rem 0;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 2px 10px #23234a33;
+  transition: background 0.2s, transform 0.12s;
+}
+.cool-btn:hover, .cool-btn:focus {
+  background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px) scale(1.03);
+}
+.cool-success {
+  color: #22c55e;
+  background: #23234a;
+  border-radius: 0.6rem;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.08rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 10px #22c55e22;
+}
+.cool-success .success-icon {
+  font-size: 1.6rem;
+  color: #22c55e;
+}
+.cool-error {
+  color: #ef4444;
+  font-weight: 500;
+  margin-top: 0.2rem;
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+}
+.cool-info {
+  color: #3b82f6;
+  font-weight: 500;
+  margin-top: 0.2rem;
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+}
+.cool-strength {
+  font-size: 0.96rem;
+  font-weight: 600;
+  margin-top: 0.13rem;
+  letter-spacing: 0.01em;
+}
+.cool-strength.weak {
+  color: #ef4444;
+  text-shadow: 0 1px 4px #ef444422;
+}
+.cool-strength.medium {
+  color: #fbbf24;
+  text-shadow: 0 1px 4px #fbbf2422;
+}
+.cool-strength.strong {
+  color: #22c55e;
+  text-shadow: 0 1px 4px #22c55e22;
+}
+@media (max-width: 600px) {
+  .account-creation-card {
+    padding: 1.2rem 0.5rem;
+    max-width: 95vw;
+  }
+}
+/* --- End Account Creation Modern Styles --- */
+
 /* Admin Container */
 .admin-container {
   padding: 2rem 0;
