@@ -285,15 +285,15 @@ const Admin = () => {
               <h2>Gestion des Produits</h2>
               <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
                 <button 
-                  className="admin-btn admin-btn-primary"
-                  onClick={() => {
-                    setEditingProduct(null);
-                    setShowProductForm(true);
-                  }}
-                >
-                  <FaPlus />
-                  Ajouter un produit
-                </button>
+  className="admin-btn admin-add-product-btn"
+  onClick={() => {
+    setEditingProduct(null);
+    setShowProductForm(true);
+  }}
+>
+  <FaPlus style={{ marginRight: 8, fontSize: '1.1em' }} />
+  Ajouter un produit
+</button>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                   <button
                     className={`admin-btn admin-btn-secondary admin-btn-sm ${productView === 'grid' ? 'active' : ''}`}
