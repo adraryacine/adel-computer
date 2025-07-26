@@ -157,9 +157,9 @@ const OrderList = ({ orders, onOrderUpdate }) => {
               <tr key={order.id}>
                 <td className="admin-order-id">#{order.id}</td>
                 <td className="admin-customer-info">
-                  <h4>{order.customer.name}</h4>
-                  <p>{order.customer.phone}</p>
-                </td>
+  <span className="admin-customer-name">{order.customer.name}</span>
+  <p>{order.customer.phone}</p>
+</td>
                 <td className="admin-order-date">{formatDate(order.created_at)}</td>
                 <td className="admin-order-total">{order.final_total || calculateTotal(order.items)} DA</td>
                 <td>{order.delivery_type === 'bureau' ? 'Bureau' : 'Domicile'}</td>

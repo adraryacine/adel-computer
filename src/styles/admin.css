@@ -817,6 +817,14 @@
   color: #667eea;
 }
 
+.admin-customer-name {
+  font-size: 1em;
+  font-weight: 500;
+  color: #ffffff;
+  display: block;
+  margin-bottom: 0.1em;
+}
+
 .admin-customer-info h4 {
   margin: 0 0 0.25rem 0;
   color: #ffffff;
