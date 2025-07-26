@@ -757,16 +757,14 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
                       {existingImages.map((imageUrl, index) => (
                         <div key={`existing-${index}`} className="admin-image-preview">
                           <img src={imageUrl} alt={`Image existante ${index + 1}`} />
-                          {isSupabaseImage(imageUrl) && (
-                            <button
-                              type="button"
-                              className="admin-remove-image"
-                              onClick={() => removeExistingImage(index)}
-                              title="Supprimer cette image du stockage"
-                            >
-                              <FaTrash />
-                            </button>
-                          )}
+                          <button
+  type="button"
+  className="admin-remove-image"
+  onClick={() => removeExistingImage(index)}
+  title={isSupabaseImage(imageUrl) ? "Supprimer cette image du stockage" : "Supprimer ce lien"}
+>
+  <FaTrash />
+</button>
                           <div className="admin-image-label">
                             {isSupabaseImage(imageUrl) ? 'Stockage' : 'Lien externe'}
                           </div>
