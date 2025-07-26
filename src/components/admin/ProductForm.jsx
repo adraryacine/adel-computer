@@ -722,27 +722,7 @@ const ProductForm = ({ product, categories, onSave, onClose }) => {
                           <small>Formats acceptés: JPG, PNG, GIF. Taille max: 5MB par image</small>
                         </div>
 
-                        {/* Uploaded Images Preview */}
-                        {uploadedImages.length > 0 && (
-                          <div className="admin-uploaded-images">
-                            <h4>Images uploadées:</h4>
-                            <div className="admin-images-grid">
-                              {uploadedImages.map((imageUrl, index) => (
-                                <div key={index} className="admin-image-preview">
-                                  <img src={imageUrl} alt={`Image ${index + 1}`} />
-                                  <button
-                                    type="button"
-                                    className="admin-remove-image"
-                                    onClick={() => removeUploadedImage(index)}
-                                    title="Supprimer cette image"
-                                  >
-                                    <FaTrash />
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+                        
                       </>
                     )}
                   </div>
